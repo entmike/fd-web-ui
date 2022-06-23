@@ -20,8 +20,8 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 const Links = [
   {title : 'Home', url: '/'},
-  {title:'Random', url: '/random'},
-  {title:'Recent', url: '/recent'}
+  {title:'Random', url: '/random/25'},
+  {title:'Recent', url: '/recent/50/1'}
 ];
 
 const NavLink = ({ title, url }: { title: ReactNode, url: string }) => (

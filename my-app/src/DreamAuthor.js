@@ -10,7 +10,7 @@ export default function DreamAuthor(props) {
     console.log(props)
     return (
       <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-        <Link to={`/gallery/${props.userdets.user_str}/50`}>
+        <Link to={`/gallery/${props.userdets.user_str}/10/1`}>
             <Image
             borderRadius="full"
             boxSize="40px"

@@ -9,11 +9,16 @@ export default function Feed({type, amount, user_id}) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     let params = useParams();
-    
+    console.log(params)
+    let page = params.page?params.page:1
+    if (params.amount) {amount = params.amount}
     function fetchFeed(type, amount, user_id) {
-      let url = `https://api.feverdreams.app/${type}/${amount}`
+      let url = `https://api.feverdreams.app/${type}/${amount}/${page}`
+      if (type==="random"){
+        url = `https://api.feverdreams.app/${type}/${amount}`
+      }
       if(user_id){
-        url = `https://api.feverdreams.app/userfeed/${user_id}/${amount}`
+        url = `https://api.feverdreams.app/userfeed/${user_id}/${amount}/${params.page}`
       }
       console.log(url)
       fetch(url)

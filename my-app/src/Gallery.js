@@ -2,6 +2,7 @@ import React from "react"
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Feed from "./Feed";
+import { Button, Text, Flex, Center } from "@chakra-ui/react";
 
 export default function Gallery() {
     let params = useParams();
@@ -33,8 +34,17 @@ export default function Gallery() {
     // useEffect(() => {
     //     fetchGallery()
     // },[]);
-
+    function go(direction){
+        window.location.href=(`/gallery/${params.user_id}/${params.amount}/${(parseInt(params.page) + direction)}`)
+    }
     return <>
-        <Feed user={params.user_id} amount={params.amount} />
+        <Flex>
+            <Button onClick={()=>go(-1)}>⬅️</Button>
+            <Center>
+                <Text>{params.page}</Text>
+            </Center>
+            <Button onClick={()=>go(1)}>➡️</Button>
+        </Flex>            
+        <Feed user={params.user_id} amount={params.amount} page={1} />
     </>
 }
