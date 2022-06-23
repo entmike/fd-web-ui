@@ -120,7 +120,7 @@ export default function Piece() {
                 fontSize="lg">
                 {data.text_prompt}
             </Text>
-            <DreamAuthor avatar={data.userdets.avatar} name={data.userdets.user_name} timestamp={data.timestamp} /><Text>—</Text><Text>{dt(data.timestamp)}</Text>
+            <DreamAuthor userdets={data.userdets} timestamp={data.timestamp} /><Text>—</Text><Text>{dt(data.timestamp)}</Text>
             </Box>
         </Box>
         </div>}

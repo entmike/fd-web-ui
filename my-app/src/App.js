@@ -20,7 +20,7 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Routes>
-          <Route path="/gallery/:user" element={<Gallery />} />
+          <Route path={"/gallery/:user_id/:amount"} element={<Gallery />} />
           <Route path={"/piece/:uuid"} element = {<Piece />} />
           <Route path="/random" element={<Feed type="random" amount="20" />} />
           <Route path="/recent" element={<Feed type="recent" amount="20" />} />

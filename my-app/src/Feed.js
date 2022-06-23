@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
 import { SimpleGrid } from '@chakra-ui/react'
+import { useParams } from "react-router-dom";
 import Preview from "./Preview";
 
 
-export default function Feed({type, amount}) {
+export default function Feed({type, amount, user_id}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    function fetchFeed(type, amount) {
-      fetch(`https://api.feverdreams.app/${type}/${amount}`)
+    let params = useParams();
+    
+    function fetchFeed(type, amount, user_id) {
+      let url = `https://api.feverdreams.app/${type}/${amount}`
+      if(user_id){
+        url = `https://api.feverdreams.app/userfeed/${user_id}/${amount}`
+      }
+      console.log(url)
+      fetch(url)
       .then((response) => {
         return response.json()
       })
@@ -28,8 +35,8 @@ export default function Feed({type, amount}) {
 
     // https://exerror.com/react-hook-useeffect-has-a-missing-dependency/
     useEffect(() => {
-      fetchFeed(type, amount)
-    },[ type, amount]);
+      fetchFeed(type, amount, params.user_id)
+    },[ type, amount, params.user_id]);
     return (
       
         <div>

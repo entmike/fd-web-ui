@@ -1,6 +1,7 @@
 import React from "react"
 import { Box, Image, Badge, AspectRatio, Text } from '@chakra-ui/react'
 import DreamAuthor from "./DreamAuthor"
+import { Link } from "react-router-dom"
 
 function dt(ts){
   let s = ""
@@ -15,18 +16,16 @@ function dt(ts){
 
 export default function Preview({uuid, render_type, text_prompt, duration, userdets, timestamp}){ 
         return (
-          <Box as='button' onClick={(event)=>{
-            window.location.href = `/piece/${uuid}`
-            // window.open(`https://api.feverdreams.app/image/${uuid}`);
-            console.log(event)
-            }} maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
+          <Box maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
             <AspectRatio maxW='400px' ratio={4 / 3}>
-              <Image src={`https://api.feverdreams.app/thumbnail/${uuid}/512`} alt={uuid} 
-              transition="0.3s ease-in-out"
-              objectFit="contain"
-              width="100%"
-              _hover={{ transform: 'scale(1.05)'}} 
-              />
+              <Link to={`/piece/${uuid}`}>
+                <Image src={`https://api.feverdreams.app/thumbnail/${uuid}/512`} alt={uuid} 
+                transition="0.3s ease-in-out"
+                objectFit="contain"
+                width="100%"
+                _hover={{ transform: 'scale(1.05)'}} 
+                />
+              </Link>
             </AspectRatio>
             <Box p='6'>
               <Box display='flex' alignItems='baseline'>
@@ -54,7 +53,7 @@ export default function Preview({uuid, render_type, text_prompt, duration, userd
               >
                 {text_prompt}
               </Box>
-              <DreamAuthor avatar={userdets.avatar} name={userdets.user_name} timestamp={timestamp} />
+              <DreamAuthor userdets={userdets} timestamp={timestamp} />
               <Box>
                 {/* {property.formattedPrice} */}
                 <Box as='span' color='gray.600' fontSize='sm'>
