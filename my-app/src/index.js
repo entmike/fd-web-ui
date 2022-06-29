@@ -1,6 +1,8 @@
 import React from 'react';
 import './index.css';
 import App from './App';
+import theme from './theme'
+import { ColorModeScript } from '@chakra-ui/react'
 import reportWebVitals from './reportWebVitals';
 import { createRoot } from 'react-dom/client';
 import { createBrowserHistory } from 'history';
@@ -21,7 +23,11 @@ if (app) {
     }
   }
   replaceHashPath()
-  createRoot(app).render(<App />);
+  createRoot(app).render(<>
+  <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+  <App />
+  </>
+  );
 }
 
 // If you want to start measuring performance in your app, pass a function

@@ -15,9 +15,9 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  useColorMode,
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-
+import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 const Links = [
   {title : 'Home', url: '/'},
   {title:'Random', url: '/random/25'},
@@ -36,8 +36,8 @@ const NavLink = ({ title, url }: { title: ReactNode, url: string }) => (
 );
 
 export default function Nav() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { colorMode, toggleColorMode } = useColorMode()
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -61,6 +61,7 @@ export default function Nav() {
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
+          <IconButton onClick={toggleColorMode} aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'} Mode`} icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} />
             <Menu>
               <MenuButton
                 as={Button}

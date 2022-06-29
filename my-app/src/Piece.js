@@ -9,15 +9,9 @@ import {
     Link,
     Image,
     Text,
-    Divider,
-    HStack,
-    Tag,
-    Wrap,
-    WrapItem,
-    SpaceProps,
-    useColorModeValue,
-    Container,
-    VStack,
+    Badge,
+    Flex,
+    Stack
   } from '@chakra-ui/react';
 
 function dt(ts){
@@ -64,28 +58,35 @@ export default function Piece() {
     return <>
         {error}
         {!loading && <div>
-            <Box
+          <Heading as='h3' size='lg'>
+            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+            {params.uuid}
+            </Link>
+        </Heading>
+        <Box
         marginTop={{ base: '1', sm: '5' }}
         display="flex"
         flexDirection={{ base: 'column', sm: 'row' }}
-        justifyContent="space-between">
+        // justifyContent="space-between"
+        >
         <Box
           display="flex"
           flex="1"
           marginRight="3"
           position="relative"
-          alignItems="center">
+          // alignItems="center"
+          >
           <Box
             width={{ base: '100%', sm: '85%' }}
             zIndex="2"
             marginLeft={{ base: '0', sm: '5%' }}
             marginTop="5%">
-            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+            <Link textDecoration="none" isExternal href={`https://api.feverdreams.app/image/${params.uuid}`}>
               <Image
                 borderRadius="lg"
-                src={`https://api.feverdreams.app/image/${params.uuid}`}
-                alt="some good alt text"
-                objectFit="contain"
+                src={`https://api.feverdreams.app/thumbnail/${params.uuid}/512`}
+                alt={data.text_prompt}
+                objectFit="cover"
               />
             </Link>
           </Box>
@@ -105,16 +106,17 @@ export default function Piece() {
             display="flex"
             flex="1"
             flexDirection="column"
-            justifyContent="center"
+            // justifyContent="center"
             marginTop={{ base: '3', sm: '0' }}>
             {/* <BlogTags tags={['Engineering', 'Product']} /> */}
-            <Heading marginTop="1">
-                <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-                {params.uuid}
-                </Link>
-            </Heading>
+            <Stack direction='row'>
+              <Badge variant='outline' colorScheme='green'>{data.model}</Badge>
+              <Badge variant='outline' colorScheme='green'>{data.render_type}</Badge>
+              <Badge variant='outline' colorScheme='green'>{`${data.steps} steps`}</Badge>
+            </Stack>
             <Text
                 as="p"
+                align="left"
                 marginTop="2"
                 // color={useColorModeValue('gray.700', 'gray.200')}
                 fontSize="lg">
