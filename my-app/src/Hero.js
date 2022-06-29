@@ -7,6 +7,7 @@ import {
     Text,
     useBreakpointValue,
   } from '@chakra-ui/react';
+import CaptionCarousel from './CaptionCarousel.js';
   
   export default function Hero() {
     return (
@@ -51,15 +52,7 @@ import {
             </Stack>
           </Stack>
         </Flex>
-        <Flex flex={1}>
-          <Image
-            alt={'Login Image'}
-            objectFit={'cover'}
-            src={
-              'https://api.feverdreams.app/image/d9e87d0c-054c-412a-bcbe-7424220d4225'
-            }
-          />
-        </Flex>
+        <CaptionCarousel amount={10} />
       </Stack>
     );
   }
