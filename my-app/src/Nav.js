@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
+import { useAuth0 } from "@auth0/auth0-react";
+import LoginButton from './LoginButton';
+import Profile from './Profile';
 import {
   Box,
   Flex,
-  Avatar,
   HStack,
   Link,
   IconButton,
@@ -24,7 +25,7 @@ const Links = [
   {title:'Recent', url: '/recent/50/1'}
 ];
 
-const NavLink = ({ title, url }: { title: ReactNode, url: string }) => (
+const NavLink = ({ title, url }) => (
   <Link
     px={2}
     py={1}
@@ -38,6 +39,8 @@ const NavLink = ({ title, url }: { title: ReactNode, url: string }) => (
 export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
+  const { isAuthenticated, logout, user } = useAuth0();
+  console.log(user)
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -55,41 +58,37 @@ export default function Nav() {
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>
-              {Links.map(({title, url} : any) => (
+              {Links.map(({title, url}) => (
                 <NavLink key={title} title={title} url={url} />
               ))}
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
-          <IconButton onClick={toggleColorMode} aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'} Mode`} icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} />
-            <Menu>
+            <IconButton onClick={toggleColorMode} aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'} Mode`} icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} />
+            {isAuthenticated && <Menu>
               <MenuButton
                 as={Button}
                 rounded={'full'}
                 variant={'link'}
                 cursor={'pointer'}
                 minW={0}>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
-                />
+                <Profile />
               </MenuButton>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+                <MenuItem onClick={() => window.location.href=`https://www.feverdreams.app/gallery/${user.sub.split('|')[2]}/10/1`}>My Gallery</MenuItem>
                 <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>Log Out</MenuItem>
               </MenuList>
             </Menu>
+            }
+            {!isAuthenticated && <LoginButton/>}
           </Flex>
         </Flex>
 
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {Links.map(({title, url} : any) => (
+              {Links.map(({title, url}) => (
                 <NavLink key={title} title={title} url={url} />
               ))}
             </Stack>

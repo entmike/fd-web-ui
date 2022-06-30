@@ -81,7 +81,7 @@ export default function Piece() {
             zIndex="2"
             marginLeft={{ base: '0', sm: '5%' }}
             marginTop="5%">
-            <Link textDecoration="none" isExternal href={`https://api.feverdreams.app/image/${params.uuid}`}>
+            <Link textDecoration="none" isExternal href={`https://www.feverdreams.app/images/${params.uuid}0_0.png`}>
               <Image
                 borderRadius="lg"
                 src={`https://api.feverdreams.app/thumbnail/${params.uuid}/512`}
