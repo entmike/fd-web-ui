@@ -6,6 +6,7 @@ import { Button, Text, Flex, Center } from "@chakra-ui/react";
 
 export default function Gallery() {
     let params = useParams();
+
     // const [data, setData] = useState(null);
     // const [loading, setLoading] = useState(true);
     // const [error, setError] = useState(null);
@@ -34,14 +35,47 @@ export default function Gallery() {
     // useEffect(() => {
     //     fetchGallery()
     // },[]);
-    function go(direction){
-        window.location.href=(`/gallery/${params.user_id}/${params.amount}/${(parseInt(params.page) + direction)}`)
+    function go(direction) {
+        if (parseInt(params.page) + direction > 0) {
+            window.location.href=(`/gallery/${params.user_id}/${params.amount}/${(parseInt(params.page) + direction)}`)
+        }
     }
+    
+    const goToPage = (page) => {
+        window.location.href=(`/gallery/${params.user_id}/${params.amount}/${page}`)
+    }
+
+    const handleBlur = (e) => {
+        let page = parseInt(e.target.innerHTML)
+        let bConform = false
+
+        if (!isNaN(page)) {
+            if (page !== 0) { bConform = true }
+        } 
+        bConform ? goToPage( page ) : document.getElementById('pageNum').innerHTML = params.page
+        
+    };
+    const handleKeyDown = event => {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            
+            let page = parseInt(document.getElementById('pageNum').innerHTML)
+            let bConform = false
+            
+            if (!isNaN(page)) {
+                if (page !== 0) { bConform = true }
+            }
+            bConform ? goToPage( page ) : document.getElementById('pageNum').innerHTML = params.page
+        }
+    };
+
     return <>
         <Flex>
             <Button onClick={()=>go(-1)}>⬅️</Button>
             <Center>
-                <Text>{params.page}</Text>
+                <div id="pageNum" onBlur={handleBlur} onKeyDown={handleKeyDown} contentEditable>
+                    {params.page}
+                </div>
             </Center>
             <Button onClick={()=>go(1)}>➡️</Button>
         </Flex>            
