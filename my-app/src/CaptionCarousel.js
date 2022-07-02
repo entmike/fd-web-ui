@@ -111,7 +111,7 @@ export default function CaptionCarousel({amount}) {
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
-            backgroundImage={`https://api.feverdreams.app/thumbnail/${img.uuid}/1024`}>
+            backgroundImage={`https://www.feverdreams.app/images/${img.uuid}0_0.png`}>
             {/* This is the block you need to change, to customize the caption */}
             <Container size="container.lg" height="600px" position="relative">
               <Stack

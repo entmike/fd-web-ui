@@ -11,6 +11,7 @@ if (app) {
   createRoot(app).render(<>
   <ColorModeScript initialColorMode={theme.config.initialColorMode} />
   <Auth0Provider
+    audience='https://api.feverdreams.app/'
     domain="dev-yqzsn326.auth0.com"
     clientId="dlt683RKXoT6tDOHCa8wWQQaoHobcjQm"
     redirectUri={window.location.origin}

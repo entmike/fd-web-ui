@@ -4,6 +4,11 @@ import Feed from "./Feed";
 import Piece from "./Piece";
 import Gallery from "./Gallery";
 import Nav from "./Nav";
+import Dream from "./Dream"
+import Search from './Search';
+import AgentStatus from './AgentStatus';
+import Jobs from './Jobs';
+
 import { useAuth0 } from "@auth0/auth0-react";
 import { ChakraProvider } from '@chakra-ui/react'
 import {
@@ -36,6 +41,14 @@ function App() {
               <Route path="" element={<Feed type="random" amount="20" />} />
             </Route>
             <Route path="/" element={<Hero />} />
+            <Route path="/agentstatus" element={<AgentStatus />}></Route>
+            <Route path="/jobs" element={<Jobs />}></Route>
+            <Route path="/dream" element={<Dream />}></Route>
+            <Route path="/search/:regexp" element={<Search />}>
+              <Route path=":amount" element={<Search />}>
+                <Route path=":page" element={<Search />} />
+              </Route>
+            </Route>
           </Routes>
         </div>
       </Router>

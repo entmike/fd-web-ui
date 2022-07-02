@@ -2,7 +2,7 @@ import React from "react"
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import DreamAuthor from "./DreamAuthor";
-
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
     Box,
     Heading,
@@ -81,7 +81,10 @@ export default function Piece() {
             zIndex="2"
             marginLeft={{ base: '0', sm: '5%' }}
             marginTop="5%">
-            <Link textDecoration="none" isExternal href={`https://www.feverdreams.app/images/${params.uuid}0_0.png`}>
+            <Link textDecoration="none" isExternal href={
+                (data.status === 'processing')?`https://www.feverdreams.app/images/${params.uuid}_progress.png`
+                :`https://www.feverdreams.app/images/${params.uuid}0_0.png`
+              }>
               <Image
                 borderRadius="lg"
                 src={`https://api.feverdreams.app/thumbnail/${params.uuid}/512`}
@@ -113,6 +116,9 @@ export default function Piece() {
               <Badge variant='outline' colorScheme='green'>{data.model}</Badge>
               <Badge variant='outline' colorScheme='green'>{data.render_type}</Badge>
               <Badge variant='outline' colorScheme='green'>{`${data.steps} steps`}</Badge>
+            </Stack>
+            <Stack direction='row'>
+              <Link color='green.500' isExternal href={`https://api.feverdreams.app/job/${params.uuid}`}>Job Details <ExternalLinkIcon mx='2px' /></Link> | <Link color='green.500' isExternal href={`https://api.feverdreams.app/config/${params.uuid}`}>YAML <ExternalLinkIcon mx='2px' /></Link>
             </Stack>
             <Text
                 as="p"

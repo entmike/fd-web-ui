@@ -19,10 +19,13 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-const Links = [
+import { useEffect } from "react";
+let Links = [
   {title : 'Home', url: '/'},
   {title:'Random', url: '/random/25'},
-  {title:'Recent', url: '/recent/50/1'}
+  {title:'Recent', url: '/recent/50/1'},
+  {title:'Status', url: '/agentstatus'},
+  {title:'Jobs', url: '/jobs'}
 ];
 
 const NavLink = ({ title, url }) => (
@@ -40,7 +43,8 @@ export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
   const { isAuthenticated, logout, user } = useAuth0();
-  console.log(user)
+  
+  isAuthenticated && Links.push({title:'Dream', url: '/dream'})
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -58,9 +62,11 @@ export default function Nav() {
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>
-              {Links.map(({title, url}) => (
+              {
+              Links.map(({title, url}) => (
                 <NavLink key={title} title={title} url={url} />
-              ))}
+              ))
+              }
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
