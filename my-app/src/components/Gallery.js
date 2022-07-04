@@ -1,11 +1,10 @@
 import React from "react"
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Feed from "./Feed";
-import { Button, Text, Flex, Center } from "@chakra-ui/react";
+import { Text, Flex, Center } from "@chakra-ui/react";
+import { Feed } from "./shared/Feed";
 
-export default function Gallery() {
-    let params = useParams();
+export function Gallery() {
+    const params = useParams();
 
     return <>
         <Flex>

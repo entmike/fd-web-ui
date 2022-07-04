@@ -1,20 +1,8 @@
 import React from "react"
-import { Box, Image, Badge, Stack, HStack, AspectRatio, Text } from '@chakra-ui/react'
-import DreamAuthor from "./DreamAuthor"
+import { Box, Image, HStack } from '@chakra-ui/react'
 import { Link } from "react-router-dom"
 
-function dt(ts){
-  let s = ""
-  if (ts && ts["$date"]){
-      s = ts.$date.toString()
-  }else{
-      s = new Date(ts).toString()
-  }
-  // console.log(s)
-  return s
-}
-
-export default function Preview({uuid, model, render_type, text_prompt, duration, userdets, timestamp}){ 
+export function Preview({uuid, model, render_type, text_prompt, duration, userdets, timestamp}){ 
         return (
           <Box width="512" borderWidth='1px' borderRadius='lg' overflow='hidden'>
             <HStack>
@@ -31,8 +19,3 @@ export default function Preview({uuid, model, render_type, text_prompt, duration
           </Box>
         )
       }
-    // return(
-    // <>
-    //     <img src={`https://api.feverdreams.app/thumbnail/${uuid}`} alt={uuid} />
-    // </>
-    // )

@@ -4,28 +4,19 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
     TableCaption,
     TableContainer,
   } from '@chakra-ui/react'
+import { dt } from '../utils/dateUtils'
   
-export default function AgentStatus() {
+export function AgentStatus() {
     const [data, setData] = useState(false);
+    // TODO: Complete or delete
     const [loading, setLoading] = useState(true);
     
-    function dt(ts){
-        let s = ""
-        if (ts && ts["$date"]){
-            s = ts.$date.toString()
-        }else{
-            s = new Date(ts).toString()
-        }
-        console.log(s)
-        return s
-    }
     function fetchStatus(type, amount, user_id) {
         let url = `https://api.feverdreams.app/agentstats`
         fetch(url)

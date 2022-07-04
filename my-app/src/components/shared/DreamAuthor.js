@@ -1,12 +1,12 @@
 import React from "react"
+import { Link } from "react-router-dom";
 import {
     Image,
     Text,
     HStack,
   } from '@chakra-ui/react';
-import { Link } from "react-router-dom";
 
-export default function DreamAuthor(props) {
+export function DreamAuthor(props) {
     console.log(props)
     return (
       <HStack marginTop="2" spacing="2" display="flex" alignItems="center">

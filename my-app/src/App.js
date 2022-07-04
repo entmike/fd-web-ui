@@ -1,13 +1,13 @@
 import './App.css';
-import Hero from "./Hero";
-import Feed from "./Feed";
-import Piece from "./Piece";
-import Gallery from "./Gallery";
-import Nav from "./Nav";
-import Dream from "./Dream"
-import Search from './Search';
-import AgentStatus from './AgentStatus';
-import Jobs from './Jobs';
+import { Hero } from "./components/Hero";
+import { Feed } from "./components/shared/Feed";
+import { Piece } from "./components/Piece";
+import { Gallery } from "./components/Gallery";
+import { Nav } from "./components/Nav";
+import { Dream } from "./components/Dream"
+import { Search } from './components/Search';
+import { AgentStatus } from './components/AgentStatus';
+import { Jobs } from './components/Jobs';
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { ChakraProvider } from '@chakra-ui/react'
@@ -18,6 +18,7 @@ import {
 } from "react-router-dom";
 
 function App() {
+  // TODO: Is something going to happen with this?
   const { isAuthenticated, logout } = useAuth0();
 
   return (

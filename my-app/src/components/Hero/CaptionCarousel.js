@@ -4,7 +4,6 @@ import {
   IconButton,
   useBreakpointValue,
   Stack,
-  Heading,
   Text,
   Container,
 } from '@chakra-ui/react';
@@ -25,12 +24,14 @@ const settings = {
   slidesToScroll: 1,
 };
 
-export default function CaptionCarousel({amount}) {
+export function CaptionCarousel({amount}) {
   // As we have used custom buttons, we need a reference variable to
   // change the state
   const [slider, setSlider] = useState(null);
   const [data, setData] = useState(null);
+  // TODO: Complete or delete
   const [loading, setLoading] = useState(true);
+  // TODO: Complete or delete
   const [error, setError] = useState(null);
   // These are the breakpoints which changes the position of the
   // buttons as the screen size changes

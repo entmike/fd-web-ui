@@ -1,14 +1,13 @@
-import { useState, useEffect, componentDidMount } from "react";
+import { useState, useEffect  } from "react";
 import { SimpleGrid } from '@chakra-ui/react'
-import { useParams, useNavigationType } from "react-router-dom";
-import Preview from "./Preview";
+import { useParams } from "react-router-dom";
+import { Preview } from "./Preview";
 
 
-export default function Feed({type, amount, user_id, regexp}) {
+export function Feed({type, amount, user_id, regexp}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [cameByBackButton, setCameByBackButton] = useState(false)
    
     function fetchFeed(type, amount, page, user_id, regexp) {
       let url = `https://api.feverdreams.app/${type}/${amount}/${page}`
@@ -39,7 +38,6 @@ export default function Feed({type, amount, user_id, regexp}) {
     }
 
     let params = useParams();
-    const history = useNavigationType();
 
     useEffect(() => {
       // console.log(history)

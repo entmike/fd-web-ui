@@ -1,11 +1,9 @@
 import React from "react"
 import { useState, useEffect } from "react";
-import DreamAuthor from "./DreamAuthor";
 import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
@@ -13,21 +11,14 @@ import {
     TableContainer,
     Link, Image
   } from '@chakra-ui/react'
+import { dt } from '../utils/dateUtils'
+import { DreamAuthor } from "./shared/DreamAuthor";
   
-export default function Jobs() {
+export function Jobs() {
     const [data, setData] = useState(false);
-    const [loading, setLoading] = useState(true);
+    // TODO: This isn't being used to change UI yet
+    const [, setLoading] = useState(true);
     
-    function dt(ts){
-        let s = ""
-        if (ts && ts["$date"]){
-            s = ts.$date.toString()
-        }else{
-            s = new Date(ts).toString()
-        }
-        console.log(s)
-        return s
-    }
     function fetchStatus(type, amount, user_id) {
         let url = `https://api.feverdreams.app/web/queue/processing/`
         fetch(url)
