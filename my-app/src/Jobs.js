@@ -29,7 +29,7 @@ export default function Jobs() {
         return s
     }
     function fetchStatus(type, amount, user_id) {
-        let url = `https://api.feverdreams.app/queue/processing/`
+        let url = `https://api.feverdreams.app/web/queue/processing/`
         fetch(url)
         .then((response) => {
             return response.json()

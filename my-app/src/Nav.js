@@ -18,7 +18,11 @@ import {
   Stack,
   useColorMode,
 } from '@chakra-ui/react';
+import {
+  Link as RouteLink
+} from "react-router-dom";
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { SiDiscord } from 'react-icons/si'
 import { useEffect } from "react";
 let Links = [
   {title : 'Home', url: '/'},
@@ -30,13 +34,15 @@ let Links = [
 
 const NavLink = ({ title, url }) => (
   <Link
+    as={RouteLink}
     px={2}
     py={1}
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
       bg: useColorModeValue('gray.200', 'gray.700'),
-    }} href={url}>{title}</Link>
+    }}
+    to={{pathname:url}}>{title}</Link>
 );
 
 export default function Nav() {
@@ -64,12 +70,13 @@ export default function Nav() {
               display={{ base: 'none', md: 'flex' }}>
               {
               Links.map(({title, url}) => (
-                <NavLink key={title} title={title} url={url} />
+                <NavLink as={RouteLink} key={title} title={title} url={url} />
               ))
               }
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
+            <IconButton onClick={()=>{window.open("https://discord.gg/yNDqCnzCbs","_blank")}} aria-label={`Discord`} icon={<SiDiscord/>} />
             <IconButton onClick={toggleColorMode} aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'} Mode`} icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} />
             {isAuthenticated && <Menu>
               <MenuButton

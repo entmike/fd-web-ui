@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Image, Badge, AspectRatio, Text } from '@chakra-ui/react'
+import { Box, Image, Badge, Stack, HStack, AspectRatio, Text } from '@chakra-ui/react'
 import DreamAuthor from "./DreamAuthor"
 import { Link } from "react-router-dom"
 
@@ -14,55 +14,20 @@ function dt(ts){
   return s
 }
 
-export default function Preview({uuid, render_type, text_prompt, duration, userdets, timestamp}){ 
+export default function Preview({uuid, model, render_type, text_prompt, duration, userdets, timestamp}){ 
         return (
-          <Box maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
-            <AspectRatio maxW='400px' ratio={4 / 3}>
+          <Box width="512" borderWidth='1px' borderRadius='lg' overflow='hidden'>
+            <HStack>
               <Link to={`/piece/${uuid}`}>
-                <Image src={`https://api.feverdreams.app/thumbnail/${uuid}/512`} alt={uuid} 
-                transition="0.3s ease-in-out"
-                objectFit="contain"
-                width="100%"
-                _hover={{ transform: 'scale(1.05)'}} 
-                />
+                  <Image height="512px" width="512px" src={`https://api.feverdreams.app/thumbnail/${uuid}/1024`} alt={uuid} 
+                  transition="0.3s ease-in-out"
+                  // objectFit="contain"
+                  style={{ objectFit: "cover"}}
+                  _hover={{ transform: 'scale(1.05)'}} 
+                  />
               </Link>
-            </AspectRatio>
-            <Box p='6'>
-              <Box display='flex' alignItems='baseline'>
-                <Badge borderRadius='full' px='2' colorScheme='teal'>
-                {render_type || "render"}
-                </Badge>
-                <Box
-                  color='gray.500'
-                  fontWeight='semibold'
-                  letterSpacing='wide'
-                  fontSize='xs'
-                  textTransform='uppercase'
-                  ml='2'
-                >
-                  {/* {property.beds} beds &bull; {property.baths} baths */}
-                </Box>
-              </Box>
-      
-              <Box
-                mt='1'
-                fontWeight='semibold'
-                as='h4'
-                lineHeight='tight'
-                noOfLines={1}
-              >
-                {text_prompt}
-              </Box>
-              <DreamAuthor userdets={userdets} timestamp={timestamp} />
-              <Box>
-                {/* {property.formattedPrice} */}
-                <Box as='span' color='gray.600' fontSize='sm'>
-                  {dt(timestamp)}
-                </Box>
-              </Box>
-      
-              
-            </Box>
+            
+            </HStack>
           </Box>
         )
       }

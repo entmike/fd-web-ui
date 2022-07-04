@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, componentDidMount } from "react";
 import { SimpleGrid } from '@chakra-ui/react'
-import { useParams } from "react-router-dom";
+import { useParams, useNavigationType } from "react-router-dom";
 import Preview from "./Preview";
 
 
@@ -8,11 +8,9 @@ export default function Feed({type, amount, user_id, regexp}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    let params = useParams();
-    let page = params.page?params.page:1
-    if (params.amount) {amount = params.amount}
-
-    function fetchFeed(type, amount, user_id, regexp) {
+    const [cameByBackButton, setCameByBackButton] = useState(false)
+   
+    function fetchFeed(type, amount, page, user_id, regexp) {
       let url = `https://api.feverdreams.app/${type}/${amount}/${page}`
       if (type==="random"){
         url = `https://api.feverdreams.app/${type}/${amount}`
@@ -40,16 +38,31 @@ export default function Feed({type, amount, user_id, regexp}) {
       });
     }
 
+    let params = useParams();
+    const history = useNavigationType();
+
     useEffect(() => {
-      fetchFeed(type, amount, params.user_id, params.regexp)
-    },[ type, amount, params.user_id, params.regexp]);
+      // console.log(history)
+      // console.log(params)
+      let page = params?params.page?params.page:1:1
+      let amount = params?params.amount?params.amount:10:10
+      fetchFeed(type, amount, page, params.user_id?params.user_id:null, params.regexp)
+      // if (history === "POP") {
+      //   setCameByBackButton(true);
+      //   console.log("User went back")
+      // }else{
+      //   let page = params?params.page?params.page:1:1
+      //   let amount = params?params.amount?params.amount:10:10
+      //   fetchFeed(type, amount, page, params.user_id, params.regexp)
+      // }
+    },[params]);
 
     return (
       
         <div>
-          {loading && <div>A moment please...</div>}
+          {loading && <div>Loading, please wait...</div>}
           {error && (
-            <div>{`There is a problem fetching the post data - ${error}`}</div>
+            <div>{`There is a problem fetching the data - ${error}`}</div>
           )}
           <SimpleGrid minChildWidth='256px' spacing = {20}>
           {data &&
