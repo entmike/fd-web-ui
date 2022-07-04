@@ -1,15 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React from "react"
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import DreamAuthor from "./DreamAuthor";
 
-import {
-    Input, Text
-  } from '@chakra-ui/react';
+import { Input, Text } from '@chakra-ui/react';
 
-export default function Dream() {
-    const [token, setToken] = useState(true);
+export function Dream() {
+    // TODO: Complete or delete
+    const [, setToken] = useState(true);
     const [dream, setDream] = useState(true);
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
     useEffect(()=>{
@@ -47,7 +44,6 @@ export default function Dream() {
             <>
             <Text>Dream Count {dream.count}</Text>
             <Input placeholder='Your dream here...' defaultValue={dream.dream} />
-            {/* <span>{JSON.stringify(dream)}</span> */}
             </>
         }
     </>);

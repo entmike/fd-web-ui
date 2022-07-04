@@ -1,6 +1,6 @@
+import { Link as RouteLink } from "react-router-dom";
+import { SiDiscord } from 'react-icons/si'
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from './LoginButton';
-import Profile from './Profile';
 import {
   Box,
   Flex,
@@ -18,12 +18,10 @@ import {
   Stack,
   useColorMode,
 } from '@chakra-ui/react';
-import {
-  Link as RouteLink
-} from "react-router-dom";
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { SiDiscord } from 'react-icons/si'
-import { useEffect } from "react";
+import { LoginButton } from './LoginButton';
+import { Profile } from './Profile';
+
 let Links = [
   {title : 'Home', url: '/'},
   {title:'Random', url: '/random/25'},
@@ -45,7 +43,7 @@ const NavLink = ({ title, url }) => (
     to={{pathname:url}}>{title}</Link>
 );
 
-export default function Nav() {
+export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
   const { isAuthenticated, logout, user } = useAuth0();

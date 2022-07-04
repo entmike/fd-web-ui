@@ -1,7 +1,6 @@
 import React from "react"
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import DreamAuthor from "./DreamAuthor";
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
     Box,
@@ -10,21 +9,12 @@ import {
     Image,
     Text,
     Badge,
-    Flex,
     Stack
   } from '@chakra-ui/react';
+import { DreamAuthor } from "./shared/DreamAuthor";
+import { dt } from '../utils/dateUtils'
 
-function dt(ts){
-    let s = ""
-    if (ts && ts["$date"]){
-        s = ts.$date.toString()
-    }else{
-        s = new Date(ts).toString()
-    }
-    console.log(s)
-    return s
-}
-export default function Piece() {
+export function Piece() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
