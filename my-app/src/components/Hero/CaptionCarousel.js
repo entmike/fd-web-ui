@@ -7,6 +7,7 @@ import {
   Text,
   Container,
 } from '@chakra-ui/react';
+import { Link } from "react-router-dom"
 
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
 import Slider from 'react-slick';
@@ -38,7 +39,7 @@ export function CaptionCarousel({amount}) {
   const top = useBreakpointValue({ base: '90%', md: '50%' });
   const side = useBreakpointValue({ base: '30%', md: '40px' });
   function fetchFeed(amount) {
-    let url = `https://api.feverdreams.app/random/${amount}`
+    let url = `https://api.feverdreams.app/random/${amount}/pano`
     console.log(url)
     fetch(url)
     .then((response) => {
@@ -63,8 +64,9 @@ export function CaptionCarousel({amount}) {
   return (
     <Box
       position={'relative'}
-      height={'600px'}
-      width={'70%'}
+      height={'512px'}
+      width={'100%'}
+      maxW={'2048px'}
       overflow={'hidden'}>
       {/* CSS files for react-slick */}
       <link
@@ -103,34 +105,29 @@ export function CaptionCarousel({amount}) {
         <BiRightArrowAlt size="40px" />
       </IconButton>
       {/* Slider */}
-      <Slider {...settings} ref={(slider) => setSlider(slider)}>
+      <Slider {...settings} ref={(slider) => setSlider(slider)}>  
         {data && data.map((img, index) => (
-          <Box
-            key={index}
-            height={'6xl'}
-            position="relative"
-            backgroundPosition="center"
-            backgroundRepeat="no-repeat"
-            backgroundSize="cover"
-            backgroundImage={`https://www.feverdreams.app/images/${img.uuid}0_0.png`}>
-            {/* This is the block you need to change, to customize the caption */}
-            <Container size="container.lg" height="600px" position="relative">
-              <Stack
-                spacing={6}
-                w={'full'}
-                maxW={'lg'}
-                position="absolute"
-                top="50%"
-                transform="translate(0, -50%)">
-                {/* <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
-                  {img.text_prompt}
-                </Heading> */}
-                <Text w={'full'} style={{"backgroundColor":"rgb(0,0,0,0.5)"}}  fontSize={{ base: 'md', lg: 'lg' }} color="WhiteText">
-                  {img.text_prompt}
-                </Text>
-              </Stack>
-            </Container>
-          </Box>
+          <Link to={`/piece/${img.uuid}`} key={index}>
+            <Box
+              // height={'6xl'}
+              position="relative"
+              backgroundPosition="center"
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              maxW={2048}
+              backgroundImage={`https://api.feverdreams.app/thumbnail/${img.uuid}/2048`}>
+              {/* This is the block you need to change, to customize the caption */}
+              <Container maxW={2048} height={512} position="relative">
+                <Box position="absolute" bottom="0" left="0" right="0" p={3} >
+                  <Box style={{"backgroundColor":"rgb(0,0,0,0.5)"}} p={5} borderRadius="md" borderWidth={1}>
+                    <Text w={'100%'} fontSize={{ base: 'md', lg: 'lg' }} color="white">
+                      {img.text_prompt}
+                    </Text>
+                  </Box>
+                </Box>
+              </Container>
+            </Box>
+          </Link>
         ))}
       </Slider>
     </Box>

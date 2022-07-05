@@ -3,14 +3,13 @@ import {
     Heading,
     Stack,
     Text,
-    useBreakpointValue,
+    useBreakpointValue, Center
   } from '@chakra-ui/react';
 import { CaptionCarousel } from './CaptionCarousel.js';
   
 export function Hero() {
   return (
-    <Stack height={'400px'} direction={{ base: 'column', md: 'row' }}>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
+    <Stack direction={{ base: 'column', md: 'column' }}>
         <Stack spacing={6} w={'full'} maxW={'lg'}>
           <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
             <Text
@@ -33,24 +32,15 @@ export function Hero() {
               Fever Dreams
             </Text>{' '}
           </Heading>
-          <Text fontSize={{ base: 'md', lg: 'lg' }} color={'gray.500'}>
+          <Text fontSize={{ base: 'md', lg: 'lg' }} color={'whiteAlpha.900'}>
             Browse generative AI art created openly by other users.
           </Text>
           <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
-            {/* <Button
-              rounded={'full'}
-              bg={'blue.400'}
-              color={'white'}
-              _hover={{
-                bg: 'blue.500',
-              }}>
-              Create Project
-            </Button>
-            <Button rounded={'full'}>How It Works</Button> */}
           </Stack>
         </Stack>
-      </Flex>
-      <CaptionCarousel amount={10} />
+        <Center>
+          <CaptionCarousel amount={10} />
+        </Center>
     </Stack>
   );
 }

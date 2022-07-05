@@ -11,7 +11,7 @@ export function Preview({uuid, model, render_type, text_prompt, duration, userde
                   transition="0.3s ease-in-out"
                   // objectFit="contain"
                   style={{ objectFit: "cover"}}
-                  _hover={{ transform: 'scale(1.05)'}} 
+                  _hover={{ transform: 'scale(1.1)'}} 
                   />
               </Link>
             

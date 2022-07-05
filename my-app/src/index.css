@@ -15,3 +15,11 @@ code {
 .nav--navbar {
   font-family: Courier
 }
+
+.slick-slide {
+  z-index: 998;
+  }
+  
+  .slick-active.slick-current {
+  z-index: 999;
+  }

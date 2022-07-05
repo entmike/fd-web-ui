@@ -62,7 +62,20 @@ export function AgentStatus() {
                         return <Tr key={o.agent_id}>
                                 <Td>{o.agent_id}</Td>
                                 <Td>{dt(o.last_seen)}</Td>
-                                <Td>{o.mode}</Td>
+                                <Td>{
+                                  (()=>{
+                                    switch(o.mode){
+                                      case "dreaming":
+                                        return "🌜"
+                                      case "working":
+                                        return "⚒️"
+                                      case "awake":
+                                        return "👀"
+                                      default:
+                                        return o.mode
+                                    }
+                                  })()
+                                }</Td>
                                 <Td>{o.model_mode}</Td>
                                 <Td>{o.score}</Td>
                                 <Td>{gpustats[0]}</Td>
