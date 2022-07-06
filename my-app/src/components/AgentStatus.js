@@ -9,11 +9,26 @@ import {
     Td,
     TableCaption,
     TableContainer,
+    Skeleton,
   } from '@chakra-ui/react'
 import { dt } from '../utils/dateUtils'
   
 export function AgentStatus() {
-    const [data, setData] = useState(false);
+    let d = []
+    for (var i=0;i<25;i++){
+      d.push({
+        "agent_id": `entmike-runpod-a6000-${i}`,
+        "last_seen": {
+          "$date": "2022-07-06T01:17:31.392Z"
+        },
+        "mode": "dreaming",
+        "idle_time": 35,
+        "score": 1919,
+        "model_mode": "rn50x64",
+        "gpustats": "NVIDIA RTX A6000, 83, 0, 0, 28399\n"
+      })
+    }
+    const [data, setData] = useState(d);
     // TODO: Complete or delete
     const [loading, setLoading] = useState(true);
     
@@ -60,9 +75,9 @@ export function AgentStatus() {
                         let gpustats = o.gpustats.split(", ")
 
                         return <Tr key={o.agent_id}>
-                                <Td>{o.agent_id}</Td>
-                                <Td>{dt(o.last_seen)}</Td>
-                                <Td>{
+                                <Td><Skeleton isLoaded={!loading}>{o.agent_id}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{dt(o.last_seen)}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{
                                   (()=>{
                                     switch(o.mode){
                                       case "dreaming":
@@ -75,14 +90,14 @@ export function AgentStatus() {
                                         return o.mode
                                     }
                                   })()
-                                }</Td>
-                                <Td>{o.model_mode}</Td>
-                                <Td>{o.score}</Td>
-                                <Td>{gpustats[0]}</Td>
-                                <Td>{gpustats[1]}</Td>
-                                <Td>{gpustats[2]}</Td>
-                                <Td>{gpustats[3]}</Td>
-                                <Td>{gpustats[4]}</Td>
+                                }</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{o.model_mode}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{o.score}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{gpustats[0]}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{gpustats[1]}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{gpustats[2]}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{gpustats[3]}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{gpustats[4]}</Skeleton></Td>
                             </Tr>
                     })
                     }

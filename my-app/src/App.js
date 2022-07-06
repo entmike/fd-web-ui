@@ -11,6 +11,7 @@ import { Jobs } from './components/Jobs';
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { ChakraProvider, Box } from '@chakra-ui/react'
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -19,7 +20,25 @@ import {
 
 function App() {
   // TODO: Is something going to happen with this?
-  const { isAuthenticated, logout } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [token, setToken] = useState("badtoken");
+  
+  const getToken = async()=>{
+    let token
+    try{
+      token = await getAccessTokenSilently({
+        audience : "https://api.feverdreams.app/"
+      })
+      console.log(token)
+      setToken(token)
+    }catch(e){
+      console.log("Not logged in")
+    }
+  }
+
+  useEffect(()=>{
+    getToken()
+  })
 
   return (
     <ChakraProvider>
@@ -45,7 +64,7 @@ function App() {
               <Route path="/" element={<Hero />} />
               <Route path="/agentstatus" element={<AgentStatus />}></Route>
               <Route path="/jobs" element={<Jobs />}></Route>
-              <Route path="/dream" element={<Dream />}></Route>
+              <Route path="/dream" element={<Dream token={token} isAuthenticated={isAuthenticated}/>}></Route>
               <Route path="/search/:regexp" element={<Search />}>
                 <Route path=":amount" element={<Search />}>
                   <Route path=":page" element={<Search />} />

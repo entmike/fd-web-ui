@@ -9,17 +9,19 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    Link, Image
+    Link, Image, Skeleton
   } from '@chakra-ui/react'
 import { dt } from '../utils/dateUtils'
 import { DreamAuthor } from "./shared/DreamAuthor";
   
 export function Jobs() {
-    const [data, setData] = useState(false);
-    // TODO: This isn't being used to change UI yet
-    const [, setLoading] = useState(true);
+    let d = []
+    for(let i=0;i<25;i++) d.push({render_type: "render", timestamp: "January 1, 1900", uuid:`xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx${i}`, userdets:{}, model: "default", percent:"50%"})
+    const [data, setData] = useState(d);
+    const [loading, setLoading] = useState(true);
     
     function fetchStatus(type, amount, user_id) {
+        setLoading(true)
         let url = `https://api.feverdreams.app/web/queue/processing/`
         fetch(url)
         .then((response) => {
@@ -28,6 +30,8 @@ export function Jobs() {
         .then((actualData) => {
           console.log(actualData)
           setData(actualData);
+          console.log(loading)
+          setLoading(false);
         })
         .then(() => {
           setLoading(false);
@@ -55,24 +59,22 @@ export function Jobs() {
                 </Thead>
                 <Tbody>
                     {data && data.map((o, i)=>{
-                        console.log(o)
                         // let gpustats = o.gpustats.split(", ")
-
                         return <Tr key={o.uuid}>
-                                <Th><DreamAuthor userdets={o.userdets}/></Th>
-                                <Td><Link color='green.500' href={`/piece/${o.uuid}`}>{o.uuid}</Link></Td>
+                                <Th><Skeleton isLoaded={!loading}><DreamAuthor userdets={o.userdets}/></Skeleton></Th>
+                                <Td><Skeleton isLoaded={!loading}><Link color='green.500' href={`/piece/${o.uuid}`}>{o.uuid}</Link></Skeleton></Td>
                                 <Td width={`75px`}><Link color='green.500' href={`/piece/${o.uuid}`}>
-                                        <Image
+                                    <Skeleton isLoaded={!loading}><Image
                                         borderRadius="lg"
                                         src={`https://api.feverdreams.app/thumbnail/${o.uuid}/64`}
                                         // alt={o.text_prompt}
                                         objectFit="cover"
-                                    />
+                                    /></Skeleton>
                                 </Link></Td>
-                                <Td>{dt(o.timestamp)}</Td>
-                                <Td>{o.render_type}</Td>
-                                <Td>{o.model}</Td>
-                                <Td>{o.percent}</Td>
+                                <Td><Skeleton isLoaded={!loading}>{dt(o.timestamp)}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{o.render_type}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{o.model}</Skeleton></Td>
+                                <Td><Skeleton isLoaded={!loading}>{o.percent}</Skeleton></Td>
                             </Tr>
                     })
                     }

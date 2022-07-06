@@ -5,7 +5,6 @@ import {
   Box,
   Flex,
   HStack,
-  Link,
   IconButton,
   Button,
   Menu,
@@ -18,6 +17,8 @@ import {
   Stack,
   useColorMode,
 } from '@chakra-ui/react';
+
+import { Link } from "react-router-dom"
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
@@ -48,7 +49,6 @@ export function Nav() {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isAuthenticated, logout, user } = useAuth0();
   
-  isAuthenticated && Links.push({title:'Dream', url: '/dream'})
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -70,6 +70,9 @@ export function Nav() {
               Links.map(({title, url}) => (
                 <NavLink as={RouteLink} key={title} title={title} url={url} />
               ))
+              }
+              {
+                isAuthenticated && <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
               }
             </HStack>
           </HStack>
@@ -100,8 +103,12 @@ export function Nav() {
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
               {Links.map(({title, url}) => (
-                <NavLink key={title} title={title} url={url} />
+                // TODO: Make it close menu
+                <NavLink key={title} title={title} url={url}/>
               ))}
+              {
+                isAuthenticated && <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
+              }
             </Stack>
           </Box>
         ) : null}

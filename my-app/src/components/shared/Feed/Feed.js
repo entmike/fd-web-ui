@@ -1,11 +1,17 @@
 import { useState, useEffect  } from "react";
-import { SimpleGrid } from '@chakra-ui/react'
+import { SimpleGrid, Skeleton } from '@chakra-ui/react'
 import { useParams } from "react-router-dom";
 import { Preview } from "./Preview";
 
 
 export function Feed({type, amount, user_id, regexp}) {
-    const [data, setData] = useState(null);
+    let d = []
+    for(let i=0;i<20;i++){
+      d.push({
+        uuid : `xxxx-xx-xxxxx-${i}`
+      })
+    }
+    const [data, setData] = useState(d);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
    
@@ -58,14 +64,18 @@ export function Feed({type, amount, user_id, regexp}) {
     return (
       
         <div>
-          {loading && <div>Loading, please wait...</div>}
           {error && (
             <div>{`There is a problem fetching the data - ${error}`}</div>
           )}
           <SimpleGrid minChildWidth='256px' spacing = {20}>
-          {data &&
-            data.map(({ uuid, author, text_prompt, render_type, duration, userdets, timestamp}) => (
-              <Preview userdets={userdets} timestamp={timestamp} key={uuid} uuid={uuid} text_prompt={text_prompt} render_type={render_type} duration={duration}/>
+          {loading && Array(20).map(()=>{
+            return <Skeleton height={256}><Preview /></Skeleton>
+          }
+          )}
+          {data && data.map(({ uuid, author, text_prompt, render_type, duration, userdets, timestamp}) => (
+              <Skeleton borderRadius="lg" isLoaded={!loading}>
+                <Preview userdets={userdets} timestamp={timestamp} key={uuid} uuid={uuid} text_prompt={text_prompt} render_type={render_type} duration={duration}/>
+              </Skeleton>
             ))}
           </SimpleGrid>
           {/* <header className="App-header">
