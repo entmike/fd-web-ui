@@ -1,23 +1,30 @@
 import React from "react"
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button, Text, Flex, Center } from "@chakra-ui/react";
 import { Feed } from "./shared/Feed";
 
 export function Search() {
     let params = useParams();
 
-     function go(direction){
-        window.location.href=(`/search/${params.regexp}/${params.amount}/${(parseInt(params.page) + direction)}`)
-    }
-
     return <>
-        <Flex>
-            <Button onClick={()=>go(-1)}>⬅️</Button>
-            <Center>
-                <Text>{params.page}</Text>
-            </Center>
-            <Button onClick={()=>go(1)}>➡️</Button>
-        </Flex>            
+        <Center>
+            <Flex>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
+                <Center>
+                    <Text>{params.page}</Text>
+                </Center>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
+            </Flex>
+        </Center>          
         <Feed type="search" regexp={params.regexp} amount={params.amount} page={1} />
+        <Center>
+            <Flex>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
+                <Center>
+                    <Text>{params.page}</Text>
+                </Center>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
+            </Flex>
+        </Center>
     </>
 }

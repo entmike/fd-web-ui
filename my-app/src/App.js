@@ -5,7 +5,9 @@ import { Piece } from "./components/Piece";
 import { Gallery } from "./components/Gallery";
 import { Nav } from "./components/Nav";
 import { Dream } from "./components/Dream"
+import { Color } from './components/Color';
 import { Search } from './components/Search';
+import { Recent } from './components/Recent';
 import { AgentStatus } from './components/AgentStatus';
 import { Jobs } from './components/Jobs';
 
@@ -55,9 +57,9 @@ function App() {
                 <Route path=":amount" element={<Feed type="random"/>} />
                 <Route path="" element={<Feed type="random" amount="20" />} />
               </Route>
-              <Route path="/recent" element={<Feed type="recent" amount="20" />}>
-                <Route path=":amount" element={<Feed type="recent"/>}>
-                  <Route path=":page" element={<Feed type="recent"/>} />
+              <Route path="/recent" element={<Recent amount="20" />}>
+                <Route path=":amount" element={<Recent />}>
+                  <Route path=":page" element={<Recent />} />
                 </Route>
                 <Route path="" element={<Feed type="random" amount="20" />} />
               </Route>
@@ -65,6 +67,14 @@ function App() {
               <Route path="/agentstatus" element={<AgentStatus />}></Route>
               <Route path="/jobs" element={<Jobs />}></Route>
               <Route path="/dream" element={<Dream token={token} isAuthenticated={isAuthenticated}/>}></Route>
+              
+              <Route path="/rgb/:r/:g/:b" element={<Color />}>
+                <Route path=":range" element={<Color />}>
+                  <Route path=":amount" element={<Color />}>
+                    <Route path=":page" element={<Color />} />
+                  </Route>
+                </Route>
+              </Route>
               <Route path="/search/:regexp" element={<Search />}>
                 <Route path=":amount" element={<Search />}>
                   <Route path=":page" element={<Search />} />

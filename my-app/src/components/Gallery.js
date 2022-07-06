@@ -7,13 +7,24 @@ export function Gallery() {
     const params = useParams();
 
     return <>
-        <Flex>
-            <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
-            <Center>
-                <Text>{params.page}</Text>
-            </Center>
-            <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
-        </Flex>            
+        <Center>
+            <Flex>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
+                <Center>
+                    <Text>{params.page}</Text>
+                </Center>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
+            </Flex>
+        </Center>
         <Feed user={params.user_id} amount={params.amount} page={1} />
+        <Center>
+            <Flex>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
+                <Center>
+                    <Text>{params.page}</Text>
+                </Center>
+                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
+            </Flex>
+        </Center>
     </>
 }

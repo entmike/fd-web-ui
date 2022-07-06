@@ -26,6 +26,9 @@ export function Feed({type, amount, user_id, regexp}) {
       if(type==="search"){
         url = `https://api.feverdreams.app/search/${regexp}/${amount}/${params.page}`
       }
+      if(type==="rgb"){
+        url = `https://api.feverdreams.app/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${amount}/${params.page}`
+      }
       fetch(url)
       .then((response) => {
         return response.json()
@@ -72,9 +75,9 @@ export function Feed({type, amount, user_id, regexp}) {
             return <Skeleton height={256}><Preview /></Skeleton>
           }
           )}
-          {data && data.map(({ uuid, author, text_prompt, render_type, duration, userdets, timestamp}) => (
+          {data && data.map(({ uuid, author, text_prompt, render_type, duration, userdets, timestamp, dominant_color}) => (
               <Skeleton borderRadius="lg" isLoaded={!loading}>
-                <Preview userdets={userdets} timestamp={timestamp} key={uuid} uuid={uuid} text_prompt={text_prompt} render_type={render_type} duration={duration}/>
+                <Preview dominant_color={dominant_color?dominant_color:[0,0,0]} userdets={userdets} timestamp={timestamp} key={uuid} uuid={uuid} text_prompt={text_prompt} render_type={render_type} duration={duration}/>
               </Skeleton>
             ))}
           </SimpleGrid>
