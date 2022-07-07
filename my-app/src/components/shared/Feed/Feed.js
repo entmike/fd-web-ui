@@ -72,7 +72,7 @@ export function Feed({ type, amount, user_id, regexp }) {
   return (
     <div>
       {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
-      <SimpleGrid minChildWidth="512px" minChildHeight="512px" spacing={20}>
+      <SimpleGrid minChildWidth="384px" minChildHeight="384px" spacing={20}>
         {data &&
           data.map(
             ({
@@ -87,6 +87,8 @@ export function Feed({ type, amount, user_id, regexp }) {
             }) => (
               <Skeleton borderRadius="lg" isLoaded={!loading}>
                 <Preview
+                  width="384px"
+                  height="384px"
                   dominant_color={dominant_color ? dominant_color : [0, 0, 0]}
                   userdets={userdets}
                   timestamp={timestamp}

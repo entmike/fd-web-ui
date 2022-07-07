@@ -11,7 +11,7 @@ export function Search() {
       <Center>
         <Flex>
           <Link
-            to={`/gallery/${params.user_id}/${params.amount}/${parseInt(
+            to={`/search/${params.regexp}/${params.amount}/${parseInt(
               parseInt(params.page) - 1
             )}`}
           >
@@ -21,7 +21,7 @@ export function Search() {
             <Text>{params.page}</Text>
           </Center>
           <Link
-            to={`/gallery/${params.user_id}/${params.amount}/${parseInt(
+            to={`/search/${params.regexp}/${params.amount}/${parseInt(
               parseInt(params.page) + 1
             )}`}
           >
@@ -38,7 +38,7 @@ export function Search() {
       <Center>
         <Flex>
           <Link
-            to={`/gallery/${params.user_id}/${params.amount}/${parseInt(
+            to={`/search/${params.regexp}/${params.amount}/${parseInt(
               parseInt(params.page) - 1
             )}`}
           >
@@ -48,7 +48,7 @@ export function Search() {
             <Text>{params.page}</Text>
           </Center>
           <Link
-            to={`/gallery/${params.user_id}/${params.amount}/${parseInt(
+            to={`/search/${params.regexp}/${params.amount}/${parseInt(
               parseInt(params.page) + 1
             )}`}
           >

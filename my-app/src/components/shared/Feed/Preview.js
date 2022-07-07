@@ -3,6 +3,8 @@ import { Box, Image, HStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
 export function Preview({
+  width,
+  height,
   uuid,
   dominant_color,
   model,
@@ -14,8 +16,8 @@ export function Preview({
 }) {
   return (
     <Box
-      width="512px"
-      height="512px"
+      width={width}
+      height={height}
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
@@ -24,8 +26,8 @@ export function Preview({
       <HStack>
         <Link to={`/piece/${uuid}`}>
           <Image
-            height="512px"
-            width="512px"
+            width={width}
+            height={height}
             src={`https://api.feverdreams.app/thumbnail/${uuid}/1024`}
             alt={uuid}
             transition="0.3s ease-in-out"

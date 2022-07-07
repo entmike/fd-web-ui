@@ -1,12 +1,14 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Button, Input, Skeleton, Text } from '@chakra-ui/react';
+import { Button, Skeleton, Text, Textarea } from '@chakra-ui/react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-// TODO: This isAuthenticated/token stuff should be in a context
+// TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
 export function Dream({ isAuthenticated, token }) {
   const [dream, setDream] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dreamPrompt, setDreamPrompt] = useState('');
+  const { user } = useAuth0();
 
   async function getDream(token) {
     setLoading(true);
@@ -47,6 +49,7 @@ export function Dream({ isAuthenticated, token }) {
 
   async function handleInitiateDream() {
     try {
+      setLoading(true);
       const { success: dreamSuccess } = await fetch(
         'https://api.feverdreams.app/web/dream',
         {
@@ -64,20 +67,26 @@ export function Dream({ isAuthenticated, token }) {
         .then((data) => {
           return data;
         });
-      console.log('SUCCESS:', dreamSuccess);
 
-      // TODO: I can't do this at the moment for w/e reason. May want to send dream back instead of success?
-      // if (dreamSuccess) getDream();
+      // Simulate data return -mike
+      if (dreamSuccess) setDream({ count: 0, dream: dreamPrompt });
+
+      setLoading(false);
     } catch (error) {
       console.log('Unable to induce dream state');
     }
   }
 
-  // TODO: This would be useful...:w
-
-  // function handleWakeUp() {
-  //   // fetch(`https://api.feverdreams.app/web/awaken/${}`)
-  // }
+  function handleWakeUp() {
+    setLoading(true);
+    fetch(`https://api.feverdreams.app/awaken/${user.sub.split('|')[2]}`).then(
+      (response) => {
+        setDream(null);
+        setDreamPrompt('');
+        setLoading(false);
+      }
+    );
+  }
 
   return (
     <>
@@ -86,13 +95,15 @@ export function Dream({ isAuthenticated, token }) {
           <Text>
             Dream Count: {dream ? dream.count : 'not currently dreaming'}
           </Text>
-          <Input
+          <Textarea
             placeholder="Your dream here..."
             value={dreamPrompt}
             onChange={(event) => setDreamPrompt(event.target.value)}
           />
           <Button onClick={handleInitiateDream}>Dream</Button>
-          {/* <Button onClick={handleWakeUp} disabled={!dream}>Wake Up</Button> */}
+          <Button onClick={handleWakeUp} disabled={!dream}>
+            Wake Up
+          </Button>
         </Skeleton>
       ) : (
         <Text>Try logging in, first.</Text>
