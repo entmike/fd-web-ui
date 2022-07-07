@@ -1,6 +1,6 @@
 import React from "react"
 import { useState, useEffect } from "react";
-import { Button, Input, Skeleton, Text } from '@chakra-ui/react';
+import { Button, Input, Skeleton, Text, Textarea } from '@chakra-ui/react';
 import { useAuth0 } from "@auth0/auth0-react";
 
 // TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
@@ -82,7 +82,7 @@ export function Dream({isAuthenticated,token}) {
           <Text>
             Dream Count: {dream ? dream.count : 'not currently dreaming'}
           </Text>
-          <Input
+          <Textarea
             placeholder='Your dream here...'
             value={dreamPrompt}
             onChange={(event) => setDreamPrompt(event.target.value)}
