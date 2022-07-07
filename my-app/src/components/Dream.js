@@ -1,13 +1,14 @@
 import React from "react"
 import { useState, useEffect } from "react";
 import { Button, Input, Skeleton, Text } from '@chakra-ui/react';
+import { useAuth0 } from "@auth0/auth0-react";
 
-// TODO: This isAuthenticated/token stuff should be in a context
+// TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
 export function Dream({isAuthenticated,token}) {
     const [dream, setDream] = useState(null);
     const [loading, setLoading] = useState(true);
     const [dreamPrompt, setDreamPrompt] = useState('');
-
+    const { user } = useAuth0();
     async function getDream(token) {
       setLoading(true)
 
@@ -56,7 +57,11 @@ export function Dream({isAuthenticated,token}) {
         }).then(response=>{
           return response.json()
         }).then(data=>{
-          return data
+          // Simulate data return -mike
+          setDream({
+            count : 0,
+            dream:dreamPrompt
+          })
         })
         console.log('SUCCESS:', dreamSuccess)
 
@@ -67,11 +72,9 @@ export function Dream({isAuthenticated,token}) {
       }
     }
 
-    // TODO: This would be useful...:w
-
-    // function handleWakeUp() {
-    //   // fetch(`https://api.feverdreams.app/web/awaken/${}`)
-    // }
+    function handleWakeUp() {
+      fetch(`https://api.feverdreams.app/awaken/${user.sub.split('|')[2]}`).then(response=>{setDream(null);setDreamPrompt('')})
+    }
 
     return (<>
       {isAuthenticated ?
@@ -85,7 +88,7 @@ export function Dream({isAuthenticated,token}) {
             onChange={(event) => setDreamPrompt(event.target.value)}
           />
           <Button onClick={handleInitiateDream}>Dream</Button>
-          {/* <Button onClick={handleWakeUp} disabled={!dream}>Wake Up</Button> */}
+          <Button onClick={handleWakeUp} disabled={!dream}>Wake Up</Button>
         </Skeleton>
       :
         <Text>Try logging in, first.</Text>
