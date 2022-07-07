@@ -1,0 +1,7 @@
+// This list defines the recommended extensions for VS Code
+{
+  "recommendations": [
+    // "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
+}

@@ -25,7 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write --ignore-unknown \"**/*\"",
+    "format:check": "prettier --check --ignore-unknown \"**/*\""
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "2.7.1"
   }
 }

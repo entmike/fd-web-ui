@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Box,
   IconButton,
   useBreakpointValue,
-  Stack,
   Text,
   Container,
 } from '@chakra-ui/react';
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
 import Slider from 'react-slick';
@@ -25,41 +24,41 @@ const settings = {
   slidesToScroll: 1,
 };
 
-export function CaptionCarousel({amount}) {
+export function CaptionCarousel({ amount }) {
   // As we have used custom buttons, we need a reference variable to
   // change the state
   const [slider, setSlider] = useState(null);
   const [data, setData] = useState(null);
   // TODO: Complete or delete
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   // TODO: Complete or delete
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   // These are the breakpoints which changes the position of the
   // buttons as the screen size changes
   const top = useBreakpointValue({ base: '90%', md: '50%' });
   const side = useBreakpointValue({ base: '30%', md: '40px' });
   function fetchFeed(amount) {
-    let url = `https://api.feverdreams.app/random/${amount}/pano`
-    console.log(url)
+    let url = `https://api.feverdreams.app/random/${amount}/pano`;
+    console.log(url);
     fetch(url)
-    .then((response) => {
-      return response.json()
-    })
-    .then((actualData) => {
-      setData(actualData);
-      setError(null);
-    })
-    .catch((err) => {
-      setError(err.message);
-      setData(null);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
+      .then((response) => {
+        return response.json();
+      })
+      .then((actualData) => {
+        setData(actualData);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setData(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
   useEffect(() => {
-    fetchFeed(amount)
-  },[amount]);
+    fetchFeed(amount);
+  }, [amount]);
 
   return (
     <Box
@@ -67,7 +66,8 @@ export function CaptionCarousel({amount}) {
       height={'512px'}
       width={'100%'}
       maxW={'2048px'}
-      overflow={'hidden'}>
+      overflow={'hidden'}
+    >
       {/* CSS files for react-slick */}
       <link
         rel="stylesheet"
@@ -89,7 +89,8 @@ export function CaptionCarousel({amount}) {
         top={top}
         transform={'translate(0%, -50%)'}
         zIndex={2}
-        onClick={() => slider?.slickPrev()}>
+        onClick={() => slider?.slickPrev()}
+      >
         <BiLeftArrowAlt size="40px" />
       </IconButton>
       {/* Right Icon */}
@@ -101,34 +102,46 @@ export function CaptionCarousel({amount}) {
         top={top}
         transform={'translate(0%, -50%)'}
         zIndex={2}
-        onClick={() => slider?.slickNext()}>
+        onClick={() => slider?.slickNext()}
+      >
         <BiRightArrowAlt size="40px" />
       </IconButton>
       {/* Slider */}
-      <Slider {...settings} ref={(slider) => setSlider(slider)}>  
-        {data && data.map((img, index) => (
-          <Link to={`/piece/${img.uuid}`} key={index}>
-            <Box
-              // height={'6xl'}
-              position="relative"
-              backgroundPosition="center"
-              backgroundRepeat="no-repeat"
-              backgroundSize="cover"
-              maxW={2048}
-              backgroundImage={`https://images.feverdreams.app/thumbnail/${img.uuid}/2048`}>
-              {/* This is the block you need to change, to customize the caption */}
-              <Container maxW={2048} height={512} position="relative">
-                <Box position="absolute" bottom="0" left="0" right="0" p={3} >
-                  <Box style={{"backgroundColor":"rgb(0,0,0,0.5)"}} p={5} borderRadius="md" borderWidth={1}>
-                    <Text w={'100%'} fontSize={{ base: 'md', lg: 'lg' }} color="white">
-                      {img.text_prompt}
-                    </Text>
+      <Slider {...settings} ref={(slider) => setSlider(slider)}>
+        {data &&
+          data.map((img, index) => (
+            <Link to={`/piece/${img.uuid}`} key={index}>
+              <Box
+                // height={'6xl'}
+                position="relative"
+                backgroundPosition="center"
+                backgroundRepeat="no-repeat"
+                backgroundSize="cover"
+                maxW={2048}
+                backgroundImage={`https://images.feverdreams.app/thumbnail/${img.uuid}/2048`}
+              >
+                {/* This is the block you need to change, to customize the caption */}
+                <Container maxW={2048} height={512} position="relative">
+                  <Box position="absolute" bottom="0" left="0" right="0" p={3}>
+                    <Box
+                      style={{ backgroundColor: 'rgb(0,0,0,0.5)' }}
+                      p={5}
+                      borderRadius="md"
+                      borderWidth={1}
+                    >
+                      <Text
+                        w={'100%'}
+                        fontSize={{ base: 'md', lg: 'lg' }}
+                        color="white"
+                      >
+                        {img.text_prompt}
+                      </Text>
+                    </Box>
                   </Box>
-                </Box>
-              </Container>
-            </Box>
-          </Link>
-        ))}
+                </Container>
+              </Box>
+            </Link>
+          ))}
       </Slider>
     </Box>
   );
