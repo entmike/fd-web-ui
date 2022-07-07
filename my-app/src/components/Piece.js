@@ -17,8 +17,7 @@ import { DreamAuthor } from "./shared/DreamAuthor";
 import { dt } from '../utils/dateUtils'
 
 export function Piece() {
-    // const IMAGE_HOST = "http://www.feverdreams.app.s3-website-us-east-1.amazonaws.com"
-    const IMAGE_HOST = "https://www.feverdreams.app"
+    const IMAGE_HOST = "https://images.feverdreams.app"
     const [data, setData] = useState({
       userdets : {},
       dominant_color : [0,0,0]
@@ -74,7 +73,7 @@ export function Piece() {
                   }>
                 <Image bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`} maxH="768" borderRadius="lg" alt={data.text_prompt} objectFit="cover" src={
                     (data.status === 'processing')?`${IMAGE_HOST}/images/${params.uuid}_progress.png`
-                    :`${IMAGE_HOST}/images/${params.uuid}0_0.png`
+                    :!data.thumbnails?`${IMAGE_HOST}/images/${params.uuid}0_0.png`:`http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
                   } />
               </Link>
               <Stack direction='row'>

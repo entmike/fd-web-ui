@@ -115,7 +115,7 @@ export function CaptionCarousel({amount}) {
               backgroundRepeat="no-repeat"
               backgroundSize="cover"
               maxW={2048}
-              backgroundImage={`https://api.feverdreams.app/thumbnail/${img.uuid}/2048`}>
+              backgroundImage={`https://images.feverdreams.app/thumbnail/${img.uuid}/2048`}>
               {/* This is the block you need to change, to customize the caption */}
               <Container maxW={2048} height={512} position="relative">
                 <Box position="absolute" bottom="0" left="0" right="0" p={3} >
