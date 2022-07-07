@@ -1,6 +1,6 @@
-import { Link as RouteLink } from "react-router-dom";
-import { SiDiscord } from 'react-icons/si'
-import { useAuth0 } from "@auth0/auth0-react";
+import { Link as RouteLink } from 'react-router-dom';
+import { SiDiscord } from 'react-icons/si';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Box,
   Flex,
@@ -18,17 +18,17 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
 
 let Links = [
-  {title : 'Home', url: '/'},
-  {title:'Random', url: '/random/25'},
-  {title:'Recent', url: '/recent/50/1'},
-  {title:'Status', url: '/agentstatus'},
-  {title:'Jobs', url: '/jobs'}
+  { title: 'Home', url: '/' },
+  { title: 'Random', url: '/random/25' },
+  { title: 'Recent', url: '/recent/50/1' },
+  { title: 'Status', url: '/agentstatus' },
+  { title: 'Jobs', url: '/jobs' },
 ];
 
 const NavLink = ({ title, url }) => (
@@ -41,14 +41,17 @@ const NavLink = ({ title, url }) => (
       textDecoration: 'none',
       bg: useColorModeValue('gray.200', 'gray.700'),
     }}
-    to={{pathname:url}}>{title}</Link>
+    to={{ pathname: url }}
+  >
+    {title}
+  </Link>
 );
 
 export function Nav() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const { colorMode, toggleColorMode } = useColorMode()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
   const { isAuthenticated, logout, user } = useAuth0();
-  
+
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -65,50 +68,85 @@ export function Nav() {
             <HStack
               as={'nav'}
               spacing={4}
-              display={{ base: 'none', md: 'flex' }}>
-              {
-              Links.map(({title, url}) => (
+              display={{ base: 'none', md: 'flex' }}
+            >
+              {Links.map(({ title, url }) => (
                 <NavLink as={RouteLink} key={title} title={title} url={url} />
-              ))
-              }
-              {
-                isAuthenticated && <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
-              }
+              ))}
+              {isAuthenticated && (
+                <NavLink
+                  as={RouteLink}
+                  key="/dream"
+                  title="Dream"
+                  url="/dream"
+                />
+              )}
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
-            <IconButton onClick={()=>{window.open("https://discord.gg/yNDqCnzCbs","_blank")}} aria-label={`Discord`} icon={<SiDiscord/>} />
-            <IconButton onClick={toggleColorMode} aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'} Mode`} icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />} />
-            {isAuthenticated && <Menu>
-              <MenuButton
-                as={Button}
-                rounded={'full'}
-                variant={'link'}
-                cursor={'pointer'}
-                minW={0}>
-                <Profile />
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => window.location.href=`https://www.feverdreams.app/gallery/${user.sub.split('|')[2]}/10/1`}>My Gallery</MenuItem>
-                <MenuDivider />
-                <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>Log Out</MenuItem>
-              </MenuList>
-            </Menu>
-            }
-            {!isAuthenticated && <LoginButton/>}
+            <IconButton
+              onClick={() => {
+                window.open('https://discord.gg/yNDqCnzCbs', '_blank');
+              }}
+              aria-label={`Discord`}
+              icon={<SiDiscord />}
+            />
+            <IconButton
+              onClick={toggleColorMode}
+              aria-label={`Toggle ${
+                colorMode === 'light' ? 'Dark' : 'Light'
+              } Mode`}
+              icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            />
+            {isAuthenticated && (
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={'full'}
+                  variant={'link'}
+                  cursor={'pointer'}
+                  minW={0}
+                >
+                  <Profile />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    onClick={() =>
+                      (window.location.href = `https://www.feverdreams.app/gallery/${
+                        user.sub.split('|')[2]
+                      }/10/1`)
+                    }
+                  >
+                    My Gallery
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem
+                    onClick={() => logout({ returnTo: window.location.origin })}
+                  >
+                    Log Out
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
+            {!isAuthenticated && <LoginButton />}
           </Flex>
         </Flex>
 
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {Links.map(({title, url}) => (
+              {Links.map(({ title, url }) => (
                 // TODO: Make it close menu
-                <NavLink key={title} title={title} url={url}/>
+                <NavLink key={title} title={title} url={url} />
               ))}
-              {
-                isAuthenticated && <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
-              }
+              {isAuthenticated && (
+                <NavLink
+                  as={RouteLink}
+                  key="/dream"
+                  title="Dream"
+                  url="/dream"
+                />
+              )}
             </Stack>
           </Box>
         ) : null}

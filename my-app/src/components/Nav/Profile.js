@@ -1,5 +1,5 @@
-import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import React from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar } from '@chakra-ui/react';
 
 export function Profile() {
@@ -10,11 +10,6 @@ export function Profile() {
   }
 
   return (
-    isAuthenticated && (
-      <Avatar
-        size={'sm'}
-        src={user.picture} alt={user.name}
-      />
-    )
+    isAuthenticated && <Avatar size={'sm'} src={user.picture} alt={user.name} />
   );
-};
+}
