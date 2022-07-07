@@ -70,10 +70,10 @@ export function Feed({type, amount, user_id, regexp}) {
           {error && (
             <div>{`There is a problem fetching the data - ${error}`}</div>
           )}
-          <SimpleGrid minChildWidth='512px' minChildHeight='512px' spacing = {20}>
+          <SimpleGrid minChildWidth='384px' minChildHeight='384px' spacing = {20}>
           {data && data.map(({ uuid, author, text_prompt, render_type, duration, userdets, timestamp, dominant_color}) => (
               <Skeleton borderRadius="lg" isLoaded={!loading}>
-                <Preview dominant_color={dominant_color?dominant_color:[0,0,0]} userdets={userdets} timestamp={timestamp} key={uuid} uuid={uuid} text_prompt={text_prompt} render_type={render_type} duration={duration}/>
+                <Preview width="384px" height="384px" dominant_color={dominant_color?dominant_color:[0,0,0]} userdets={userdets} timestamp={timestamp} key={uuid} uuid={uuid} text_prompt={text_prompt} render_type={render_type} duration={duration}/>
               </Skeleton>
             ))}
           </SimpleGrid>
