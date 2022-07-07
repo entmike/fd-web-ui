@@ -47,6 +47,7 @@ export function Dream({isAuthenticated,token}) {
 
     async function handleInitiateDream() {
       try {
+        setLoading(true)
         const { success: dreamSuccess } = await fetch("https://api.feverdreams.app/web/dream", {
           method: 'POST',
           headers : {
@@ -62,6 +63,7 @@ export function Dream({isAuthenticated,token}) {
             count : 0,
             dream:dreamPrompt
           })
+          setLoading(false)
         })
         console.log('SUCCESS:', dreamSuccess)
 
@@ -73,7 +75,8 @@ export function Dream({isAuthenticated,token}) {
     }
 
     function handleWakeUp() {
-      fetch(`https://api.feverdreams.app/awaken/${user.sub.split('|')[2]}`).then(response=>{setDream(null);setDreamPrompt('')})
+      setLoading(true)
+      fetch(`https://api.feverdreams.app/awaken/${user.sub.split('|')[2]}`).then(response=>{setDream(null);setDreamPrompt('');setLoading(false)})
     }
 
     return (<>
