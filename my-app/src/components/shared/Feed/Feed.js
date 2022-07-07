@@ -84,11 +84,13 @@ export function Feed({ type, amount, user_id, regexp }) {
               userdets,
               timestamp,
               dominant_color,
+              thumbnails,
             }) => (
               <Skeleton borderRadius="lg" isLoaded={!loading}>
                 <Preview
                   width="384px"
                   height="384px"
+                  thumbnails={thumbnails}
                   dominant_color={dominant_color ? dominant_color : [0, 0, 0]}
                   userdets={userdets}
                   timestamp={timestamp}

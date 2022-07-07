@@ -13,6 +13,7 @@ export function Preview({
   duration,
   userdets,
   timestamp,
+  thumbnails,
 }) {
   return (
     <Box
@@ -28,7 +29,11 @@ export function Preview({
           <Image
             width={width}
             height={height}
-            src={`https://api.feverdreams.app/thumbnail/${uuid}/1024`}
+            src={
+              !thumbnails
+                ? `https://api.feverdreams.app/thumbnail/${uuid}/1024`
+                : `http://images.feverdreams.app/thumbs/1024/${uuid}.jpg`
+            }
             alt={uuid}
             transition="0.3s ease-in-out"
             // objectFit="contain"
