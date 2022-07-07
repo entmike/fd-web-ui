@@ -9,21 +9,21 @@ export function Search() {
     return <>
         <Center>
             <Flex>
-                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
+                <Link to={`/search/${params.regexp}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
                 <Center>
                     <Text>{params.page}</Text>
                 </Center>
-                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
+                <Link to={`/search/${params.regexp}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
             </Flex>
         </Center>          
         <Feed type="search" regexp={params.regexp} amount={params.amount} page={1} />
         <Center>
             <Flex>
-                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
+                <Link to={`/search/${params.regexp}/${params.amount}/${(parseInt(parseInt(params.page) - 1))}`}>◀️</Link>
                 <Center>
                     <Text>{params.page}</Text>
                 </Center>
-                <Link to={`/gallery/${params.user_id}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
+                <Link to={`/search/${params.regexp}/${params.amount}/${(parseInt(parseInt(params.page) + 1))}`}>▶️</Link>
             </Flex>
         </Center>
     </>
