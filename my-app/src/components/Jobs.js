@@ -92,7 +92,7 @@ export function Jobs() {
                     <Th>Author</Th>
                     <Th>Job Details</Th>
                     <Th>Job UUID</Th>
-                    <Th>Image</Th>
+                    {/* <Th>Image</Th> */}
                     <Th width={`75px`}>Timestamp</Th>
                     <Th>Render Type</Th>
                     <Th>Model Mode</Th>
@@ -123,20 +123,19 @@ export function Jobs() {
                               </Skeleton>
                             </Center>
                           </Td>
-                          <Td width={`75px`}>
+                          {/* <Td width={`75px`}>
                             <Link color="green.500" href={`/piece/${o.uuid}`}>
                               <Center>
                                 <Skeleton isLoaded={!loading}>
                                   <Image
                                     borderRadius="lg"
                                     src={`https://images.feverdreams.app/thumbs/64/${o.uuid}.jpg`}
-                                    // alt={o.text_prompt}
                                     objectFit="cover"
                                   />
                                 </Skeleton>
                               </Center>
                             </Link>
-                          </Td>
+                          </Td> */}
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               {dt(o.timestamp)}
