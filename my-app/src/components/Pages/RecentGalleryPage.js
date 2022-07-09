@@ -1,18 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center } from '@chakra-ui/react';
-import FeedGrid from '../shared/Feed/FeedGrid';
+import { Text, Flex, Center, Button } from '@chakra-ui/react';
 
-const PaginationNav = ({ pageNumber, prevURL, nextURL }) => (
-  <Center mt={2} mb={2} fontSize="lg">
-    <Link to={prevURL}>◀️</Link>
-    <Text mr={1} ml={1}>
-      {pageNumber}
-    </Text>
-    <Link to={nextURL}>▶️</Link>
-  </Center>
-);
+import FeedGrid from '../shared/Feed/FeedGrid';
+import PaginationNav from '../shared/Feed/PaginationNav';
 
 export default function UserGalleryPage() {
   const [data, setData] = useState([]);

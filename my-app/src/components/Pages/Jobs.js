@@ -19,9 +19,9 @@ import {
   Skeleton,
   Center,
 } from '@chakra-ui/react';
-import { dt } from '../utils/dateUtils';
-import { DreamAuthor } from './shared/DreamAuthor';
-import { CopyButton } from './shared/CopyButton';
+import { dt } from '../../utils/dateUtils';
+import { DreamAuthor } from '../shared/DreamAuthor';
+import { CopyButton } from '../shared/CopyButton';
 
 export function Jobs() {
   let d = [];

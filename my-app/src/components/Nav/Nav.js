@@ -28,7 +28,6 @@ import { Profile } from './Profile';
 import SearchTypeahead from '../shared/SearchTypeahead';
 
 let Links = [
-  { title: 'Home', url: '/' },
   { title: 'Random', url: '/random' },
   { title: 'Recent', url: '/recent/1' },
   { title: 'Status', url: '/agentstatus' },

@@ -1,5 +1,5 @@
 import './App.css';
-import { Hero } from './components/Hero';
+import { Hero } from './components/Pages/HomePage';
 import { Feed } from './components/shared/Feed';
 import { Piece } from './components/Piece';
 
@@ -8,12 +8,11 @@ import RandomGalleryPage from './components/Pages/RandomGalleryPage';
 import RecentGalleryPage from './components/Pages/RecentGalleryPage';
 
 import { Nav } from './components/Nav';
-import { Dream } from './components/Dream';
+import { Dream } from './components/Pages/Dream';
 import { Color } from './components/Color';
 import { Search } from './components/Search';
-import { Recent } from './components/Recent';
 import { AgentStatus } from './components/AgentStatus';
-import { Jobs } from './components/Jobs';
+import { Jobs } from './components/Pages/Jobs';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import { ChakraProvider, Box } from '@chakra-ui/react';
