@@ -73,7 +73,7 @@ export function Feed({ type, amount, user_id, regexp }) {
   return (
     <div>
       <ResponsiveMasonry
-        columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 5, 1100: 6, 1280: 8, 1600:10 }}
+        columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 5, 1100: 6, 1600: 8 }}
       >
         <Masonry gutter="16x">
           {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
