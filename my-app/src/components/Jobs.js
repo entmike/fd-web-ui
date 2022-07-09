@@ -129,7 +129,7 @@ export function Jobs() {
                                 <Skeleton isLoaded={!loading}>
                                   <Image
                                     borderRadius="lg"
-                                    src={`https://api.feverdreams.app/thumbnail/${o.uuid}/64`}
+                                    src={`https://images.feverdreams.app/thumbs/64/${o.uuid}.jpg`}
                                     // alt={o.text_prompt}
                                     objectFit="cover"
                                   />
