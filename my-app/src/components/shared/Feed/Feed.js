@@ -44,8 +44,6 @@ export function Feed({ type, amount, user_id, regexp }) {
   let params = useParams();
 
   useEffect(() => {
-    // console.log(history)
-    // console.log(params)
     let page = params ? (params.page ? params.page : 1) : 1;
     let amount = params ? (params.amount ? params.amount : 10) : 10;
     fetchFeed(
@@ -55,14 +53,6 @@ export function Feed({ type, amount, user_id, regexp }) {
       params.user_id ? params.user_id : null,
       params.regexp
     );
-    // if (history === "POP") {
-    //   setCameByBackButton(true);
-    //   console.log("User went back")
-    // }else{
-    //   let page = params?params.page?params.page:1:1
-    //   let amount = params?params.amount?params.amount:10:10
-    //   fetchFeed(type, amount, page, params.user_id, params.regexp)
-    // }
   }, [params]);
 
   return (

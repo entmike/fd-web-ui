@@ -2,7 +2,11 @@ import './App.css';
 import { Hero } from './components/Hero';
 import { Feed } from './components/shared/Feed';
 import { Piece } from './components/Piece';
-import { UserGallery } from './components/UserGallery';
+
+import UserGalleryPage from './components/Pages/UserGalleryPage';
+import RandomGalleryPage from './components/Pages/RandomGalleryPage';
+import RecentGalleryPage from './components/Pages/RecentGalleryPage';
+
 import { Nav } from './components/Nav';
 import { Dream } from './components/Dream';
 import { Color } from './components/Color';
@@ -50,24 +54,11 @@ function App() {
             <Routes>
               {/* Gallery pages */}
               <Route
-                path={'/gallery/:user_id/:amount/:page'}
-                element={<UserGallery />}
+                path={'/gallery/:user_id/:page'}
+                element={<UserGalleryPage />}
               />
-
-              <Route
-                path="/random"
-                element={<Feed type="random" amount="20" />}
-              >
-                <Route path=":amount" element={<Feed type="random" />} />
-                <Route path="" element={<Feed type="random" amount="20" />} />
-              </Route>
-
-              <Route path="/recent" element={<Recent amount="20" />}>
-                <Route path=":amount" element={<Recent />}>
-                  <Route path=":page" element={<Recent />} />
-                </Route>
-                <Route path="" element={<Feed type="random" amount="20" />} />
-              </Route>
+              <Route path="/random" element={<RandomGalleryPage />} />
+              <Route path="/recent/:page" element={<RecentGalleryPage />} />
 
               <Route path="/search/:regexp" element={<Search />}>
                 <Route path=":amount" element={<Search />}>
