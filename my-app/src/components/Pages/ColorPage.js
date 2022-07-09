@@ -1,9 +1,9 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Text, Flex, Center } from '@chakra-ui/react';
-import { Feed } from './shared/Feed';
+import { Feed } from '../shared/Feed';
 
-export function Color() {
+function ColorPage() {
   let params = useParams();
 
   return (
@@ -62,3 +62,5 @@ export function Color() {
     </>
   );
 }
+
+export default ColorPage;

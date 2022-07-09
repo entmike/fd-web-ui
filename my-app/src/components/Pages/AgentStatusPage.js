@@ -11,9 +11,9 @@ import {
   TableContainer,
   Skeleton,
 } from '@chakra-ui/react';
-import { dt } from '../utils/dateUtils';
+import { dt } from '../../utils/dateUtils';
 
-export function AgentStatus() {
+function AgentStatusPage() {
   let d = [];
   for (var i = 0; i < 25; i++) {
     d.push({
@@ -130,3 +130,5 @@ export function AgentStatus() {
     </>
   );
 }
+
+export default AgentStatusPage;

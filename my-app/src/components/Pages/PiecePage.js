@@ -16,10 +16,10 @@ import {
   useClipboard,
   Skeleton,
 } from '@chakra-ui/react';
-import { DreamAuthor } from './shared/DreamAuthor';
-import { dt } from '../utils/dateUtils';
+import { DreamAuthor } from '../shared/DreamAuthor';
+import { dt } from '../../utils/dateUtils';
 
-export function Piece() {
+function PiecePage() {
   const IMAGE_HOST = 'https://images.feverdreams.app';
 
   const [data, setData] = useState({
@@ -147,3 +147,5 @@ export function Piece() {
     </>
   );
 }
+
+export default PiecePage;

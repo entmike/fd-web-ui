@@ -4,7 +4,7 @@ import { Button, Skeleton, Text, Textarea } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 // TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
-export function Dream({ isAuthenticated, token }) {
+function CreateDreamPage({ isAuthenticated, token }) {
   const [dream, setDream] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dreamPrompt, setDreamPrompt] = useState('');
@@ -106,8 +106,10 @@ export function Dream({ isAuthenticated, token }) {
           </Button>
         </Skeleton>
       ) : (
-        <Text>Try logging in, first.</Text>
+        <Text>You are not logged in. To create a dream, log in first.</Text>
       )}
     </>
   );
 }
+
+export default CreateDreamPage;

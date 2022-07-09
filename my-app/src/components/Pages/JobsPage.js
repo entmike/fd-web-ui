@@ -23,8 +23,9 @@ import { dt } from '../../utils/dateUtils';
 import { DreamAuthor } from '../shared/DreamAuthor';
 import { CopyButton } from '../shared/CopyButton';
 
-export function Jobs() {
+function JobsPage() {
   let d = [];
+
   for (let i = 0; i < 25; i++)
     d.push({
       render_type: 'render',
@@ -215,3 +216,5 @@ export function Jobs() {
     </>
   );
 }
+
+export default JobsPage;
