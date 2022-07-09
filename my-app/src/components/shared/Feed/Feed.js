@@ -73,7 +73,7 @@ export function Feed({ type, amount, user_id, regexp }) {
   return (
     <div>
       <ResponsiveMasonry
-        columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 5, 1100: 6, 1600: 8 }}
+        columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 4 }}
       >
         <Masonry gutter="16x">
           {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
@@ -92,7 +92,7 @@ export function Feed({ type, amount, user_id, regexp }) {
               <Skeleton margin=".25em" borderRadius="lg" minHeight="50px" min-width="360px" isLoaded={!loading}>
                 <Center>
                   <Preview
-                    width="360px"
+                    width="460x"
                     thumbnails={thumbnails}
                     dominant_color={dominant_color ? dominant_color : [0, 0, 0]}
                     userdets={userdets}
