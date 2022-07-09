@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Image, HStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import { Previewcaption } from './Previewcaption';
 
 export function Preview({
   width,
@@ -19,7 +20,8 @@ export function Preview({
     <Box
       width={width}
       height={height}
-      borderWidth="1px"
+      pos="relative"
+      borderWidth="0px"
       borderRadius="lg"
       overflow="hidden"
       bg={`rgb(${dominant_color[0]},${dominant_color[1]},${dominant_color[2]},0.5)`}
@@ -32,7 +34,7 @@ export function Preview({
             src={
               !thumbnails
                 ? `https://api.feverdreams.app/thumbnail/${uuid}/1024`
-                : `http://images.feverdreams.app/thumbs/1024/${uuid}.jpg`
+                : `http://images.feverdreams.app/thumbs/1024/${uuid}.jpg` 
             }
             alt={uuid}
             transition="0.3s ease-in-out"
@@ -40,6 +42,7 @@ export function Preview({
             style={{ objectFit: 'cover' }}
             _hover={{ transform: 'scale(1.1)' }}
           />
+          {/* <Previewcaption key={uuid} uuid={uuid} model={model} /> */}
         </Link>
       </HStack>
     </Box>

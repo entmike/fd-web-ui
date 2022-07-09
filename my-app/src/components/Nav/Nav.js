@@ -16,6 +16,9 @@ import {
   useColorModeValue,
   Stack,
   useColorMode,
+  Center,
+  Square,
+  Text
 } from '@chakra-ui/react';
 
 import { Link } from 'react-router-dom';
@@ -55,14 +58,25 @@ export function Nav() {
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <IconButton
+        <Flex h={16} alignItems={'center'}>
+        <IconButton
             size={'md'}
+            w='30px'
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
+          <Text
+            paddingLeft='20px'
+            w='180px'
+            bgGradient='linear(to-l, #7928CA, #FF0080)'
+            bgClip='text'
+            fontSize='1.1em'
+            fontWeight='bold'
+          >
+            Fever Dreams
+          </Text>
           <HStack spacing={8} alignItems={'center'}>
             {/* <Box>Logo</Box> */}
             <HStack
@@ -83,8 +97,9 @@ export function Nav() {
               )}
             </HStack>
           </HStack>
-          <Flex alignItems={'center'}>
+          <Flex marginLeft="auto" alignItems={'center'}>
             <IconButton
+              m='1'
               onClick={() => {
                 window.open('https://discord.gg/yNDqCnzCbs', '_blank');
               }}
@@ -92,10 +107,10 @@ export function Nav() {
               icon={<SiDiscord />}
             />
             <IconButton
+              m='1'
               onClick={toggleColorMode}
-              aria-label={`Toggle ${
-                colorMode === 'light' ? 'Dark' : 'Light'
-              } Mode`}
+              aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'
+                } Mode`}
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             />
             {isAuthenticated && (
@@ -106,14 +121,15 @@ export function Nav() {
                   variant={'link'}
                   cursor={'pointer'}
                   minW={0}
+                  pr='2'
+                  pl='1'
                 >
                   <Profile />
                 </MenuButton>
                 <MenuList>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `https://www.feverdreams.app/gallery/${
-                        user.sub.split('|')[2]
+                    (window.location.href = `https://www.feverdreams.app/gallery/${user.sub.split('|')[2]
                       }/10/1`)
                     }
                   >
