@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center } from '@chakra-ui/react';
+import { Button, Text, Flex, Center } from '@chakra-ui/react';
+import { Icon, ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { Feed } from './shared/Feed';
 
 export function Recent() {
@@ -9,15 +10,15 @@ export function Recent() {
   return (
     <>
       <Center>
-        <Flex>
+        <Flex marginBottom={3}>
           <Link
             to={`/recent/${params.amount}/${parseInt(
               parseInt(params.page) - 1
             )}`}
           >
-            ◀️
+          <Button variant='outline' colorScheme='blue'> <ArrowBackIcon /></Button>
           </Link>
-          <Center>
+          <Center marginLeft={2} marginRight={2}>
             <Text>{params.page}</Text>
           </Center>
           <Link
@@ -25,7 +26,7 @@ export function Recent() {
               parseInt(params.page) + 1
             )}`}
           >
-            ▶️
+            <Button variant='outline' colorScheme='blue'> <ArrowForwardIcon /></Button>
           </Link>
         </Flex>
       </Center>
@@ -36,15 +37,15 @@ export function Recent() {
         page={1}
       />
       <Center>
-        <Flex>
+        <Flex marginTop={3}>
           <Link
             to={`/recent/${params.amount}/${parseInt(
               parseInt(params.page) - 1
             )}`}
           >
-            ◀️
+          <Button variant='outline' colorScheme='blue'> <ArrowBackIcon /></Button>
           </Link>
-          <Center>
+          <Center marginLeft={2} marginRight={2}>
             <Text>{params.page}</Text>
           </Center>
           <Link
@@ -52,7 +53,7 @@ export function Recent() {
               parseInt(params.page) + 1
             )}`}
           >
-            ▶️
+          <Button variant='outline' colorScheme='blue'> <ArrowForwardIcon /></Button>
           </Link>
         </Flex>
       </Center>

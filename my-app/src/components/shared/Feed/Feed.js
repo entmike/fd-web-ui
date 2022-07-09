@@ -1,5 +1,7 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { SimpleGrid, Skeleton, Center } from '@chakra-ui/react';
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
+import { Skeleton, Center } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { Preview } from './Preview';
 
@@ -70,43 +72,43 @@ export function Feed({ type, amount, user_id, regexp }) {
 
   return (
     <div>
-      {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
-      <SimpleGrid
-        gridTemplateColumns="repeat(auto-fit, minmax(384px, 1fr))"
-        spacing={8}
+      <ResponsiveMasonry
+        columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4 }}
       >
-        {data?.map(
-          ({
-            uuid,
-            author,
-            text_prompt,
-            render_type,
-            duration,
-            userdets,
-            timestamp,
-            dominant_color,
-            thumbnails,
-          }) => (
-            <Skeleton borderRadius="lg" isLoaded={!loading}>
-              <Center>
-                <Preview
-                  width="384px"
-                  height="384px"
-                  thumbnails={thumbnails}
-                  dominant_color={dominant_color ? dominant_color : [0, 0, 0]}
-                  userdets={userdets}
-                  timestamp={timestamp}
-                  key={uuid}
-                  uuid={uuid}
-                  text_prompt={text_prompt}
-                  render_type={render_type}
-                  duration={duration}
-                />
-              </Center>
-            </Skeleton>
-          )
-        )}
-      </SimpleGrid>
+        <Masonry gutter="16x">
+          {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
+          {data?.map(
+            ({
+              uuid,
+              author,
+              text_prompt,
+              render_type,
+              duration,
+              userdets,
+              timestamp,
+              dominant_color,
+              thumbnails,
+            }) => (
+              <Skeleton margin=".25em" borderRadius="lg" minHeight="50px" min-width="360px" isLoaded={!loading}>
+                <Center>
+                  <Preview
+                    width="360px"
+                    thumbnails={thumbnails}
+                    dominant_color={dominant_color ? dominant_color : [0, 0, 0]}
+                    userdets={userdets}
+                    timestamp={timestamp}
+                    key={uuid}
+                    uuid={uuid}
+                    text_prompt={text_prompt}
+                    render_type={render_type}
+                    duration={duration}
+                  />
+                </Center>
+              </Skeleton>
+            )
+          )}
+        </Masonry>
+      </ResponsiveMasonry>
     </div>
   );
 }
