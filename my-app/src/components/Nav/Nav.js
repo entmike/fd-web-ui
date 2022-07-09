@@ -75,7 +75,9 @@ export function Nav() {
             fontSize='1.1em'
             fontWeight='bold'
           >
+            <Link  to='/'>
             Fever Dreams
+            </Link>
           </Text>
           <HStack spacing={8} alignItems={'center'}>
             {/* <Box>Logo</Box> */}
