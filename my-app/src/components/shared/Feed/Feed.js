@@ -1,18 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 import { Skeleton, Center } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { Preview } from './Preview';
 
+import FeedGrid from './FeedGrid';
+
 export function Feed({ type, amount, user_id, regexp }) {
-  let d = [];
-  for (let i = 0; i < 20; i++) {
-    d.push({
-      uuid: `xxxx-xx-xxxxx-${i}`,
-    });
-  }
-  const [data, setData] = useState(d);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -71,44 +66,9 @@ export function Feed({ type, amount, user_id, regexp }) {
   }, [params]);
 
   return (
-    <div>
-      <ResponsiveMasonry
-        columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 4 }}
-      >
-        <Masonry gutter="16x">
-          {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
-          {data?.map(
-            ({
-              uuid,
-              author,
-              text_prompt,
-              render_type,
-              duration,
-              userdets,
-              timestamp,
-              dominant_color,
-              thumbnails,
-            }) => (
-              <Skeleton margin=".25em" borderRadius="lg" minHeight="50px" min-width="360px" isLoaded={!loading}>
-                <Center>
-                  <Preview
-                    width="460x"
-                    thumbnails={thumbnails}
-                    dominant_color={dominant_color ? dominant_color : [0, 0, 0]}
-                    userdets={userdets}
-                    timestamp={timestamp}
-                    key={uuid}
-                    uuid={uuid}
-                    text_prompt={text_prompt}
-                    render_type={render_type}
-                    duration={duration}
-                  />
-                </Center>
-              </Skeleton>
-            )
-          )}
-        </Masonry>
-      </ResponsiveMasonry>
-    </div>
+    <>
+      {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
+      <FeedGrid dreams={data} loading={loading} />
+    </>
   );
 }

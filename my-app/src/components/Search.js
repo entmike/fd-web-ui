@@ -2,12 +2,16 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Text, Flex, Center } from '@chakra-ui/react';
 import { Feed } from './shared/Feed';
+import SearchTypeahead from './shared/SearchTypeahead';
 
 export function Search() {
   let params = useParams();
 
   return (
     <>
+      <h1>Search Page</h1>
+      <SearchTypeahead />
+
       <Center>
         <Flex>
           <Link
