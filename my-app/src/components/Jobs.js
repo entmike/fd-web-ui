@@ -17,9 +17,11 @@ import {
   Link,
   Image,
   Skeleton,
+  Center,
 } from '@chakra-ui/react';
 import { dt } from '../utils/dateUtils';
 import { DreamAuthor } from './shared/DreamAuthor';
+import { CopyButton } from './shared/CopyButton';
 
 export function Jobs() {
   let d = [];
@@ -88,6 +90,7 @@ export function Jobs() {
                 <Thead>
                   <Tr>
                     <Th>Author</Th>
+                    <Th>Job Details</Th>
                     <Th>Job UUID</Th>
                     <Th>Image</Th>
                     <Th width={`75px`}>Timestamp</Th>
@@ -109,20 +112,29 @@ export function Jobs() {
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`}>
-                                {o.uuid}
+                                View Details
                               </Link>
                             </Skeleton>
                           </Td>
+                          <Td>
+                            <Center>
+                              <Skeleton isLoaded={!loading}>
+                                <CopyButton value={o.uuid} />
+                              </Skeleton>
+                            </Center>
+                          </Td>
                           <Td width={`75px`}>
                             <Link color="green.500" href={`/piece/${o.uuid}`}>
-                              <Skeleton isLoaded={!loading}>
-                                <Image
-                                  borderRadius="lg"
-                                  src={`https://api.feverdreams.app/thumbnail/${o.uuid}/64`}
-                                  // alt={o.text_prompt}
-                                  objectFit="cover"
-                                />
-                              </Skeleton>
+                              <Center>
+                                <Skeleton isLoaded={!loading}>
+                                  <Image
+                                    borderRadius="lg"
+                                    src={`https://api.feverdreams.app/thumbnail/${o.uuid}/64`}
+                                    // alt={o.text_prompt}
+                                    objectFit="cover"
+                                  />
+                                </Skeleton>
+                              </Center>
                             </Link>
                           </Td>
                           <Td>
