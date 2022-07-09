@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { SimpleGrid, Skeleton } from '@chakra-ui/react';
+import { SimpleGrid, Skeleton, Center } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { Preview } from './Preview';
 
@@ -16,18 +16,17 @@ export function Feed({ type, amount, user_id, regexp }) {
 
   function fetchFeed(type, amount, page, user_id, regexp) {
     let url = `https://api.feverdreams.app/${type}/${amount}/${page}`;
+
     if (type === 'random') {
       url = `https://api.feverdreams.app/${type}/${amount}`;
-    }
-    if (user_id) {
+    } else if (user_id) {
       url = `https://api.feverdreams.app/userfeed/${user_id}/${amount}/${params.page}`;
-    }
-    if (type === 'search') {
+    } else if (type === 'search') {
       url = `https://api.feverdreams.app/search/${regexp}/${amount}/${params.page}`;
-    }
-    if (type === 'rgb') {
+    } else if (type === 'rgb') {
       url = `https://api.feverdreams.app/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${amount}/${params.page}`;
     }
+
     fetch(url)
       .then((response) => {
         return response.json();
@@ -72,21 +71,24 @@ export function Feed({ type, amount, user_id, regexp }) {
   return (
     <div>
       {error && <div>{`There is a problem fetching the data - ${error}`}</div>}
-      <SimpleGrid minChildWidth="384px" minChildHeight="384px" spacing={20}>
-        {data &&
-          data.map(
-            ({
-              uuid,
-              author,
-              text_prompt,
-              render_type,
-              duration,
-              userdets,
-              timestamp,
-              dominant_color,
-              thumbnails,
-            }) => (
-              <Skeleton borderRadius="lg" isLoaded={!loading}>
+      <SimpleGrid
+        gridTemplateColumns="repeat(auto-fit, minmax(384px, 1fr))"
+        spacing={8}
+      >
+        {data?.map(
+          ({
+            uuid,
+            author,
+            text_prompt,
+            render_type,
+            duration,
+            userdets,
+            timestamp,
+            dominant_color,
+            thumbnails,
+          }) => (
+            <Skeleton borderRadius="lg" isLoaded={!loading}>
+              <Center>
                 <Preview
                   width="384px"
                   height="384px"
@@ -100,16 +102,11 @@ export function Feed({ type, amount, user_id, regexp }) {
                   render_type={render_type}
                   duration={duration}
                 />
-              </Skeleton>
-            )
-          )}
+              </Center>
+            </Skeleton>
+          )
+        )}
       </SimpleGrid>
-      {/* <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-              Welcome to Fever Dreams
-            </p>
-          </header> */}
     </div>
   );
 }
