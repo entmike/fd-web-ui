@@ -89,8 +89,8 @@ export function Feed({ type, amount, user_id, regexp }) {
               dominant_color,
               thumbnails,
             }) => (
-              <Skeleton borderRadius="lg" minHeight="50px" min-width="360px" isLoaded={!loading}>
-                <Center margin=".25em">
+              <Skeleton margin=".25em" borderRadius="lg" minHeight="50px" min-width="360px" isLoaded={!loading}>
+                <Center>
                   <Preview
                     width="360px"
                     thumbnails={thumbnails}
