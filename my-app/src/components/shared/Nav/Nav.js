@@ -102,7 +102,7 @@ const CustomSearchBox = (props) => {
             // This updates the search term sent to Algolia / maintained in the InstantSearch context.
             refine(e.target.value);
 
-            navigate(`/search?q=${e.target.value}`, {
+            navigate(`/search?q=${encodeURIComponent(e.target.value)}`, {
               replace: true,
             });
           }}
