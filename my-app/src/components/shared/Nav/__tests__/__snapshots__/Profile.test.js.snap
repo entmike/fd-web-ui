@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile test suite should generate a snapshot 1`] = `<div />`;
