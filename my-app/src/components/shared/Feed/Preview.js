@@ -3,48 +3,19 @@ import { Box, Image, HStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { Previewcaption } from './Previewcaption';
 
-export function Preview({
-  width,
-  height,
-  uuid,
-  dominant_color,
-  model,
-  render_type,
-  text_prompt,
-  duration,
-  userdets,
-  timestamp,
-  thumbnails,
-}) {
+export function Preview({ uuid, thumbnails }) {
   return (
-    <Box
-      width={width}
-      height={height}
-      pos="relative"
-      borderWidth="0px"
-      borderRadius="lg"
-      overflow="hidden"
-      bg={`rgb(${dominant_color[0]},${dominant_color[1]},${dominant_color[2]},0.5)`}
-    >
-      <HStack>
-        <Link to={`/piece/${uuid}`}>
-          <Image
-            width={width}
-            height={height}
-            src={
-              !thumbnails
-                ? `https://api.feverdreams.app/thumbnail/${uuid}/1024`
-                : `http://images.feverdreams.app/thumbs/1024/${uuid}.jpg` 
-            }
-            alt={uuid}
-            transition="0.3s ease-in-out"
-            // objectFit="contain"
-            style={{ objectFit: 'cover' }}
-            _hover={{ transform: 'scale(1.1)' }}
-          />
-          {/* <Previewcaption key={uuid} uuid={uuid} model={model} /> */}
-        </Link>
-      </HStack>
+    <Box pos="relative" borderRadius="lg" overflow="hidden">
+      <Link to={`/piece/${uuid}`}>
+        <Image
+          src={`http://images.feverdreams.app/thumbs/1024/${uuid}.jpg`}
+          alt={uuid}
+          transition="0.3s ease-in-out"
+          // objectFit="contain"
+          style={{ objectFit: 'cover' }}
+          _hover={{ transform: 'scale(1.1)' }}
+        />
+      </Link>
     </Box>
   );
 }

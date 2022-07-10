@@ -20,6 +20,12 @@ import {
   Square,
   Text,
 } from '@chakra-ui/react';
+import algoliasearch from 'algoliasearch/lite';
+import {
+  InstantSearch,
+  SearchBox,
+  Configure,
+} from 'react-instantsearch-hooks-web';
 
 import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
@@ -50,6 +56,20 @@ const NavLink = ({ title, url }) => (
   </Link>
 );
 
+const searchClient = algoliasearch(
+  'SBW45H5QPH',
+  '735cfe2686474a143a610f864474b2f2'
+);
+
+const SearchBar = ({}) => {
+  return (
+    <>
+      <Configure hitsPerPage={50} />
+      <SearchBox />
+    </>
+  );
+};
+
 export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
@@ -79,12 +99,12 @@ export function Nav() {
           </Text>
           <HStack spacing={8} alignItems={'center'}>
             {/* When the search is typed into, we will set */}
-
             <HStack
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}
             >
+              <SearchBar />
               {Links.map(({ title, url }) => (
                 <NavLink as={RouteLink} key={title} title={title} url={url} />
               ))}
@@ -131,7 +151,7 @@ export function Nav() {
                 <MenuList>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `https://www.feverdreams.app/gallery/${
+                      (window.location.href = `/gallery/${
                         user.sub.split('|')[2]
                       }/1`)
                     }
