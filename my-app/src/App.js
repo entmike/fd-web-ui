@@ -65,7 +65,7 @@ function App() {
                 />
                 <Route path="/random" element={<RandomGalleryPage />} />
                 <Route path="/recent/:page" element={<RecentGalleryPage />} />
-                <Route path="/search/:regexp/:page" element={<SearchPage />} />
+                <Route path="/search" element={<SearchPage />} />
                 <Route
                   path="/rgb/:r/:g/:b/:range/:amount/:page"
                   element={<ColorPage />}

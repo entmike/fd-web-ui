@@ -1,11 +1,11 @@
-import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Link as RouteLink,
-  useLocation,
-  useNavigate,
   Link,
+  useNavigate,
+  useSearchParams,
+  useLocation,
 } from 'react-router-dom';
 import { SiDiscord } from 'react-icons/si';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -44,7 +44,6 @@ import qs from 'qs';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
-// import SearchTypeahead from '../SearchTypeahead';
 
 let Links = [
   { title: 'Random', url: '/random' },
@@ -76,44 +75,15 @@ const searchClient = algoliasearch(
 
 // URL setting - https://github.com/algolia/react-instantsearch/blob/master/examples/react-router/src/App.js
 const CustomSearchBox = (props) => {
-  // Constants and funcs
-  const DEBOUNCE_TIME = 500;
-
-  const createURL = (state) => `/search?${qs.stringify(state)}`;
-
-  const searchStateToUrl = (searchState) =>
-    searchState ? createURL(searchState) : '/search';
-
-  const urlToSearchState = (location) => qs.parse(location.search.slice(1));
-
-  // Track state
-  const location = useLocation();
-  const navigate = useNavigate(); // https://reactrouter.com/docs/en/v6/hooks/use-navigate
-
-  const [searchState, setSearchState] = useState(urlToSearchState(location));
-
-  const debouncedSetter = React.useRef(); // ?
-
-  React.useEffect(() => {
-    const nextSearchState = urlToSearchState(location);
-
-    if (JSON.stringify(searchState) !== JSON.stringify(nextSearchState)) {
-      setSearchState(nextSearchState);
-    }
-  }, [location]);
-
-  function onSearchStateChange(nextSearchState) {
-    clearTimeout(debouncedSetter.current);
-
-    debouncedSetter.current = setTimeout(() => {
-      const url = searchStateToUrl(location, nextSearchState);
-      navigate(url);
-    }, DEBOUNCE_TIME);
-
-    setSearchState(nextSearchState);
-  }
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { query, refine, clear, isSearchStalled } = useSearchBox(props);
+  const navigate = useNavigate(); // https://reactrouter.com/docs/en/v6/hooks/use-navigate
+
+  // Set the search state once on load if a query ("q") is present in URL.
+  useEffect(() => {
+    refine(searchParams.get('q'));
+  }, []);
 
   return (
     <>
@@ -127,11 +97,14 @@ const CustomSearchBox = (props) => {
         <Input
           type="text"
           placeholder="Search dreams"
+          value={searchParams.get('q') ?? ''}
           onChange={(e) => {
             // This updates the search term sent to Algolia / maintained in the InstantSearch context.
             refine(e.target.value);
 
-            onSearchStateChange();
+            navigate(`/search?q=${e.target.value}`, {
+              replace: true,
+            });
           }}
         />
       </InputGroup>
