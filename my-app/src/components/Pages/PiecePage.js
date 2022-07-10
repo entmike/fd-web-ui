@@ -1,23 +1,22 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {ExternalLinkIcon} from '@chakra-ui/icons';
 import {
-  Heading,
-  Link,
-  Image,
-  Text,
   Badge,
-  Stack,
-  Code,
   Button,
+  Code,
+  Heading,
   HStack,
-  VStack,
-  useClipboard,
+  Image,
+  Link,
   Skeleton,
+  Stack,
+  Text,
+  useClipboard,
+  VStack,
 } from '@chakra-ui/react';
-import { DreamAuthor } from '../shared/DreamAuthor';
-import { dt } from '../../utils/dateUtils';
+import {DreamAuthor} from '../shared/DreamAuthor';
+import {dt} from '../../utils/dateUtils';
 
 function PiecePage() {
   const IMAGE_HOST = 'https://images.feverdreams.app';
@@ -39,8 +38,7 @@ function PiecePage() {
 
     fetch(`https://api.feverdreams.app/job/${uuid}`)
       .then((response) => {
-        let obj = response.json();
-        return obj;
+        return response.json();
       })
       .then((actualData) => {
         actualData.dominant_color = actualData.dominant_color || [0, 0, 0];
