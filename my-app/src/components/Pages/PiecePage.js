@@ -120,12 +120,18 @@ function PiecePage() {
           <Code p={4} borderRadius="md" maxW="800">
             {textPrompt}
           </Code>
-            <HStack>
+          <HStack>
             <Button colorScheme={'gray'} onClick={onCopy} ml={2}>
-              {hasCopied ? 'Copied' : 'Copy Text Prompt'}</Button>
-            <Button colorScheme={'green'} onClick={()=>window.location.href=`/mutate/${params.uuid}`} ml={2}>
-              Mutate</Button>
-            </HStack>
+              {hasCopied ? 'Copied' : 'Copy Text Prompt'}
+            </Button>
+            <Button
+              colorScheme={'green'}
+              onClick={() => (window.location.href = `/mutate/${params.uuid}`)}
+              ml={2}
+            >
+              Mutate
+            </Button>
+          </HStack>
         </VStack>
 
         <Stack direction="row">

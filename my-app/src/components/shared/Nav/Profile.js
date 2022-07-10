@@ -10,6 +10,13 @@ export function Profile() {
   }
 
   return (
-    isAuthenticated && <Avatar size={'sm'} src={user.picture} alt={user.name} />
+    isAuthenticated && (
+      <Avatar
+        aria-label="user-avatar"
+        size={'sm'}
+        src={user.picture}
+        alt={user.name}
+      />
+    )
   );
 }

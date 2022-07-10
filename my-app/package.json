@@ -50,6 +50,9 @@
       "last 1 safari version"
     ]
   },
+	"jest": {
+    "coverageReporters": ["text-summary"]
+  },
   "devDependencies": {
     "prettier": "2.7.1"
   }
