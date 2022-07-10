@@ -18,18 +18,18 @@ import {
   useColorMode,
   Center,
   Square,
-  Text
+  Text,
 } from '@chakra-ui/react';
 
 import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
+// import SearchTypeahead from '../SearchTypeahead';
 
 let Links = [
-  { title: 'Home', url: '/' },
-  { title: 'Random', url: '/random/25' },
-  { title: 'Recent', url: '/recent/50/1' },
+  { title: 'Random', url: '/random' },
+  { title: 'Recent', url: '/recent/1' },
   { title: 'Status', url: '/agentstatus' },
   { title: 'Jobs', url: '/jobs' },
 ];
@@ -59,28 +59,27 @@ export function Nav() {
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Flex h={16} alignItems={'center'}>
-        <IconButton
+          <IconButton
             size={'md'}
-            w='30px'
+            w="30px"
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
           <Text
-            paddingLeft='20px'
-            w='180px'
-            bgGradient='linear(to-l, #7928CA, #FF0080)'
-            bgClip='text'
-            fontSize='1.1em'
-            fontWeight='bold'
+            paddingLeft="20px"
+            w="180px"
+            bgGradient="linear(to-l, #7928CA, #FF0080)"
+            bgClip="text"
+            fontSize="1.1em"
+            fontWeight="bold"
           >
-            <Link  to='/'>
-            Fever Dreams
-            </Link>
+            <Link to="/">Fever Dreams</Link>
           </Text>
           <HStack spacing={8} alignItems={'center'}>
-            {/* <Box>Logo</Box> */}
+            {/* When the search is typed into, we will set */}
+
             <HStack
               as={'nav'}
               spacing={4}
@@ -101,7 +100,7 @@ export function Nav() {
           </HStack>
           <Flex marginLeft="auto" alignItems={'center'}>
             <IconButton
-              m='1'
+              m="1"
               onClick={() => {
                 window.open('https://discord.gg/yNDqCnzCbs', '_blank');
               }}
@@ -109,10 +108,11 @@ export function Nav() {
               icon={<SiDiscord />}
             />
             <IconButton
-              m='1'
+              m="1"
               onClick={toggleColorMode}
-              aria-label={`Toggle ${colorMode === 'light' ? 'Dark' : 'Light'
-                } Mode`}
+              aria-label={`Toggle ${
+                colorMode === 'light' ? 'Dark' : 'Light'
+              } Mode`}
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             />
             {isAuthenticated && (
@@ -123,15 +123,16 @@ export function Nav() {
                   variant={'link'}
                   cursor={'pointer'}
                   minW={0}
-                  pr='2'
-                  pl='1'
+                  pr="2"
+                  pl="1"
                 >
                   <Profile />
                 </MenuButton>
                 <MenuList>
                   <MenuItem
                     onClick={() =>
-                    (window.location.href = `https://www.feverdreams.app/gallery/${user.sub.split('|')[2]
+                      (window.location.href = `https://www.feverdreams.app/gallery/${
+                        user.sub.split('|')[2]
                       }/10/1`)
                     }
                   >
