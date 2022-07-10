@@ -1,16 +1,11 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center, Button } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
 
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
+import useFetchPaginated from '../../utils/useFetchPaginated';
 
 export default function SearchPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const params = useParams();
 
   const apiURL = `https://api.feverdreams.app/search/${params.regexp}/50/${params.page}`;
@@ -18,23 +13,7 @@ export default function SearchPage() {
   const prevURL = `/recent/${parseInt(params.page) - 1}`;
   const nextURL = `/recent/${parseInt(params.page) + 1}`;
 
-  useEffect(() => {
-    setLoading(true);
-
-    fetch(apiURL)
-      .then((response) => response.json())
-      .then((actualData) => {
-        setData(actualData);
-        setError(null);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setData(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [params.page]);
+  const { loading, data } = useFetchPaginated(apiURL, params);
 
   return (
     <>

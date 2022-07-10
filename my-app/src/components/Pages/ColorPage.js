@@ -1,16 +1,11 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center, Button } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
 
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
+import useFetchPaginated from '../../utils/useFetchPaginated';
 
 export default function ColorPage() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const params = useParams();
 
   const apiURL = `https://api.feverdreams.app/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${params.amount}/${params.page}`;
@@ -23,21 +18,7 @@ export default function ColorPage() {
     params.amount
   }/${parseInt(params.page) + 1}`;
 
-  useEffect(() => {
-    fetch(apiURL)
-      .then((response) => response.json())
-      .then((actualData) => {
-        setData(actualData);
-        setError(null);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setData(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [params.page]);
+  const { loading, data } = useFetchPaginated(apiURL, params);
 
   return (
     <>
