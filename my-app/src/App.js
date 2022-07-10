@@ -78,10 +78,7 @@ function App() {
               <Route
                 path="/mutate/:uuid"
                 element={
-                  <MutatePage
-                    token={token}
-                    isAuthenticated={isAuthenticated}
-                  />
+                  <MutatePage token={token} isAuthenticated={isAuthenticated} />
                 }
               />
 
