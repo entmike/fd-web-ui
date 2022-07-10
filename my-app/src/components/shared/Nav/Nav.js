@@ -133,7 +133,7 @@ export function Nav() {
                     onClick={() =>
                       (window.location.href = `https://www.feverdreams.app/gallery/${
                         user.sub.split('|')[2]
-                      }/10/1`)
+                      }/1`)
                     }
                   >
                     My Gallery
