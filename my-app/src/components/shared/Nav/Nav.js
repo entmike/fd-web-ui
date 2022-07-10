@@ -1,4 +1,12 @@
-import { Link as RouteLink } from 'react-router-dom';
+import React from 'react';
+import { useState } from 'react';
+
+import {
+  Link as RouteLink,
+  useLocation,
+  useNavigate,
+  Link,
+} from 'react-router-dom';
 import { SiDiscord } from 'react-icons/si';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
@@ -19,15 +27,20 @@ import {
   Center,
   Square,
   Text,
+  Input,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
+import { Search2Icon } from '@chakra-ui/icons';
 import algoliasearch from 'algoliasearch/lite';
 import {
   InstantSearch,
   SearchBox,
   Configure,
 } from 'react-instantsearch-hooks-web';
+import { useSearchBox } from 'react-instantsearch-hooks-web';
+import qs from 'qs';
 
-import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
@@ -61,11 +74,67 @@ const searchClient = algoliasearch(
   '735cfe2686474a143a610f864474b2f2'
 );
 
-const SearchBar = ({}) => {
+// URL setting - https://github.com/algolia/react-instantsearch/blob/master/examples/react-router/src/App.js
+const CustomSearchBox = (props) => {
+  // Constants and funcs
+  const DEBOUNCE_TIME = 500;
+
+  const createURL = (state) => `/search?${qs.stringify(state)}`;
+
+  const searchStateToUrl = (searchState) =>
+    searchState ? createURL(searchState) : '/search';
+
+  const urlToSearchState = (location) => qs.parse(location.search.slice(1));
+
+  // Track state
+  const location = useLocation();
+  const navigate = useNavigate(); // https://reactrouter.com/docs/en/v6/hooks/use-navigate
+
+  const [searchState, setSearchState] = useState(urlToSearchState(location));
+
+  const debouncedSetter = React.useRef(); // ?
+
+  React.useEffect(() => {
+    const nextSearchState = urlToSearchState(location);
+
+    if (JSON.stringify(searchState) !== JSON.stringify(nextSearchState)) {
+      setSearchState(nextSearchState);
+    }
+  }, [location]);
+
+  function onSearchStateChange(nextSearchState) {
+    clearTimeout(debouncedSetter.current);
+
+    debouncedSetter.current = setTimeout(() => {
+      const url = searchStateToUrl(location, nextSearchState);
+      navigate(url);
+    }, DEBOUNCE_TIME);
+
+    setSearchState(nextSearchState);
+  }
+
+  const { query, refine, clear, isSearchStalled } = useSearchBox(props);
+
   return (
     <>
       <Configure hitsPerPage={50} />
-      <SearchBox />
+
+      <InputGroup>
+        <InputLeftElement
+          pointerEvents="none"
+          children={<Search2Icon color="gray.300" />}
+        />
+        <Input
+          type="text"
+          placeholder="Search dreams"
+          onChange={(e) => {
+            // This updates the search term sent to Algolia / maintained in the InstantSearch context.
+            refine(e.target.value);
+
+            onSearchStateChange();
+          }}
+        />
+      </InputGroup>
     </>
   );
 };
@@ -104,7 +173,7 @@ export function Nav() {
               spacing={4}
               display={{ base: 'none', md: 'flex' }}
             >
-              <SearchBar />
+              <CustomSearchBox />
               {Links.map(({ title, url }) => (
                 <NavLink as={RouteLink} key={title} title={title} url={url} />
               ))}
@@ -190,8 +259,6 @@ export function Nav() {
           </Box>
         ) : null}
       </Box>
-
-      {/* <Box p={4}>Main Content Here</Box> */}
     </>
   );
 }
