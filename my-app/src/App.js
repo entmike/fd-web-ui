@@ -11,7 +11,7 @@ import { Hero } from './components/Pages/HomePage';
 import UserGalleryPage from './components/Pages/UserGalleryPage';
 import RandomGalleryPage from './components/Pages/RandomGalleryPage';
 import RecentGalleryPage from './components/Pages/RecentGalleryPage';
-
+import MutatePage from './components/Pages/MutatePage';
 import CreateDreamPage from './components/Pages/CreateDreamPage';
 import JobsPage from './components/Pages/JobsPage';
 import PiecePage from './components/Pages/PiecePage';
@@ -21,7 +21,6 @@ import ColorPage from './components/Pages/ColorPage';
 import SearchPage from './components/Pages/SearchPage';
 
 function App() {
-  // TODO: Is something going to happen with this?
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState('badtoken');
 
@@ -71,6 +70,15 @@ function App() {
                 path="/dream"
                 element={
                   <CreateDreamPage
+                    token={token}
+                    isAuthenticated={isAuthenticated}
+                  />
+                }
+              />
+              <Route
+                path="/mutate/:uuid"
+                element={
+                  <MutatePage
                     token={token}
                     isAuthenticated={isAuthenticated}
                   />
