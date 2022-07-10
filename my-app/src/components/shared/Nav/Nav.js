@@ -1,4 +1,12 @@
-import { Link as RouteLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+import {
+  Link as RouteLink,
+  Link,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from 'react-router-dom';
 import { SiDiscord } from 'react-icons/si';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
@@ -19,13 +27,23 @@ import {
   Center,
   Square,
   Text,
+  Input,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
+import { Search2Icon } from '@chakra-ui/icons';
+import algoliasearch from 'algoliasearch/lite';
+import {
+  InstantSearch,
+  SearchBox,
+  Configure,
+} from 'react-instantsearch-hooks-web';
+import { useSearchBox } from 'react-instantsearch-hooks-web';
+import qs from 'qs';
 
-import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
-// import SearchTypeahead from '../SearchTypeahead';
 
 let Links = [
   { title: 'Random', url: '/random' },
@@ -49,6 +67,50 @@ const NavLink = ({ title, url }) => (
     {title}
   </Link>
 );
+
+const searchClient = algoliasearch(
+  'SBW45H5QPH',
+  '735cfe2686474a143a610f864474b2f2'
+);
+
+// URL setting - https://github.com/algolia/react-instantsearch/blob/master/examples/react-router/src/App.js
+const CustomSearchBox = (props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { query, refine, clear, isSearchStalled } = useSearchBox(props);
+  const navigate = useNavigate(); // https://reactrouter.com/docs/en/v6/hooks/use-navigate
+
+  // Set the search state once on load if a query ("q") is present in URL.
+  useEffect(() => {
+    refine(searchParams.get('q'));
+  }, []);
+
+  return (
+    <>
+      <Configure hitsPerPage={50} />
+
+      <InputGroup>
+        <InputLeftElement
+          pointerEvents="none"
+          children={<Search2Icon color="gray.300" />}
+        />
+        <Input
+          type="text"
+          placeholder="Search dreams"
+          value={searchParams.get('q') ?? ''}
+          onChange={(e) => {
+            // This updates the search term sent to Algolia / maintained in the InstantSearch context.
+            refine(e.target.value);
+
+            navigate(`/search?q=${e.target.value}`, {
+              replace: true,
+            });
+          }}
+        />
+      </InputGroup>
+    </>
+  );
+};
 
 export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -79,12 +141,12 @@ export function Nav() {
           </Text>
           <HStack spacing={8} alignItems={'center'}>
             {/* When the search is typed into, we will set */}
-
             <HStack
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}
             >
+              <CustomSearchBox />
               {Links.map(({ title, url }) => (
                 <NavLink as={RouteLink} key={title} title={title} url={url} />
               ))}
@@ -131,7 +193,7 @@ export function Nav() {
                 <MenuList>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `https://www.feverdreams.app/gallery/${
+                      (window.location.href = `/gallery/${
                         user.sub.split('|')[2]
                       }/1`)
                     }
@@ -170,8 +232,6 @@ export function Nav() {
           </Box>
         ) : null}
       </Box>
-
-      {/* <Box p={4}>Main Content Here</Box> */}
     </>
   );
 }
