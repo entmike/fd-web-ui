@@ -9,9 +9,10 @@ import {
   Text,
   Badge,
   Stack,
+  Flex,
   Code,
   Button,
-  HStack,
+  Box,
   VStack,
   useClipboard,
   Skeleton,
@@ -64,42 +65,45 @@ function PiecePage() {
   return (
     <>
       {error}
-
-      <VStack alignItems={'center'}>
-        <HStack mt={4} mb={4}>
-          <Skeleton isLoaded={!loading}>
-            <DreamAuthor userdets={data.userdets} />
-            <Heading as="h4" size="xs">
-              {params.uuid}
-            </Heading>
-          </Skeleton>
-        </HStack>
-
-        <Link
-          textDecoration="none"
-          isExternal
-          href={
+      <Link
+        textDecoration="none"
+        isExternal
+        href={
+          data.status === 'processing'
+            ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+            : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+        }
+        pb={6}
+      >
+        <Image
+          bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
+          maxH="768"
+          borderRadius="lg"
+          alt={data.text_prompt}
+          objectFit="cover"
+          src={
             data.status === 'processing'
               ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-          }
-          pb={6}
-        >
-          <Image
-            bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
-            maxH="768"
-            borderRadius="lg"
-            alt={data.text_prompt}
-            objectFit="cover"
-            src={
-              data.status === 'processing'
-                ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-                : !data.thumbnails
+              : !data.thumbnails
                 ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
                 : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
-            }
-          />
-        </Link>
+          }
+        />
+      </Link>
+      <VStack alignItems={'between'}>
+        <Flex minWidth='max-content' alignItems='center'>
+          <Box pt='4' mb="2">
+            <Skeleton isLoaded={!loading}>
+            <Heading as="h1" pt="2" pb="1" size="lg">
+                Artwork Name
+              </Heading>
+              <Heading as="h2" pt="1" pb="2" size="sm">
+                {params.uuid}
+              </Heading>
+              <DreamAuthor userdets={data.userdets} />
+            </Skeleton>
+          </Box>
+        </Flex>
 
         <Stack direction="row">
           <Badge variant="outline" colorScheme="green">
@@ -116,14 +120,18 @@ function PiecePage() {
           </Badge>
         </Stack>
 
-        <VStack>
-          <Code p={4} borderRadius="md" maxW="800">
-            {textPrompt}
-          </Code>
-          <Button colorScheme={'gray'} onClick={onCopy} ml={2}>
-            {hasCopied ? 'Copied' : 'Copy Text Prompt'}
-          </Button>
-        </VStack>
+       
+          <Flex minWidth='max-content' alignItems='center'>
+            <Code p={4} borderRadius="md" maxW="440px">
+              {textPrompt}
+            </Code>
+          </Flex>
+          <Flex minWidth='max-content' alignItems='center'>
+            <Button colorScheme='teal' onClick={onCopy} mr={2}>
+              {hasCopied ? 'Copied' : 'Copy Text Prompt'}
+            </Button>
+            <Button colorScheme={'gray'} >Mutate This Piece</Button>
+          </Flex>
 
         <Stack direction="row">
           <Link
