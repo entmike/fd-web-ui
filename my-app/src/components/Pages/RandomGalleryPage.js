@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Text, Flex, Center } from '@chakra-ui/react';
 import FeedGrid from '../shared/Feed/FeedGrid';
 
-export default function UserGalleryPage() {
+export default function RandomGalleryPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,6 +14,8 @@ export default function UserGalleryPage() {
   const url = `https://api.feverdreams.app/random/50`;
 
   useEffect(() => {
+    setLoading(true);
+
     fetch(url)
       .then((response) => response.json())
       .then((actualData) => {

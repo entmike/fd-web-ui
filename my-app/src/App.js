@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './App.css';
 
-import { Nav } from './components/Nav';
+import { Nav } from './components/shared/Nav';
 
 import { Hero } from './components/Pages/HomePage';
 import UserGalleryPage from './components/Pages/UserGalleryPage';
@@ -18,7 +18,7 @@ import PiecePage from './components/Pages/PiecePage';
 import AgentStatusPage from './components/Pages/AgentStatusPage';
 import ColorPage from './components/Pages/ColorPage';
 
-import { Search } from './components/Pages/Search';
+import SearchPage from './components/Pages/SearchPage';
 
 function App() {
   // TODO: Is something going to happen with this?
@@ -49,8 +49,6 @@ function App() {
         <div className="App">
           <Nav />
           <Box p={5} width={'100%'}>
-            {/* A <Switch> looks through its children <Route>s and
-                renders the first one that matches the current URL. */}
             <Routes>
               {/* Gallery pages */}
               <Route
@@ -59,12 +57,11 @@ function App() {
               />
               <Route path="/random" element={<RandomGalleryPage />} />
               <Route path="/recent/:page" element={<RecentGalleryPage />} />
-
-              <Route path="/search/:regexp" element={<Search />}>
-                <Route path=":amount" element={<Search />}>
-                  <Route path=":page" element={<Search />} />
-                </Route>
-              </Route>
+              <Route path="/search/:regexp/:page" element={<SearchPage />} />
+              <Route
+                path="/rgb/:r/:g/:b/:range/:amount/:page"
+                element={<ColorPage />}
+              />
 
               {/* Non-gallery pages */}
               <Route path="/" element={<Hero />} />
@@ -80,15 +77,7 @@ function App() {
                 }
               />
 
-              <Route path="/agentstatus" element={<AgentStatusPage />}></Route>
-
-              <Route path="/rgb/:r/:g/:b" element={<ColorPage />}>
-                <Route path=":range" element={<ColorPage />}>
-                  <Route path=":amount" element={<ColorPage />}>
-                    <Route path=":page" element={<ColorPage />} />
-                  </Route>
-                </Route>
-              </Route>
+              <Route path="/agentstatus" element={<AgentStatusPage />} />
             </Routes>
           </Box>
         </div>

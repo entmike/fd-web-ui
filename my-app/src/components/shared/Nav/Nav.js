@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
-import SearchTypeahead from '../shared/SearchTypeahead';
+// import SearchTypeahead from '../SearchTypeahead';
 
 let Links = [
   { title: 'Random', url: '/random' },

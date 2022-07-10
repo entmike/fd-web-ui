@@ -1,66 +1,57 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center } from '@chakra-ui/react';
-import { Feed } from '../shared/Feed';
+import { Text, Flex, Center, Button } from '@chakra-ui/react';
 
-function ColorPage() {
-  let params = useParams();
+import FeedGrid from '../shared/Feed/FeedGrid';
+import PaginationNav from '../shared/Feed/PaginationNav';
+
+export default function ColorPage() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const params = useParams();
+
+  const apiURL = `https://api.feverdreams.app/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${params.amount}/${params.page}`;
+
+  const prevURL = `/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
+    params.amount
+  }/${parseInt(params.page) - 1}`;
+
+  const nextURL = `/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
+    params.amount
+  }/${parseInt(params.page) + 1}`;
+
+  useEffect(() => {
+    fetch(apiURL)
+      .then((response) => response.json())
+      .then((actualData) => {
+        setData(actualData);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setData(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [params.page]);
 
   return (
     <>
-      <Center>
-        <Flex>
-          <Link
-            to={`/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
-              params.amount
-            }/${parseInt(parseInt(params.page) - 1)}`}
-          >
-            ◀️
-          </Link>
-          <Center>
-            <Text>{params.page}</Text>
-          </Center>
-          <Link
-            to={`/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
-              params.amount
-            }/${parseInt(parseInt(params.page) + 1)}`}
-          >
-            ▶️
-          </Link>
-        </Flex>
-      </Center>
-      <Feed
-        type="rgb"
-        r={params.r}
-        g={params.g}
-        b={params.b}
-        range={params.range}
-        amount={params.amount}
-        page={1}
+      <PaginationNav
+        pageNumber={params.page}
+        prevURL={prevURL}
+        nextURL={nextURL}
       />
-      <Center>
-        <Flex>
-          <Link
-            to={`/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
-              params.amount
-            }/${parseInt(parseInt(params.page) - 1)}`}
-          >
-            ◀️
-          </Link>
-          <Center>
-            <Text>{params.page}</Text>
-          </Center>
-          <Link
-            to={`/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
-              params.amount
-            }/${parseInt(parseInt(params.page) + 1)}`}
-          >
-            ▶️
-          </Link>
-        </Flex>
-      </Center>
+      <FeedGrid dreams={data} loading={loading} />
+      <PaginationNav
+        pageNumber={params.page}
+        prevURL={prevURL}
+        nextURL={nextURL}
+      />
     </>
   );
 }
-
-export default ColorPage;

@@ -1,23 +1,27 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center } from '@chakra-ui/react';
+import { Text, Flex, Center, Button } from '@chakra-ui/react';
+
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
-export default function UserGalleryPage() {
+export default function SearchPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const params = useParams();
 
-  const url = `https://api.feverdreams.app/userfeed/${params.user_id}/50/${params.page}`;
+  const apiURL = `https://api.feverdreams.app/search/${params.regexp}/50/${params.page}`;
+
+  const prevURL = `/recent/${parseInt(params.page) - 1}`;
+  const nextURL = `/recent/${parseInt(params.page) + 1}`;
 
   useEffect(() => {
     setLoading(true);
 
-    fetch(url)
+    fetch(apiURL)
       .then((response) => response.json())
       .then((actualData) => {
         setData(actualData);
@@ -30,10 +34,7 @@ export default function UserGalleryPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [params.user_id, params.page]);
-
-  const prevURL = `/gallery/${params.user_id}/${parseInt(params.page) - 1}`;
-  const nextURL = `/gallery/${params.user_id}/${parseInt(params.page) + 1}`;
+  }, [params.page]);
 
   return (
     <>

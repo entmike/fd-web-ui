@@ -6,7 +6,7 @@ import { Text, Flex, Center, Button } from '@chakra-ui/react';
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
-export default function UserGalleryPage() {
+export default function RecentGalleryPage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +19,8 @@ export default function UserGalleryPage() {
   const nextURL = `/recent/${parseInt(params.page) + 1}`;
 
   useEffect(() => {
+    setLoading(true);
+
     fetch(apiURL)
       .then((response) => response.json())
       .then((actualData) => {
@@ -33,6 +35,8 @@ export default function UserGalleryPage() {
         setLoading(false);
       });
   }, [params.page]);
+
+  console.log('loading', loading);
 
   return (
     <>
