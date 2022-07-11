@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-
+import { useEffect, useState, useRef } from 'react';
 import {
   Link as RouteLink,
   Link,
@@ -39,7 +38,7 @@ import {
   Configure,
 } from 'react-instantsearch-hooks-web';
 import { useSearchBox } from 'react-instantsearch-hooks-web';
-import qs from 'qs';
+import debounce from 'lodash.debounce';
 
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
@@ -85,6 +84,10 @@ const CustomSearchBox = (props) => {
     refine(searchParams.get('q'));
   }, []);
 
+  const debouncedSearch = useRef(
+    debounce((searchTerm) => refine(searchTerm), 700)
+  ).current;
+
   return (
     <>
       <Configure hitsPerPage={50} />
@@ -100,7 +103,7 @@ const CustomSearchBox = (props) => {
           value={searchParams.get('q') ?? ''}
           onChange={(e) => {
             // This updates the search term sent to Algolia / maintained in the InstantSearch context.
-            refine(e.target.value);
+            debouncedSearch(e.target.value);
 
             navigate(`/search?q=${encodeURIComponent(e.target.value)}`, {
               replace: true,
