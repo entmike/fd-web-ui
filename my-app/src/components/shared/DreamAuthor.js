@@ -21,7 +21,7 @@ export function DreamAuthor(props) {
           <Heading as="h3" p="2" size="sm">
             {props.userdets.user_name}
           </Heading>
-          <Button colorScheme='teal' isDisabled variant='outline' size="xs">
+          <Button colorScheme='blue' variant='outline' size="xs">
             Follow
           </Button>
         </VStack>
