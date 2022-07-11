@@ -85,7 +85,7 @@ const CustomSearchBox = (props) => {
   }, []);
 
   const debouncedSearch = useRef(
-    debounce((searchTerm) => refine(searchTerm), 700)
+    debounce((searchTerm) => refine(searchTerm), 500)
   ).current;
 
   return (
