@@ -83,7 +83,7 @@ function PiecePage() {
   return (
     <>
       {error}
-      <Flex className='piece-container' display={{ lg: 'flex' }}>
+      <Flex className='piece-container' justifyContent={'center'} display={{ lg: 'flex' }}>
         <Link
           onClick={onOpen}
           textDecoration="none"
