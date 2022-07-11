@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import {
   Table,
+  Code,
   Thead,
   Tbody,
   Tr,
@@ -59,6 +60,7 @@ function AgentStatusPage() {
           <Thead>
             <Tr>
               <Th>Agent ID</Th>
+              <Th>Version</Th>
               <Th>Last Seen</Th>
               <Th>Mode</Th>
               <Th>Model Mode</Th>
@@ -80,6 +82,9 @@ function AgentStatusPage() {
                   <Tr key={o.agent_id}>
                     <Td>
                       <Skeleton isLoaded={!loading}>{o.agent_id}</Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton isLoaded={!loading}><Code>{o.bot_version}</Code></Skeleton>
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}>{dt(o.last_seen)}</Skeleton>
