@@ -127,39 +127,32 @@ export function Nav() {
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
             display={{ md: 'none' }}
+            mr={{ base: 2, md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
           <Text
-            paddingLeft="20px"
-            w="180px"
             bgGradient="linear(to-l, #7928CA, #FF0080)"
             bgClip="text"
             fontSize="1.1em"
             fontWeight="bold"
+            whiteSpace="nowrap"
           >
             <Link to="/">Fever Dreams</Link>
           </Text>
-          <HStack spacing={8} alignItems={'center'}>
-            {/* When the search is typed into, we will set */}
-            <HStack
-              as={'nav'}
-              spacing={4}
-              display={{ base: 'none', md: 'flex' }}
-            >
-              <CustomSearchBox />
-              {Links.map(({ title, url }) => (
-                <NavLink as={RouteLink} key={title} title={title} url={url} />
-              ))}
-              {isAuthenticated && (
-                <NavLink
-                  as={RouteLink}
-                  key="/dream"
-                  title="Dream"
-                  url="/dream"
-                />
-              )}
-            </HStack>
+
+          <Box p={{ base: 2, md: 4 }} pl={{ base: 4 }}>
+            <CustomSearchBox />
+          </Box>
+
+          <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
+            {Links.map(({ title, url }) => (
+              <NavLink as={RouteLink} key={title} title={title} url={url} />
+            ))}
+            {isAuthenticated && (
+              <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
+            )}
           </HStack>
+
           <Flex marginLeft="auto" alignItems={'center'}>
             <IconButton
               m="1"
@@ -167,7 +160,12 @@ export function Nav() {
                 window.open('https://discord.gg/yNDqCnzCbs', '_blank');
               }}
               aria-label={`Discord`}
-              icon={<SiDiscord />}
+              icon={
+                <SiDiscord
+                  style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                />
+              }
+              display={{ base: 'none', md: 'block' }}
             />
             <IconButton
               m="1"
@@ -176,6 +174,7 @@ export function Nav() {
                 colorMode === 'light' ? 'Dark' : 'Light'
               } Mode`}
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              display={{ base: 'none', md: 'block' }}
             />
             {isAuthenticated && (
               <Menu>
