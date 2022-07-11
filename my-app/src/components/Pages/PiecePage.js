@@ -120,6 +120,7 @@ function PiecePage() {
           </Badge>
         </Stack>
 
+<<<<<<< HEAD
        
           <Flex minWidth='max-content' alignItems='center'>
             <Code p={4} borderRadius="md" maxW="440px">
@@ -132,6 +133,19 @@ function PiecePage() {
             </Button>
             <Button colorScheme={'gray'} >Mutate This Piece</Button>
           </Flex>
+=======
+        <VStack>
+          <Code p={4} borderRadius="md" maxW="800">
+            {textPrompt}
+          </Code>
+            <HStack>
+            <Button colorScheme={'gray'} onClick={onCopy} ml={2}>
+              {hasCopied ? 'Copied' : 'Copy Text Prompt'}</Button>
+            <Button colorScheme={'green'} onClick={()=>window.location.href=`/mutate/${params.uuid}`} ml={2}>
+              Mutate</Button>
+            </HStack>
+        </VStack>
+>>>>>>> 099f6beed3f5b06365ce6b5d16e5905e8d75978d
 
         <Stack direction="row">
           <Link
