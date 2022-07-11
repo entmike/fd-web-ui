@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Image, Heading, Box, Center, VStack } from '@chakra-ui/react';
 
 export function DreamAuthor(props) {
+  console.log(props);
   return (
     <Link to={`/gallery/${props.userdets.user_str}/1`}>
       <VStack mb={1}>

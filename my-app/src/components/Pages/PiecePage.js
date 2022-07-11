@@ -15,11 +15,12 @@ import {
   VStack,
   useClipboard,
   Skeleton,
+  Center,
 } from '@chakra-ui/react';
 import { DreamAuthor } from '../shared/DreamAuthor';
 import { dt } from '../../utils/dateUtils';
 
-function PiecePage() {
+function PiecePage({ token }) {
   const IMAGE_HOST = 'https://images.feverdreams.app';
 
   const [data, setData] = useState({
@@ -57,9 +58,20 @@ function PiecePage() {
       });
   }
 
+  console.log('token', token);
+
   useEffect(() => {
     fetchPiece();
-  }, []);
+
+    fetch('https://api.feverdreams.app/following', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log('data', data));
+  }, [token]);
 
   return (
     <>
@@ -68,10 +80,30 @@ function PiecePage() {
       <VStack alignItems={'center'}>
         <HStack mt={4} mb={4}>
           <Skeleton isLoaded={!loading}>
-            <DreamAuthor userdets={data.userdets} />
-            <Heading as="h4" size="xs">
-              {params.uuid}
-            </Heading>
+            <Center flexDirection={'column'}>
+              <DreamAuthor userdets={data.userdets} />
+              <Button
+                mt={2}
+                mb={4}
+                onClick={() => {
+                  fetch(
+                    `https://api.feverdreams.app/follow/${data.userdets.user_id}`,
+                    {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
+                }}
+              >
+                Follow
+              </Button>
+              <Heading as="h4" size="xs">
+                {params.uuid}
+              </Heading>
+            </Center>
           </Skeleton>
         </HStack>
 
@@ -120,12 +152,18 @@ function PiecePage() {
           <Code p={4} borderRadius="md" maxW="800">
             {textPrompt}
           </Code>
-            <HStack>
+          <HStack>
             <Button colorScheme={'gray'} onClick={onCopy} ml={2}>
-              {hasCopied ? 'Copied' : 'Copy Text Prompt'}</Button>
-            <Button colorScheme={'green'} onClick={()=>window.location.href=`/mutate/${params.uuid}`} ml={2}>
-              Mutate</Button>
-            </HStack>
+              {hasCopied ? 'Copied' : 'Copy Text Prompt'}
+            </Button>
+            <Button
+              colorScheme={'green'}
+              onClick={() => (window.location.href = `/mutate/${params.uuid}`)}
+              ml={2}
+            >
+              Mutate
+            </Button>
+          </HStack>
         </VStack>
 
         <Stack direction="row">
