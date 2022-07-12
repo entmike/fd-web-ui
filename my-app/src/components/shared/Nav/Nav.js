@@ -168,6 +168,16 @@ export function Nav() {
                 url="/dream"
               />
             )}
+            <NavLink
+                as={RouteLink}
+                key="/job-generator"
+                title={
+                  <Button colorScheme="blue" size="sm">
+                    + New Job
+                  </Button>
+                }
+                url="/job-generator"
+              />
           </HStack>
 
           <Flex marginLeft="auto" alignItems={'center'}>
