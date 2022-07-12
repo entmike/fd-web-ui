@@ -137,6 +137,7 @@ export function Nav() {
             fontSize="lg"
             fontWeight="bold"
             whiteSpace="nowrap"
+            pl={{ base: 2, md: 0 }}
           >
             <Link to="/">Fever Dreams</Link>
           </Text>
@@ -149,6 +150,7 @@ export function Nav() {
             as={'nav'}
             spacing={4}
             p={4}
+            pr={8}
             display={{ base: 'none', md: 'flex' }}
           >
             {Links.map(({ title, url }) => (
