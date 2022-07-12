@@ -1,4 +1,11 @@
-import { Link as RouteLink } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import {
+  Link as RouteLink,
+  Link,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from 'react-router-dom';
 import { SiDiscord } from 'react-icons/si';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
@@ -19,13 +26,23 @@ import {
   Center,
   Square,
   Text,
+  Input,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
+import { Search2Icon } from '@chakra-ui/icons';
+import algoliasearch from 'algoliasearch/lite';
+import {
+  InstantSearch,
+  SearchBox,
+  Configure,
+} from 'react-instantsearch-hooks-web';
+import { useSearchBox } from 'react-instantsearch-hooks-web';
+import debounce from 'lodash.debounce';
 
-import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
-// import SearchTypeahead from '../SearchTypeahead';
 
 let Links = [
   { title: 'Random', url: '/random' },
@@ -50,6 +67,54 @@ const NavLink = ({ title, url }) => (
   </Link>
 );
 
+const searchClient = algoliasearch(
+  'SBW45H5QPH',
+  '735cfe2686474a143a610f864474b2f2'
+);
+
+// URL setting - https://github.com/algolia/react-instantsearch/blob/master/examples/react-router/src/App.js
+const CustomSearchBox = (props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { query, refine, clear, isSearchStalled } = useSearchBox(props);
+  const navigate = useNavigate(); // https://reactrouter.com/docs/en/v6/hooks/use-navigate
+
+  // Set the search state once on load if a query ("q") is present in URL.
+  useEffect(() => {
+    refine(searchParams.get('q'));
+  }, []);
+
+  const debouncedSearch = useRef(
+    debounce((searchTerm) => refine(searchTerm), 500)
+  ).current;
+
+  return (
+    <>
+      <Configure hitsPerPage={50} />
+
+      <InputGroup>
+        <InputLeftElement
+          pointerEvents="none"
+          children={<Search2Icon color="gray.300" />}
+        />
+        <Input
+          type="text"
+          placeholder="Search dreams"
+          value={searchParams.get('q') ?? ''}
+          onChange={(e) => {
+            // This updates the search term sent to Algolia / maintained in the InstantSearch context.
+            debouncedSearch(e.target.value);
+
+            navigate(`/search?q=${encodeURIComponent(e.target.value)}`, {
+              replace: true,
+            });
+          }}
+        />
+      </InputGroup>
+    </>
+  );
+};
+
 export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
@@ -65,39 +130,32 @@ export function Nav() {
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
             aria-label={'Open Menu'}
             display={{ md: 'none' }}
+            mr={{ base: 2, md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
           />
           <Text
-            paddingLeft="20px"
-            w="180px"
             bgGradient="linear(to-l, #7928CA, #FF0080)"
             bgClip="text"
             fontSize="1.1em"
             fontWeight="bold"
+            whiteSpace="nowrap"
           >
             <Link to="/">Fever Dreams</Link>
           </Text>
-          <HStack spacing={8} alignItems={'center'}>
-            {/* When the search is typed into, we will set */}
 
-            <HStack
-              as={'nav'}
-              spacing={4}
-              display={{ base: 'none', md: 'flex' }}
-            >
-              {Links.map(({ title, url }) => (
-                <NavLink as={RouteLink} key={title} title={title} url={url} />
-              ))}
-              {isAuthenticated && (
-                <NavLink
-                  as={RouteLink}
-                  key="/dream"
-                  title="Dream"
-                  url="/dream"
-                />
-              )}
-            </HStack>
+          <Box p={{ base: 2, md: 4 }} pl={{ base: 4 }}>
+            <CustomSearchBox />
+          </Box>
+
+          <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
+            {Links.map(({ title, url }) => (
+              <NavLink as={RouteLink} key={title} title={title} url={url} />
+            ))}
+            {isAuthenticated && (
+              <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
+            )}
           </HStack>
+
           <Flex marginLeft="auto" alignItems={'center'}>
             <IconButton
               m="1"
@@ -105,7 +163,12 @@ export function Nav() {
                 window.open('https://discord.gg/yNDqCnzCbs', '_blank');
               }}
               aria-label={`Discord`}
-              icon={<SiDiscord />}
+              icon={
+                <SiDiscord
+                  style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                />
+              }
+              display={{ base: 'none', md: 'block' }}
             />
             <IconButton
               m="1"
@@ -114,6 +177,7 @@ export function Nav() {
                 colorMode === 'light' ? 'Dark' : 'Light'
               } Mode`}
               icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              display={{ base: 'none', md: 'block' }}
             />
             {isAuthenticated && (
               <Menu>
@@ -131,7 +195,7 @@ export function Nav() {
                 <MenuList>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `https://www.feverdreams.app/gallery/${
+                      (window.location.href = `/gallery/${
                         user.sub.split('|')[2]
                       }/1`)
                     }
@@ -170,8 +234,6 @@ export function Nav() {
           </Box>
         ) : null}
       </Box>
-
-      {/* <Box p={4}>Main Content Here</Box> */}
     </>
   );
 }
