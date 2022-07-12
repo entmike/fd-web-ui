@@ -47,8 +47,6 @@ import { Profile } from './Profile';
 let Links = [
   { title: 'Random', url: '/random' },
   { title: 'Recent', url: '/recent/1' },
-  { title: 'Status', url: '/agentstatus' },
-  { title: 'Jobs', url: '/jobs' },
 ];
 
 const NavLink = ({ title, url }) => (
@@ -136,23 +134,39 @@ export function Nav() {
           <Text
             bgGradient="linear(to-l, #7928CA, #FF0080)"
             bgClip="text"
-            fontSize="1.1em"
+            fontSize="lg"
             fontWeight="bold"
             whiteSpace="nowrap"
+            pl={{ base: 2, md: 0 }}
           >
             <Link to="/">Fever Dreams</Link>
           </Text>
 
-          <Box p={{ base: 2, md: 4 }} pl={{ base: 4 }}>
+          <Box p={{ base: 2, md: 4 }} pl={{ base: 4, md: 8 }} flex="1">
             <CustomSearchBox />
           </Box>
 
-          <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
+          <HStack
+            as={'nav'}
+            spacing={4}
+            p={4}
+            pr={8}
+            display={{ base: 'none', md: 'flex' }}
+          >
             {Links.map(({ title, url }) => (
               <NavLink as={RouteLink} key={title} title={title} url={url} />
             ))}
             {isAuthenticated && (
-              <NavLink as={RouteLink} key="/dream" title="Dream" url="/dream" />
+              <NavLink
+                as={RouteLink}
+                key="/dream"
+                title={
+                  <Button colorScheme="blue" size="sm">
+                    + New Dream
+                  </Button>
+                }
+                url="/dream"
+              />
             )}
           </HStack>
 
@@ -204,6 +218,15 @@ export function Nav() {
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
+                    onClick={() => (window.location.href = `/agentstatus`)}
+                  >
+                    Status
+                  </MenuItem>
+                  <MenuItem onClick={() => (window.location.href = `/jobs`)}>
+                    Jobs
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem
                     onClick={() => logout({ returnTo: window.location.origin })}
                   >
                     Log Out
@@ -226,7 +249,7 @@ export function Nav() {
                 <NavLink
                   as={RouteLink}
                   key="/dream"
-                  title="Dream"
+                  title={<Button colorScheme="blue">+ New Dream</Button>}
                   url="/dream"
                 />
               )}
