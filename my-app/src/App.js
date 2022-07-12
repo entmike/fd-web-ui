@@ -73,7 +73,10 @@ function App() {
 
                 {/* Non-gallery pages */}
                 <Route path="/" element={<Hero />} />
-                <Route path={'/piece/:uuid'} element={<PiecePage />} />
+                <Route
+                  path={'/piece/:uuid'}
+                  element={<PiecePage token={token} />}
+                />
                 <Route path="/jobs" element={<JobsPage />}></Route>
                 <Route
                   path="/dream"

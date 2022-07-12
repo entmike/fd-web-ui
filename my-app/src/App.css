@@ -50,6 +50,14 @@ button.chakra-button {
 .w-100 {
   min-width: 100%;
 }
+.copy-prompt-container {
+  position: relative;
+}
+.copy-prompt-btn {
+  position: absolute!important;
+  bottom: 0;
+  right:0;
+}
 .chakra-modal__body img.chakra-image {
   margin: auto;
   top:0;
