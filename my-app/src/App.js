@@ -17,6 +17,7 @@ import JobsPage from './components/Pages/JobsPage';
 import PiecePage from './components/Pages/PiecePage';
 import AgentStatusPage from './components/Pages/AgentStatusPage';
 import ColorPage from './components/Pages/ColorPage';
+import JobGenerator from 'components/Pages/JobGenerator';
 
 import SearchPage from './components/Pages/SearchPage';
 
@@ -50,17 +51,11 @@ function App() {
           <Box p={5} width={'100%'}>
             <Routes>
               {/* Gallery pages */}
-              <Route
-                path={'/gallery/:user_id/:page'}
-                element={<UserGalleryPage />}
-              />
+              <Route path={'/gallery/:user_id/:page'} element={<UserGalleryPage />} />
               <Route path="/random" element={<RandomGalleryPage />} />
               <Route path="/recent/:page" element={<RecentGalleryPage />} />
               <Route path="/search/:regexp/:page" element={<SearchPage />} />
-              <Route
-                path="/rgb/:r/:g/:b/:range/:amount/:page"
-                element={<ColorPage />}
-              />
+              <Route path="/rgb/:r/:g/:b/:range/:amount/:page" element={<ColorPage />} />
 
               {/* Non-gallery pages */}
               <Route path="/" element={<Hero />} />
@@ -68,22 +63,13 @@ function App() {
               <Route path="/jobs" element={<JobsPage />}></Route>
               <Route
                 path="/dream"
-                element={
-                  <CreateDreamPage
-                    token={token}
-                    isAuthenticated={isAuthenticated}
-                  />
-                }
+                element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}
               />
               <Route
                 path="/mutate/:uuid"
-                element={
-                  <MutatePage
-                    token={token}
-                    isAuthenticated={isAuthenticated}
-                  />
-                }
+                element={<MutatePage token={token} isAuthenticated={isAuthenticated} />}
               />
+              <Route path="/job-generator" element={<JobGenerator />} />
 
               <Route path="/agentstatus" element={<AgentStatusPage />} />
             </Routes>
