@@ -161,7 +161,7 @@ export const inputConfig = {
   animation: { default: false, type: "boolean", label: "Enable Animation" },
   animation_mode: {
     type: "select",
-    default: "2D",
+    default: null,
     options: ["2D", "3D", "Video Input"],
     label: "Animation Mode",
   },
