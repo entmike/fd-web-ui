@@ -80,20 +80,9 @@ function PiecePage({ token }) {
       });
   }
 
-  console.log('token', token);
-
   useEffect(() => {
     fetchPiece();
-
-    fetch('https://api.feverdreams.app/following', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log('data', data));
-  }, [token]);
+    }, []);
 
   return (
     <>
