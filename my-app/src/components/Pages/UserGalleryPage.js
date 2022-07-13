@@ -53,25 +53,27 @@ export default function UserGalleryPage({token, isAuthenticated}) {
         <Skeleton isLoaded={!loading}>
           <VStack alignItems={"left"}>
             <Heading>{(data && data.userdetails)?data.userdetails.user_name:"Loading"}'s Gallery</Heading>
-            <Button
-              colorScheme='blue'
-              variant='outline'
-              size="xs"
-              onClick={() => {
-                fetch(
-                  `https://api.feverdreams.app/follow/${data.userdetails.user_id}`,
-                  {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`,
-                    },
-                  }
-                );
-              }}
-            >
-              Follow
-            </Button>
+            <HStack>
+              <Button
+                colorScheme='blue'
+                variant='outline'
+                size="xs"
+                onClick={() => {
+                  fetch(
+                    `https://api.feverdreams.app/follow/${data.userdetails.user_id}`,
+                    {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
+                }}
+              >
+                Follow
+              </Button>
+            </HStack>
           </VStack>
         </Skeleton>
       </HStack>
