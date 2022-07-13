@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ExternalLinkIcon, ViewIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
 import {
   Heading,
   Link,
@@ -175,6 +175,26 @@ function PiecePage({ token }) {
                     </svg>
                     Mutate
                   </Button>
+                  <Button
+                    colorScheme={'green'}
+                    size="xs"
+                    onClick={() => {
+                        window.open(`https://images.feverdreams.app/images/${params.uuid}0_0.png`, "_blank")
+                        // const link = document.createElement('a')
+                        // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
+                        // link.setAttribute('download', `${params.uuid}0_0.png`)
+                      
+                        // if (document.createEvent) {
+                        //   const event = document.createEvent('MouseEvents')
+                        //   event.initEvent('click', true, true)
+                        //   link.dispatchEvent(event)
+                        // } else {
+                        //   link.click()
+                        // }
+                      }
+                    }
+                    ml={1}
+                  ><DownloadIcon />Download</Button>
                 </WrapItem>
               </Wrap>
             </Flex>
