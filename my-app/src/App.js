@@ -58,7 +58,7 @@ function App() {
             <Box p={5} width={"100%"}>
               <Routes>
                 {/* Gallery pages */}
-                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage />} />
+                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/random" element={<RandomGalleryPage />} />
                 <Route path="/recent/:page" element={<RecentGalleryPage />} />
                 <Route path="/search" element={<SearchPage />} />
