@@ -331,7 +331,7 @@ function JobGenerator({ customValidationSchema }) {
       </Accordion>
 
       <SimpleGrid marginTop="24px" minChildWidth="250px" spacing="16px">
-        <Button onClick={submit}>Do The Thing</Button>
+        <Button onClick={submit} isDisabled>Submit Job (Coming Soon)</Button>
         <Button onClick={openImportModal}>Import Settings from YAML</Button>
         <Button onClick={exportYaml}>Export Settings to YAML</Button>
       </SimpleGrid>

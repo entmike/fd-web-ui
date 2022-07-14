@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Previewcaption } from './Previewcaption';
 
 export function Preview({ uuid, thumbnails }) {
+
   return (
     <Box pos="relative" borderRadius="lg" overflow="hidden">
       <Link to={`/piece/${uuid}`}>

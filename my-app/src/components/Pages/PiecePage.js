@@ -1,25 +1,48 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
 import {
   Heading,
   Link,
   Image,
-  Text,
+  IconButton,
   Badge,
   Stack,
+  Flex,
+  HStack,
   Code,
   Button,
-  HStack,
+  Box,
   VStack,
   useClipboard,
   Skeleton,
+  Center,
+  Text,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Wrap,
+  WrapItem,
+  Modal,
+  Spacer,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  ButtonGroup
 } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react'
 import { DreamAuthor } from '../shared/DreamAuthor';
+import { PreviewDrawer } from '../shared/PreviewDrawer';
 import { dt } from '../../utils/dateUtils';
 
-function PiecePage() {
+function PiecePage({ token }) {
   const IMAGE_HOST = 'https://images.feverdreams.app';
 
   const [data, setData] = useState({
@@ -29,7 +52,7 @@ function PiecePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [textPrompt, setTextPrompt] = useState('');
-
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasCopied, onCopy } = useClipboard(textPrompt);
 
   const params = useParams();
@@ -59,94 +82,191 @@ function PiecePage() {
 
   useEffect(() => {
     fetchPiece();
-  }, []);
+    }, []);
 
   return (
     <>
       {error}
+      <HStack mt={4} mb={4} maxW="1024" m="auto">
+        <Skeleton isLoaded={!loading} className='w-100'>
+          <Flex className="w-100" flexDirection={'column'} justifyContent="space-between" alignItems='center'>
+            <Flex className="w-100" pl="2" textAlign="left" alignItems="center" justifyContent="space-between">
+              <Wrap className="w-100">
+                <WrapItem minWidth="360px" mr="auto!important" alignItems="center" justifyContent="left">
+                  <Box>
+                    <DreamAuthor userdets={data.userdets} />
+                  </Box>
+                  <Box>
+                    <Heading as="h4" size="sm">
+                      {params.uuid}
+                    </Heading>
+                    <Flex alignItems="center">
+                      <Heading as="h5" pr="2" size="xs">
+                        {data.userdets.user_name}
+                      </Heading>
+                      <Button
+                        colorScheme='blue'
+                        variant='outline'
+                        size="xs"
+                        onClick={() => {
+                          fetch(
+                            `https://api.feverdreams.app/follow/${data.userdets.user_id}`,
+                            {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${token}`,
+                              },
+                            }
+                          );
+                        }}
+                      >
+                        Follow
+                      </Button>
+                    </Flex>
+                  </Box>
+                </WrapItem>
+                <WrapItem
+                  justifyContent="flex-end"
+                  alignItems="center">
+                  <ViewIcon />
+                  <Text ml={2} mr={2}>{data.views}</Text>
+                  <Button
+                    colorScheme={'pink'}
+                    size="xs"
+                    onClick={() => (window.location.href = ``)}
+                    ml={1}
+                    isDisabled
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    </svg> (Coming Soon)
+                  </Button>
+                  <Button
+                    colorScheme={'purple'}
+                    size="xs"
+                    onClick={() => (window.location.href = ``)}
+                    ml={1}
+                    isDisabled
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg> (Coming Soon)
+                  </Button>
+                  <Button
+                    colorScheme={'green'}
+                    size="xs"
+                    onClick={() => (window.location.href = `/mutate/${params.uuid}`)}
+                    ml={1}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+                    </svg>
+                    Mutate
+                  </Button>
+                  <Button
+                    colorScheme={'green'}
+                    size="xs"
+                    onClick={() => {
+                        window.open(`https://images.feverdreams.app/images/${params.uuid}0_0.png`, "_blank")
+                        // const link = document.createElement('a')
+                        // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
+                        // link.setAttribute('download', `${params.uuid}0_0.png`)
+                      
+                        // if (document.createEvent) {
+                        //   const event = document.createEvent('MouseEvents')
+                        //   event.initEvent('click', true, true)
+                        //   link.dispatchEvent(event)
+                        // } else {
+                        //   link.click()
+                        // }
+                      }
+                    }
+                    ml={1}
+                  ><DownloadIcon />Download</Button>
+                </WrapItem>
+              </Wrap>
+            </Flex>
+          </Flex>
+        </Skeleton>
+      </HStack>
 
-      <VStack alignItems={'center'}>
-        <HStack mt={4} mb={4}>
-          <Skeleton isLoaded={!loading}>
-            <DreamAuthor userdets={data.userdets} />
-            <Heading as="h4" size="xs">
-              {params.uuid}
-            </Heading>
-          </Skeleton>
-        </HStack>
-
-        <Link
-          textDecoration="none"
-          isExternal
-          href={
+      <Link
+        onClick={onOpen}
+        textDecoration="none"
+        isExternal
+        // href={
+        //   data.status === 'processing'
+        //     ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+        //     : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+        // }
+        pb={6}
+      >
+        <Image
+          bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
+          maxH="768"
+          m="auto"
+          mt="3"
+          mb="3"
+          borderRadius="lg"
+          alt={data.text_prompt}
+          objectFit="cover"
+          src={
             data.status === 'processing'
               ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-          }
-          pb={6}
-        >
-          <Image
-            bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
-            maxH="768"
-            borderRadius="lg"
-            alt={data.text_prompt}
-            objectFit="cover"
-            src={
-              data.status === 'processing'
-                ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-                : !data.thumbnails
+              : !data.thumbnails
                 ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
                 : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
-            }
-          />
-        </Link>
-
-        <Stack direction="row">
-          <Badge variant="outline" colorScheme="green">
-            {data.model}
-          </Badge>
-          <Badge variant="outline" colorScheme="green">
-            {data.render_type}
-          </Badge>
-          <Badge variant="outline" colorScheme="green">
-            {data.steps} steps
-          </Badge>
-          <Badge variant="outline" colorScheme="blue">
-            {data.views} Views
-          </Badge>
-        </Stack>
-
-        <VStack>
-          <Code p={4} borderRadius="md" maxW="800">
-            {textPrompt}
-          </Code>
-            <HStack>
-            <Button colorScheme={'gray'} onClick={onCopy} ml={2}>
-              {hasCopied ? 'Copied' : 'Copy Text Prompt'}</Button>
-            <Button colorScheme={'green'} onClick={()=>window.location.href=`/mutate/${params.uuid}`} ml={2}>
-              Mutate</Button>
-            </HStack>
-        </VStack>
-
-        <Stack direction="row">
-          <Link
-            color="green.500"
-            isExternal
-            href={`https://api.feverdreams.app/job/${params.uuid}`}
-          >
-            Job Details <ExternalLinkIcon mx="2px" />
-          </Link>{' '}
-          |{' '}
-          <Link
-            color="green.500"
-            isExternal
-            href={`https://api.feverdreams.app/config/${params.uuid}`}
-          >
-            YAML <ExternalLinkIcon mx="2px" />
-          </Link>
-        </Stack>
-        <Text>{new Date(dt(data.timestamp)).toLocaleString()}</Text>
+          }
+        />
+      </Link>
+      <VStack>
+        <Code className="copy-prompt-container" my={3} p={4} pb={12} borderRadius="md" maxW="1024">
+          {textPrompt}
+          <Button className="copy-prompt-btn" size="sm" colorScheme={'gray'} onClick={onCopy} ml={2}>
+            {hasCopied ? 'Copied' : 'Copy Text Prompt'}
+          </Button>
+        </Code>
+        <HStack>
+        </HStack>
+        <Box>
+          <Stack direction="row">
+            <Badge variant="outline" colorScheme="green">
+              {data.model}
+            </Badge>
+            <Badge variant="outline" colorScheme="green">
+              {data.render_type}
+            </Badge>
+            <Badge variant="outline" colorScheme="green">
+              {data.steps} steps
+            </Badge>
+          </Stack>
+        </Box>
       </VStack>
+      <Modal
+        className="piece-modal"
+        isOpen={isOpen}
+        onClose={onClose}
+        size="full"
+        isCentered
+        scrollBehavior="inside"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex alignItems="center" justifyContent="center">
+              <Image
+                src={`http://images.feverdreams.app/images/${params.uuid}0_0.png`}
+                alt={`${params.uuid}`}
+                transition="0.3s ease-in-out"
+                // objectFit="contain"
+                style={{ objectFit: 'contain' }} />
+            </Flex>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

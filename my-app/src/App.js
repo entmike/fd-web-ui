@@ -17,7 +17,8 @@ import JobsPage from "./components/Pages/JobsPage"
 import PiecePage from "./components/Pages/PiecePage"
 import AgentStatusPage from "./components/Pages/AgentStatusPage"
 import ColorPage from "./components/Pages/ColorPage"
-import JobGenerator from "components/Pages/JobGenerator"
+import JobGenerator from "./components/Pages/JobGenerator"
+import FollowingPage from "./components/Pages/FollowingPage"
 
 import SearchPage from "./components/Pages/SearchPage"
 import algoliasearch from "algoliasearch/lite"
@@ -57,7 +58,7 @@ function App() {
             <Box p={5} width={"100%"}>
               <Routes>
                 {/* Gallery pages */}
-                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage />} />
+                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/random" element={<RandomGalleryPage />} />
                 <Route path="/recent/:page" element={<RecentGalleryPage />} />
                 <Route path="/search" element={<SearchPage />} />
@@ -65,7 +66,10 @@ function App() {
 
                 {/* Non-gallery pages */}
                 <Route path="/" element={<Hero />} />
-                <Route path={"/piece/:uuid"} element={<PiecePage />} />
+                <Route
+                  path={'/piece/:uuid'}
+                  element={<PiecePage token={token} />}
+                />
                 <Route path="/jobs" element={<JobsPage />}></Route>
                 <Route
                   path="/dream"
@@ -77,6 +81,7 @@ function App() {
                 />
                 <Route path="/job-generator" element={<JobGenerator />} />
                 <Route path="/agentstatus" element={<AgentStatusPage />} />
+                <Route path="/following" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
               </Routes>
             </Box>
           </div>
