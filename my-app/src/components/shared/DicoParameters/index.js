@@ -161,8 +161,8 @@ export const inputConfig = {
   animation: { default: false, type: "boolean", label: "Enable Animation" },
   animation_mode: {
     type: "select",
-    default: null,
-    options: ["2D", "3D", "Video Input"],
+    default: "None",
+    options: ["None", "2D", "3D", "Video Input"],
     label: "Animation Mode",
   },
   video_init_path: { default: "training.mp4", type: "string", label: "Video Init Path" },
