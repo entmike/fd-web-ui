@@ -110,7 +110,7 @@ function PiecePage({ token }) {
                         size="xs"
                         onClick={() => {
                           fetch(
-                            `https://api.feverdreams.app/follow/${data.userdets.user_id}`,
+                            `https://api.feverdreams.app/follow/${data.userdets.user_id_str}`,
                             {
                               method: 'POST',
                               headers: {

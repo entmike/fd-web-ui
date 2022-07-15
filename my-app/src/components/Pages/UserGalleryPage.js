@@ -76,13 +76,13 @@ export default function UserGalleryPage({token, isAuthenticated}) {
           <VStack alignItems={"left"}>
             <Heading>{(data && data.userdetails)?data.userdetails.user_name:"Loading"}'s Gallery</Heading>
             <HStack>
-              <Button
+              {data && data.userdetails && <Button
                 colorScheme='blue'
                 variant='outline'
                 size="xs"
                 onClick={() => {
                   fetch(
-                    `https://api.feverdreams.app/follow/${data.userdetails.user_id}`,
+                    `https://api.feverdreams.app/follow/${data.userdetails.user_id_str}`,
                     {
                       method: 'POST',
                       headers: {
@@ -94,7 +94,7 @@ export default function UserGalleryPage({token, isAuthenticated}) {
                 }}
               >
                 Follow
-              </Button>
+              </Button>}
               {(data && data.userdetails && data.userdetails.social && data.userdetails.social.twitter) &&
                 <SocialButton label={data.userdetails.social.twitter} href={`https://twitter.com/${data.userdetails.social.twitter}`}>
                   <FaTwitter />
