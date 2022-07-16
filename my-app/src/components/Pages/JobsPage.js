@@ -54,7 +54,7 @@ function JobsPage() {
         return actualData;
       });
 
-    let queued = fetch(`https://api.feverdreams.app/web/queue/queued/`)
+    let queued = fetch(`https://api.feverdreams.app/web/up_next`)
       .then((response) => {
         return response.json();
       })

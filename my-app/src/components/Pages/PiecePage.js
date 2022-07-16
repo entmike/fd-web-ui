@@ -168,7 +168,12 @@ function PiecePage({ token }) {
                     colorScheme={'green'}
                     size="xs"
                     onClick={() => {
-                        window.open(`https://images.feverdreams.app/images/${params.uuid}0_0.png`, "_blank")
+                          let url = data.status === 'processing'
+                          ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+                          : !data.thumbnails
+                          ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+                          : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+                        window.open(url, "_blank")
                         // const link = document.createElement('a')
                         // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
                         // link.setAttribute('download', `${params.uuid}0_0.png`)
@@ -192,7 +197,14 @@ function PiecePage({ token }) {
       </HStack>
 
       <Link
-        onClick={onOpen}
+        // onClick={onOpen}
+        onClick={() => {
+          let url = data.status === 'processing'
+          ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+          : !data.thumbnails
+          ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+          : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+        window.open(url, "_blank")}}
         textDecoration="none"
         isExternal
         // href={
@@ -221,14 +233,25 @@ function PiecePage({ token }) {
         />
       </Link>
       <VStack>
+        <Box>
+          <Stack direction="row">
+            <Badge variant="outline" colorScheme="blue">
+              {data.status}
+            </Badge>
+            <Badge variant="outline" colorScheme="blue">
+              {data.percent} % Complete
+            </Badge>
+            <Badge variant="outline" colorScheme="blue">
+              Seed: {data.results?data.results.seed:"?"}
+            </Badge>
+          </Stack>
+        </Box>
         <Code className="copy-prompt-container" my={3} p={4} pb={12} borderRadius="md" maxW="1024">
           {textPrompt}
           <Button className="copy-prompt-btn" size="sm" colorScheme={'gray'} onClick={onCopy} ml={2}>
             {hasCopied ? 'Copied' : 'Copy Text Prompt'}
           </Button>
         </Code>
-        <HStack>
-        </HStack>
         <Box>
           <Stack direction="row">
             <Badge variant="outline" colorScheme="green">
@@ -243,7 +266,7 @@ function PiecePage({ token }) {
           </Stack>
         </Box>
       </VStack>
-      <Modal
+      {/* <Modal
         className="piece-modal"
         isOpen={isOpen}
         onClose={onClose}
@@ -266,7 +289,7 @@ function PiecePage({ token }) {
             </Flex>
           </ModalBody>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   );
 }
