@@ -170,9 +170,7 @@ function PiecePage({ token }) {
                     onClick={() => {
                           let url = data.status === 'processing'
                           ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-                          : !data.thumbnails
-                          ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-                          : `https://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+                          : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
                         window.open(url, "_blank")
                         // const link = document.createElement('a')
                         // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
@@ -198,15 +196,16 @@ function PiecePage({ token }) {
 
       <Link
         // onClick={onOpen}
-        onClick={() => {
+        onClick={(() => {
+          console.log(data)
           let url = data.status === 'processing'
           ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-          : !data.thumbnails
-          ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+          // : !data.thumbnails
+          // ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
           : `https://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
-        window.open(url, "_blank")}}
+        window.open(url, "_blank")})}
         textDecoration="none"
-        isExternal
+        // isExternal
         // href={
         //   data.status === 'processing'
         //     ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
