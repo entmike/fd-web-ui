@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Text, Flex, Center, Button } from '@chakra-ui/react';
-import { Icon, ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 
 /* Creates a back, forward, and page # button navigator. Some gallery views are paginated while others (e.g. random) are not */
-const PaginationNav = ({ pageNumber, prevURL, nextURL }) => (
-  <Center mt={4} mb={4} fontSize="lg">
+const PaginationNav = ({ pageNumber, prevURL, nextURL }) => {
+  const minPageToPaginate = pageNumber > 1;
+  const isPageButtonDisabled = parseInt(pageNumber) === 1
+
+  return <Center mt={4} mb={4} fontSize="lg">
     <Flex marginBottom={3} alignItems="center">
-      <Link to={prevURL}>
-        <Button variant="outline" colorScheme="blue">
+      <Link to={minPageToPaginate && prevURL}>
+        <Button variant="outline" colorScheme="blue" disabled={isPageButtonDisabled}>
           <ArrowBackIcon />
         </Button>
       </Link>
@@ -17,11 +20,11 @@ const PaginationNav = ({ pageNumber, prevURL, nextURL }) => (
       </Text>
       <Link to={nextURL}>
         <Button variant="outline" colorScheme="blue">
-          <ArrowForwardIcon />
+          <ArrowForwardIcon/>
         </Button>
       </Link>
     </Flex>
   </Center>
-);
+}
 
 export default PaginationNav;
