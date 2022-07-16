@@ -172,7 +172,7 @@ function PiecePage({ token }) {
                           ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
                           : !data.thumbnails
                           ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-                          : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+                          : `https://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
                         window.open(url, "_blank")
                         // const link = document.createElement('a')
                         // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
@@ -203,7 +203,7 @@ function PiecePage({ token }) {
           ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
           : !data.thumbnails
           ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-          : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+          : `https://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
         window.open(url, "_blank")}}
         textDecoration="none"
         isExternal
