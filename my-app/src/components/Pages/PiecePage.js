@@ -193,29 +193,16 @@ function PiecePage({ token }) {
           </Flex>
         </Skeleton>
       </HStack>
-
-      <Link
-        // onClick={onOpen}
-        onClick={(() => {
-          console.log(data)
-          let url = data.status === 'processing'
-          ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-          // : !data.thumbnails
-          // ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-          : `https://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
-        window.open(url, "_blank")})}
-        textDecoration="none"
-        // isExternal
-        // href={
-        //   data.status === 'processing'
-        //     ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-        //     : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-        // }
-        pb={6}
-      >
+        <Link>
         <Image
           bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
-          maxH="768"
+          onClick={(() => {
+            console.log(data)
+            let url = data.status === 'processing'
+            ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+            : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+          window.open(url, "_blank")})}
+          maxH="1024"
           m="auto"
           mt="3"
           mb="3"
@@ -230,7 +217,7 @@ function PiecePage({ token }) {
                 : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
           }
         />
-      </Link>
+        </Link>
       <VStack>
         <Box>
           <Stack direction="row">
@@ -252,7 +239,7 @@ function PiecePage({ token }) {
           </Button>
         </Code>
         <Box>
-          <Stack direction="row">
+          {/* <HStack> */}
             <Badge variant="outline" colorScheme="green">
               {data.model}
             </Badge>
@@ -262,7 +249,7 @@ function PiecePage({ token }) {
             <Badge variant="outline" colorScheme="green">
               {data.steps} steps
             </Badge>
-          </Stack>
+          {/* </HStack> */}
         </Box>
       </VStack>
       {/* <Modal
