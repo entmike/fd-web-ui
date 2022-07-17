@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -23,9 +23,58 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
+.chakra-form-control {
+  margin: 2em 0.25em;
+}
 .App-link {
   color: #61dafb;
+}
+button.chakra-button {
+  margin: .5em;
+}
+.heroicons-sm {
+  min-width:8px;
+  max-width:14px;
+  height:auto;
+  margin-right: 8px;
+}
+.heroicons-md {
+  min-width:18px;
+  max-width:28px;
+  height:auto;
+  margin-right: 8px;
+}
+.opacity-50 {
+  opacity: 0.50;
+}
+.w-100 {
+  min-width: 100%;
+}
+.copy-prompt-container {
+  position: relative;
+}
+.copy-prompt-btn {
+  position: absolute!important;
+  bottom: 0;
+  right:0;
+}
+.chakra-modal__body img.chakra-image {
+  margin: auto;
+  top:0;
+  bottom:0;
+  left:0;
+  right: 0;
+  position:relative;
+}
+@media (min-width: 976px) {
+  .chakra-stack.piece-details {
+      margin-left: 2em;
+      max-width: 480px;
+  }
+  .piece-container {
+      max-width: 80vw;
+      margin: auto;
+  }
 }
 
 @keyframes App-logo-spin {
