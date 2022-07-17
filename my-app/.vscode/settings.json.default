@@ -1,0 +1,9 @@
+{
+  // Fix auto fixable eslint issues on save if you have ESLint extension
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": true
+  // },
+  // Auto format with Prettier on save if you have the Prettier extension
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
