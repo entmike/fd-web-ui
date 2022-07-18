@@ -102,6 +102,11 @@ function PiecePage({ token }) {
                     <Heading as="h4" size="sm">
                       {params.uuid}
                     </Heading>
+                    {data && data.timestamp && (()=>{
+                      return <Text fontSize={"xs"}>
+                        {dt(data.timestamp)}
+                      </Text>
+                    })()}
                     <Flex alignItems="center">
                       <Heading as="h5" pr="2" size="xs">
                         {data.userdets.user_name}
@@ -288,30 +293,6 @@ function PiecePage({ token }) {
           </HStack>
         </Box>
       </VStack>
-      {/* <Modal
-        className="piece-modal"
-        isOpen={isOpen}
-        onClose={onClose}
-        size="full"
-        isCentered
-        scrollBehavior="inside"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Flex alignItems="center" justifyContent="center">
-              <Image
-                src={`http://images.feverdreams.app/images/${params.uuid}0_0.png`}
-                alt={`${params.uuid}`}
-                transition="0.3s ease-in-out"
-                // objectFit="contain"
-                style={{ objectFit: 'contain' }} />
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal> */}
     </>
   );
 }
