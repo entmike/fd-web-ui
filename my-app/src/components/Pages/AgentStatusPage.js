@@ -11,6 +11,8 @@ import {
   TableCaption,
   TableContainer,
   Skeleton,
+  Badge,
+  HStack
 } from '@chakra-ui/react';
 import { dt } from '../../utils/dateUtils';
 
@@ -63,7 +65,7 @@ function AgentStatusPage() {
               <Th>Version</Th>
               <Th>Last Seen</Th>
               <Th>Mode</Th>
-              <Th>Model Mode</Th>
+              <Th>CLIP Models</Th>
               <Th>Score</Th>
               <Th>GPU</Th>
               <Th>Temp.</Th>
@@ -106,7 +108,19 @@ function AgentStatusPage() {
                       </Skeleton>
                     </Td>
                     <Td>
-                      <Skeleton isLoaded={!loading}>{o.model_mode}</Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        <HStack>
+                        {(()=>{
+                          let badges = []
+                          for(let model in o.clip_models){
+                            if(o.clip_models[model]){
+                              badges.push(<Badge variant={"outline"}>{model}</Badge>)
+                            }
+                          }
+                          return badges
+                        })()}
+                        </HStack>
+                      </Skeleton>
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}>{o.score}</Skeleton>

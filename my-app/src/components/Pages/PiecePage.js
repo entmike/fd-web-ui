@@ -2,6 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { MdIosShare } from "react-icons/md";
 import {
   Heading,
   Link,
@@ -100,6 +102,11 @@ function PiecePage({ token }) {
                     <Heading as="h4" size="sm">
                       {params.uuid}
                     </Heading>
+                    {data && data.timestamp && (()=>{
+                      return <Text fontSize={"xs"}>
+                        {dt(data.timestamp)}
+                      </Text>
+                    })()}
                     <Flex alignItems="center">
                       <Heading as="h5" pr="2" size="xs">
                         {data.userdets.user_name}
@@ -131,28 +138,32 @@ function PiecePage({ token }) {
                   alignItems="center">
                   <ViewIcon />
                   <Text ml={2} mr={2}>{data.views}</Text>
-                  <Button
+                  <IconButton
+                    isRound
                     colorScheme={'pink'}
-                    size="xs"
+                    size="md"
                     onClick={() => (window.location.href = ``)}
-                    ml={1}
+                    // ml={1}
                     isDisabled
+                    icon={<AiOutlineHeart />}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
+                    {/* <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                    </svg> (Coming Soon)
-                  </Button>
-                  <Button
+                    </svg> */}
+                  </IconButton>
+                  <IconButton
+                    isRound
                     colorScheme={'purple'}
-                    size="xs"
+                    size="md"
                     onClick={() => (window.location.href = ``)}
-                    ml={1}
+                    // ml={1}
                     isDisabled
+                    icon={<MdIosShare />}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg> (Coming Soon)
-                  </Button>
+                    </svg>
+                  </IconButton>
                   <Button
                     colorScheme={'green'}
                     size="xs"
@@ -168,7 +179,10 @@ function PiecePage({ token }) {
                     colorScheme={'green'}
                     size="xs"
                     onClick={() => {
-                        window.open(`https://images.feverdreams.app/images/${params.uuid}0_0.png`, "_blank")
+                          let url = data.status === 'processing'
+                          ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+                          : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+                        window.open(url, "_blank")
                         // const link = document.createElement('a')
                         // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
                         // link.setAttribute('download', `${params.uuid}0_0.png`)
@@ -190,21 +204,16 @@ function PiecePage({ token }) {
           </Flex>
         </Skeleton>
       </HStack>
-
-      <Link
-        onClick={onOpen}
-        textDecoration="none"
-        isExternal
-        // href={
-        //   data.status === 'processing'
-        //     ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-        //     : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-        // }
-        pb={6}
-      >
+        <Link>
         <Image
           bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
-          maxH="768"
+          onClick={(() => {
+            console.log(data)
+            let url = data.status === 'processing'
+            ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+            : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+          window.open(url, "_blank")})}
+          maxH="1024"
           m="auto"
           mt="3"
           mb="3"
@@ -219,54 +228,71 @@ function PiecePage({ token }) {
                 : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
           }
         />
-      </Link>
+        </Link>
       <VStack>
+        <Box>
+          <Stack direction="row">
+            <Badge variant="outline" colorScheme="blue">
+              {data.status}
+            </Badge>
+            <Badge variant="outline" colorScheme="blue">
+              {data.percent} % Complete
+            </Badge>
+            <Badge variant="outline" colorScheme="blue">
+              Seed: {data.results?data.results.seed:"?"}
+            </Badge>
+          </Stack>
+        </Box>
         <Code className="copy-prompt-container" my={3} p={4} pb={12} borderRadius="md" maxW="1024">
           {textPrompt}
           <Button className="copy-prompt-btn" size="sm" colorScheme={'gray'} onClick={onCopy} ml={2}>
             {hasCopied ? 'Copied' : 'Copy Text Prompt'}
           </Button>
         </Code>
-        <HStack>
-        </HStack>
         <Box>
-          <Stack direction="row">
-            <Badge variant="outline" colorScheme="green">
-              {data.model}
-            </Badge>
-            <Badge variant="outline" colorScheme="green">
+          <HStack>
+            {data && data.results && (()=>{
+              let badges = []
+              const clip_models = ["RN101","RN50","RN50x16","RN50x4","RN50x64","ViTB16","ViTB32","ViTL14","ViTL14_336"]
+              clip_models.map((model)=>{
+                console.log(model)
+                if (data.results[model]) badges.push(<Badge variant="outline" colorScheme="orange">{model}</Badge>)
+              })
+              return badges
+            })()}
+            </HStack>
+          </Box>
+        <Box>
+          <HStack>
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                {data.results.width_height[0]}x{data.results.width_height[1]}
+              </Badge>
+            })()}
+            {/* <Badge variant="outline" colorScheme="green">
               {data.render_type}
-            </Badge>
+            </Badge> */}
             <Badge variant="outline" colorScheme="green">
-              {data.steps} steps
+              Steps: {data.steps}
             </Badge>
-          </Stack>
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                ETA: {data.results.eta}
+              </Badge>
+            })()}
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                cut_ic_pow: {data.results.cut_ic_pow}
+              </Badge>
+            })()}
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                clip_guidance_scale: {data.results.clip_guidance_scale}
+              </Badge>
+            })()}
+          </HStack>
         </Box>
       </VStack>
-      <Modal
-        className="piece-modal"
-        isOpen={isOpen}
-        onClose={onClose}
-        size="full"
-        isCentered
-        scrollBehavior="inside"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Flex alignItems="center" justifyContent="center">
-              <Image
-                src={`http://images.feverdreams.app/images/${params.uuid}0_0.png`}
-                alt={`${params.uuid}`}
-                transition="0.3s ease-in-out"
-                // objectFit="contain"
-                style={{ objectFit: 'contain' }} />
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </>
   );
 }
