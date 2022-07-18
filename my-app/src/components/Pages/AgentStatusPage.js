@@ -63,7 +63,7 @@ function AgentStatusPage() {
               <Th>Version</Th>
               <Th>Last Seen</Th>
               <Th>Mode</Th>
-              <Th>Model Mode</Th>
+              <Th>CLIP Models</Th>
               <Th>Score</Th>
               <Th>GPU</Th>
               <Th>Temp.</Th>

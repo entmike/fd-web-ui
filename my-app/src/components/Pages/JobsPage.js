@@ -16,6 +16,7 @@ import {
   TabPanels,
   Link,
   Image,
+  Code,
   Skeleton,
   Center,
 } from '@chakra-ui/react';
@@ -91,7 +92,7 @@ function JobsPage() {
                 <Thead>
                   <Tr>
                     <Th>Author</Th>
-                    <Th>Job Details</Th>
+                    <Th>Job</Th>
                     <Th>Job UUID</Th>
                     {/* <Th>Image</Th> */}
                     <Th width={`75px`}>Timestamp</Th>
@@ -112,8 +113,8 @@ function JobsPage() {
                           </Th>
                           <Td>
                             <Skeleton isLoaded={!loading}>
-                              <Link color="green.500" href={`/piece/${o.uuid}`}>
-                                View Details
+                              <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
+                                <Code>{o.uuid}</Code>
                               </Link>
                             </Skeleton>
                           </Td>
@@ -167,7 +168,7 @@ function JobsPage() {
                 <Thead>
                   <Tr>
                     <Th>Author</Th>
-                    <Th>Job UUID</Th>
+                    <Th>Job</Th>
                     <Th width={`75px`}>Timestamp</Th>
                     <Th>Render Type</Th>
                     <Th>Model Mode</Th>
@@ -186,8 +187,8 @@ function JobsPage() {
                           </Th>
                           <Td>
                             <Skeleton isLoaded={!loading}>
-                              <Link color="green.500" href={`/piece/${o.uuid}`}>
-                                {o.uuid}
+                              <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
+                                <Code>{o.uuid}</Code>
                               </Link>
                             </Skeleton>
                           </Td>
