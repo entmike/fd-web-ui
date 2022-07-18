@@ -245,17 +245,47 @@ function PiecePage({ token }) {
           </Button>
         </Code>
         <Box>
-          {/* <HStack> */}
-            <Badge variant="outline" colorScheme="green">
-              {data.model}
-            </Badge>
-            <Badge variant="outline" colorScheme="green">
+          <HStack>
+            {data && data.results && (()=>{
+              let badges = []
+              const clip_models = ["RN101","RN50","RN50x16","RN50x4","RN50x64","ViTB16","ViTB32","ViTL14","ViTL14_336"]
+              clip_models.map((model)=>{
+                console.log(model)
+                if (data.results[model]) badges.push(<Badge variant="outline" colorScheme="orange">{model}</Badge>)
+              })
+              return badges
+            })()}
+            </HStack>
+          </Box>
+        <Box>
+          <HStack>
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                {data.results.width_height[0]}x{data.results.width_height[1]}
+              </Badge>
+            })()}
+            {/* <Badge variant="outline" colorScheme="green">
               {data.render_type}
-            </Badge>
+            </Badge> */}
             <Badge variant="outline" colorScheme="green">
-              {data.steps} steps
+              Steps: {data.steps}
             </Badge>
-          {/* </HStack> */}
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                ETA: {data.results.eta}
+              </Badge>
+            })()}
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                cut_ic_pow: {data.results.cut_ic_pow}
+              </Badge>
+            })()}
+            {data && data.results && (()=>{
+              return <Badge variant="outline" colorScheme="green">
+                clip_guidance_scale: {data.results.clip_guidance_scale}
+              </Badge>
+            })()}
+          </HStack>
         </Box>
       </VStack>
       {/* <Modal
