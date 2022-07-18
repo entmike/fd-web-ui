@@ -1,7 +1,8 @@
+import { format } from "date-fns"
 export function dt(ts) {
-  if (ts && ts['$date']) {
-    return ts.$date.toString();
+  if (ts && ts["$date"]) {
+    return format(new Date(ts.$date), "MM/dd/yyyy k:mm:ss")
   } else {
-    return new Date(ts).toString();
+    return format(new Date(ts), "MM/dd/yyyy k:mm:ss")
   }
 }

@@ -262,56 +262,6 @@ function JobGenerator({ customValidationSchema }) {
           <h2>
             <AccordionButton>
               <Heading flex="1" textAlign="left" as="h2" fontSize="lg">
-                Animation Settings
-              </Heading>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <SimpleGrid marginTop="16px" spacing="16px" minChildWidth="200px">
-              <DynamicInput errors={errors} register={register} name={"key_frames"} />
-              <DynamicInput
-                errors={errors}
-                register={register}
-                name={"video_init_seed_continuity"}
-              />
-              <DynamicInput errors={errors} register={register} name={"turbo_mode"} />
-              <DynamicInput errors={errors} register={register} name={"vr_mode"} />
-            </SimpleGrid>
-            <SimpleGrid marginTop="16px" spacing="16px" minChildWidth="200px">
-              <DynamicInput errors={errors} register={register} name={"animation_mode"} />
-              <DynamicInput errors={errors} register={register} name={"extract_nth_frame"} />
-
-              <DynamicInput errors={errors} register={register} name={"max_frames"} />
-              <DynamicInput errors={errors} register={register} name={"frames_skip_steps"} />
-
-              <DynamicInput errors={errors} register={register} name={"angle"} />
-              <DynamicInput errors={errors} register={register} name={"zoom"} />
-              <DynamicInput errors={errors} register={register} name={"translation_x"} />
-              <DynamicInput errors={errors} register={register} name={"translation_y"} />
-              <DynamicInput errors={errors} register={register} name={"translation_z"} />
-              <DynamicInput errors={errors} register={register} name={"rotation_3d_x"} />
-              <DynamicInput errors={errors} register={register} name={"rotation_3d_y"} />
-              <DynamicInput errors={errors} register={register} name={"rotation_3d_z"} />
-              <DynamicInput errors={errors} register={register} name={"midas_depth_model"} />
-              <DynamicInput errors={errors} register={register} name={"midas_weight"} />
-              <DynamicInput errors={errors} register={register} name={"far_plane"} />
-              <DynamicInput errors={errors} register={register} name={"fov"} />
-              <DynamicInput errors={errors} register={register} name={"padding_mode"} />
-              <DynamicInput errors={errors} register={register} name={"sampling_mode"} />
-
-              <DynamicInput errors={errors} register={register} name={"turbo_steps"} />
-              <DynamicInput errors={errors} register={register} name={"turbo_preroll"} />
-              <DynamicInput errors={errors} register={register} name={"frames_scale"} />
-              <DynamicInput errors={errors} register={register} name={"video_init_path"} />
-            </SimpleGrid>
-          </AccordionPanel>
-        </AccordionItem>
-
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Heading flex="1" textAlign="left" as="h2" fontSize="lg">
                 Miscellaneous Settings
               </Heading>
               <AccordionIcon />
@@ -331,7 +281,9 @@ function JobGenerator({ customValidationSchema }) {
       </Accordion>
 
       <SimpleGrid marginTop="24px" minChildWidth="250px" spacing="16px">
-        <Button onClick={submit} isDisabled>Submit Job (Coming Soon)</Button>
+        <Button onClick={submit} isDisabled>
+          Submit Job (Coming Soon)
+        </Button>
         <Button onClick={openImportModal}>Import Settings from YAML</Button>
         <Button onClick={exportYaml}>Export Settings to YAML</Button>
       </SimpleGrid>
