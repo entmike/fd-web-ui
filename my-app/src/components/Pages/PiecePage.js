@@ -8,7 +8,9 @@ import {
   Heading,
   Link,
   Image,
+  Icon,
   IconButton,
+  IconProps,
   Badge,
   Stack,
   Flex,
@@ -37,7 +39,8 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  ButtonGroup
+  ButtonGroup,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react'
 import { DreamAuthor } from '../shared/DreamAuthor';
@@ -89,7 +92,28 @@ function PiecePage({ token }) {
   return (
     <>
       {error}
-      <HStack mt={4} mb={4} maxW="1024" m="auto">
+      <HStack mt={4} mb={4} maxW="1024" m="auto" position={'relative'}>
+      <Image
+          bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
+          position={'absolute'}
+          top={-10}
+          left={-10}
+          right={-10}
+          bottom={-10}
+          style={{
+            filter: 'blur(70px)',
+            zIndex: '-1',
+            transform: 'scale(2.0)'
+          }}
+          objectFit="contain"
+          src={
+            data.status === 'processing'
+              ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+              : !data.thumbnails
+                ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+                : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+          }
+        />
         <Skeleton isLoaded={!loading} className='w-100'>
           <Flex className="w-100" flexDirection={'column'} justifyContent="space-between" alignItems='center'>
             <Flex className="w-100" pl="2" textAlign="left" alignItems="center" justifyContent="space-between">
