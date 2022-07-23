@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Button,
+  Heading,
+  Image,
   Skeleton,
   Text,
   Textarea,
@@ -71,6 +73,7 @@ function MutatePage({ isAuthenticated, token }) {
   async function submitMutate() {
     try {
       setLoading(true);
+      console.log(job)
       const { success: mutateSuccess, new_record: newRecord } = await fetch(
         'https://api.feverdreams.app/web/mutate',
         {
@@ -93,13 +96,9 @@ function MutatePage({ isAuthenticated, token }) {
         let uuid = newRecord.uuid;
         window.location.href = `/piece/${uuid}`;
       }
-
-      // Simulate data return -mike
-      // if (dreamSuccess) setJob({ count: 0, dream: dreamPrompt });
-
       setLoading(false);
     } catch (error) {
-      console.log('Unable to induce dream state');
+      console.log('Unable to mutate.');
     }
   }
 
@@ -110,7 +109,20 @@ function MutatePage({ isAuthenticated, token }) {
   return (
     <>
       <Skeleton isLoaded={!loading}>
-        <Text>UUID: {job ? job.uuid : 'Loading'}</Text>
+        <Heading size={"md"}>Mutate: {job ? job.uuid : 'Loading'}</Heading>
+        <Image src={`https://images.feverdreams.app/thumbs/512/${job.uuid}.jpg`}></Image>
+        <FormControl>
+          <FormLabel htmlFor="experimental">🧪 Experimental Mode</FormLabel>
+          <Switch
+            id="experimental"
+            onChange={(event) => {
+              let updatedJob = JSON.parse(JSON.stringify(job));
+              updatedJob.experimental = event.target.checked ? true : false;
+              setJob({ ...job, ...updatedJob });
+            }}
+          />
+          <FormHelperText>Opt-in for experimental new GPU agent mode.  Jobs may take longer to be taken, may fail, or might be better!</FormHelperText>
+        </FormControl>
         <FormControl>
           <FormLabel htmlFor="text_prompt">Text Prompt</FormLabel>
           <Textarea

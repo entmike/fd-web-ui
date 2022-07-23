@@ -226,6 +226,13 @@ export function Nav() {
                   >
                     My Gallery
                   </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      (window.location.href = `/myprofile`)
+                    }
+                  >
+                    My Profile
+                  </MenuItem>
                   <MenuDivider />
                   <MenuItem
                     onClick={() => (window.location.href = `/agentstatus`)}

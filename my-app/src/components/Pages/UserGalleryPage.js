@@ -7,10 +7,10 @@ import {
   Heading,
   HStack,
   VStack,
-  Button,
-  useColorModeValue,
+  Button
 } from '@chakra-ui/react';
 import FeedGrid from '../shared/Feed/FeedGrid';
+import { SocialButton } from 'components/shared/SocialButton';
 import PaginationNav from '../shared/Feed/PaginationNav';
 import { FaTwitter } from 'react-icons/fa';
 
@@ -52,28 +52,6 @@ export default function UserGalleryPage({ token }) {
 
   const prevURL = `/gallery/${params.user_id}/${parseInt(params.page) - 1}`;
   const nextURL = `/gallery/${params.user_id}/${parseInt(params.page) + 1}`;
-
-  const SocialButton = ({ children, label, href }) => (
-    <Button
-      bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
-      rounded={'full'}
-      // w={24}
-      // h={12}
-      cursor={'pointer'}
-      as={'a'}
-      href={href}
-      target={'_blank'}
-      display={'inline-flex'}
-      alignItems={'center'}
-      justifyContent={'left'}
-      transition={'background 0.3s ease'}
-      _hover={{
-        bg: useColorModeValue('blackAlpha.200', 'whiteAlpha.200'),
-      }}
-    >
-      {children}&nbsp;{label}
-    </Button>
-  );
 
   const handleFollowClick = () => {
     fetch(`https://api.feverdreams.app/follow/${userDetails.user_id_str}`, {

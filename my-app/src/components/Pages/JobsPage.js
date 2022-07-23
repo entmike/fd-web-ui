@@ -14,6 +14,7 @@ import {
   Tabs,
   TabList,
   TabPanels,
+  Text,
   Link,
   Image,
   Code,
@@ -94,7 +95,7 @@ function JobsPage() {
                     <Th>Author</Th>
                     <Th>Job</Th>
                     <Th>Job UUID</Th>
-                    {/* <Th>Image</Th> */}
+                    <Th>Agent</Th>
                     <Th width={`75px`}>Timestamp</Th>
                     <Th>Render Type</Th>
                     <Th>Model Mode</Th>
@@ -109,35 +110,28 @@ function JobsPage() {
                           <Th>
                             <Skeleton isLoaded={!loading}>
                               <DreamAuthor userdets={o.userdets} />
+                              <Text>{o && o.userdets?o.userdets.user_name:"Unknown"}</Text>
                             </Skeleton>
                           </Th>
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
-                                <Code>{o.uuid}</Code>
+                                {o.experimental?"🧪":""}<Code>{o.uuid}</Code>
                               </Link>
                             </Skeleton>
                           </Td>
                           <Td>
-                            <Center>
-                              <Skeleton isLoaded={!loading}>
-                                <CopyButton value={o.uuid} />
-                              </Skeleton>
-                            </Center>
+                            <Skeleton isLoaded={!loading}>
+                              <CopyButton value={o.uuid} />
+                            </Skeleton>
                           </Td>
-                          {/* <Td width={`75px`}>
-                            <Link color="green.500" href={`/piece/${o.uuid}`}>
+                          <Td width={`75px`}>
                               <Center>
                                 <Skeleton isLoaded={!loading}>
-                                  <Image
-                                    borderRadius="lg"
-                                    src={`https://images.feverdreams.app/thumbs/64/${o.uuid}.jpg`}
-                                    objectFit="cover"
-                                  />
+                                  <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
                                 </Skeleton>
                               </Center>
-                            </Link>
-                          </Td> */}
+                          </Td>
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               {dt(o.timestamp)}
@@ -186,9 +180,9 @@ function JobsPage() {
                             </Skeleton>
                           </Th>
                           <Td>
-                            <Skeleton isLoaded={!loading}>
+                          <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
-                                <Code>{o.uuid}</Code>
+                                {o.experimental?"🧪":""}<Code>{o.uuid}</Code>
                               </Link>
                             </Skeleton>
                           </Td>

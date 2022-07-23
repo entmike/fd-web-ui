@@ -256,6 +256,7 @@ function PiecePage({ token }) {
       <VStack>
         <Box>
           <Stack direction="row">
+            {data.experimental && <Badge variant="outline" colorScheme="blue">🧪 Experimental</Badge>}
             <Badge variant="outline" colorScheme="blue">
               {data.status}
             </Badge>
@@ -316,6 +317,7 @@ function PiecePage({ token }) {
             })()}
           </HStack>
         </Box>
+        <Link color={'green.400'} href={`https://api.feverdreams.app/job/${data.uuid}`}>Metadata</Link>
       </VStack>
     </>
   );

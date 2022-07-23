@@ -19,6 +19,7 @@ import AgentStatusPage from "./components/Pages/AgentStatusPage"
 import ColorPage from "./components/Pages/ColorPage"
 import JobGenerator from "./components/Pages/JobGenerator"
 import FollowingPage from "./components/Pages/FollowingPage"
+import MyProfile from "./components/Pages/MyProfile"
 
 import SearchPage from "./components/Pages/SearchPage"
 import algoliasearch from "algoliasearch/lite"
@@ -82,6 +83,7 @@ function App() {
                 <Route path="/job-generator" element={<JobGenerator />} />
                 <Route path="/agentstatus" element={<AgentStatusPage />} />
                 <Route path="/following" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
+                <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
               </Routes>
             </Box>
           </div>
