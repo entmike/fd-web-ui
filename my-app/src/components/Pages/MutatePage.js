@@ -233,21 +233,24 @@ function MutatePage({ isAuthenticated, token }) {
               <Radio value="256x256_diffusion_uncond">
                 256x256_diffusion_uncond
               </Radio>
-              <Radio value="pixel_art_diffusion_hard_256">
+              <Radio value="portrait_generator_v001_ema_0.9999_1MM">
+                portrait_generator_v001_ema_0.9999_1MM
+              </Radio>
+              {/* <Radio value="pixel_art_diffusion_hard_256">
                 pixel_art_diffusion_hard_256
               </Radio>
               <Radio value="pixel_art_diffusion_soft_256">
                 pixel_art_diffusion_soft_256
               </Radio>
-              <Radio value="256x256_openai_comics_faces_by_alex_spirin_084000">
-                256x256_openai_comics_faces_by_alex_spirin_084000
+              <Radio value="256x256_openai_comics_faces_v2.by_alex_spirin_114k">
+                256x256_openai_comics_faces_v2.by_alex_spirin_114k
               </Radio>
               <Radio value="lsun_uncond_100M_1200K_bs128">
                 lsun_uncond_100M_1200K_bs128
-              </Radio>
+              </Radio> */}
             </Stack>
           </RadioGroup>
-          <FormHelperText>Temporarily disabled.</FormHelperText>
+          <FormHelperText>🧪 Experimental feature</FormHelperText>
         </FormControl>
         <FormControl>
           <FormLabel htmlFor="cutn_batches">Number of Cut Batches</FormLabel>
