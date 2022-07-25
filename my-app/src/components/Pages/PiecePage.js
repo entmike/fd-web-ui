@@ -56,7 +56,7 @@ function PiecePage({ token }) {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [textPrompt, setTextPrompt] = useState('');
+  const [textPrompt, setTextPrompt] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasCopied, onCopy } = useClipboard(textPrompt);
 
@@ -73,7 +73,7 @@ function PiecePage({ token }) {
       .then((actualData) => {
         actualData.dominant_color = actualData.dominant_color || [0, 0, 0];
         setData(actualData);
-        setTextPrompt(actualData.text_prompt);
+        setTextPrompt(actualData.text_prompts?actualData.text_prompts:actualData.text_prompt);
         setError(null);
       })
       .catch((err) => {

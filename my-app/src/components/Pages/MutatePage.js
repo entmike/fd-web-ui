@@ -520,8 +520,9 @@ function MutatePage({ isAuthenticated, token }) {
           <SimpleGrid columns={{sm: 1, md: 3}} spacing="20px">
             <FormControl>
               <FormLabel htmlFor="diffusion_model">Diffusion Model</FormLabel>
-              <Select placeholder='Select Diffusion Model' value={job.diffusion_model} onChange={(value) => {
+              <Select placeholder='Select Diffusion Model' value={job.diffusion_model} onChange={(event) => {
                   let updatedJob = JSON.parse(JSON.stringify(job));
+                  let value = event.target.selectedOptions[0].value;
                   updatedJob.diffusion_model = value;
                   setJob({ ...job, ...updatedJob });
                 }}>
