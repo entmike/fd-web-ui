@@ -12,6 +12,7 @@ import UserGalleryPage from "./components/Pages/UserGalleryPage"
 import RandomGalleryPage from "./components/Pages/RandomGalleryPage"
 import RecentGalleryPage from "./components/Pages/RecentGalleryPage"
 import MutatePage from "./components/Pages/MutatePage"
+import IncubatePage from "./components/Pages/MutatePage"
 import CreateDreamPage from "./components/Pages/CreateDreamPage"
 import JobsPage from "./components/Pages/JobsPage"
 import PiecePage from "./components/Pages/PiecePage"
@@ -79,6 +80,10 @@ function App() {
                 <Route
                   path="/mutate/:uuid"
                   element={<MutatePage token={token} isAuthenticated={isAuthenticated} />}
+                />
+                <Route
+                  path="/incubate/:uuid"
+                  element={<IncubatePage token={token} isAuthenticated={isAuthenticated} />}
                 />
                 <Route path="/job-generator" element={<JobGenerator />} />
                 <Route path="/agentstatus" element={<AgentStatusPage />} />
