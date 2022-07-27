@@ -131,7 +131,10 @@ function MutatePage({ isAuthenticated, token }) {
                 skip_augs: (data.skip_augs !==undefined)?data.skip_augs:false,
 
                 on_misspelled_token: (data.on_misspelled_token !==undefined)?data.on_misspelled_token:"ignore",
-                text_clip_on_cpu: (data.text_clip_on_cpu !==undefined)?data.text_clip_on_cpu:false
+                text_clip_on_cpu: (data.text_clip_on_cpu !==undefined)?data.text_clip_on_cpu:false,
+                
+                aspect_ratio: (data.aspect_ratio !==undefined)?data.aspect_ratio:"free",
+                lock_ratio: (data.lock_ratio !==undefined)?data.lock_ratio:false
               }
           }
           let source
@@ -155,7 +158,7 @@ function MutatePage({ isAuthenticated, token }) {
           data.randomize_class = source.randomize_class
           data.skip_augs = source.skip_augs
           data.clip_denoised = source.clip_denoised
-          data.fuzzy_prompt = source.fuzzy_prompt
+          data.fuzzy_prompt = source.fuzzy_prompt || false
           data.diffusion_model = source.diffusion_model
           data.diffusion_sampling_mode = source.diffusion_sampling_mode || "ddim"
           data.cut_ic_pow = source.cut_ic_pow
@@ -165,6 +168,9 @@ function MutatePage({ isAuthenticated, token }) {
           data.use_secondary_model = source.use_secondary_model
           data.width_height = source.width_height
           data.transformation_percent = source.transformation_percent || [0.09]
+          // UI-specific
+          data.aspect_ratio = data.aspect_ratio || "free"
+          data.lock_ratio = data.lock_ratio || false
           // Legacy
           let cm = []
           if(source.RN101) cm.push("RN101::openai")
@@ -478,11 +484,59 @@ function MutatePage({ isAuthenticated, token }) {
               </SimpleGrid>
               <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
                 <FormControl>
+                  <FormLabel htmlFor="aspect_ratio">Aspect Ratio Presets</FormLabel>
+                  <Select id = "aspect_ratio" value={job.aspect_ratio} placeholder='Select an aspect ratio...' onChange={(event) => {
+                      let updatedJob = JSON.parse(JSON.stringify(job));
+                      let value = event.target.selectedOptions[0].value;
+                      updatedJob.aspect_ratio = value
+                      if(value!=="free"){
+                        let w = updatedJob.width_height[0]
+                        let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
+                        let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
+                        let w_h = [parseInt(w), parseInt(h_ratio/w_ratio * w)]
+                        updatedJob.width_height = w_h;
+                      }
+                      setJob({ ...job, ...updatedJob });
+                    }}>
+                    {
+                      [
+                        {"key" : "free", "text" : "Free"},
+                        {"key" : "1:1", "text" : "1:1 (Square)"},
+                        {"key" : "16:9", "text" : "16:9 (Film/Display)"},
+                        {"key" : "4:5", "text" : "4:5 (Portrait)"},
+                        {"key" : "4:1", "text" : "4:1 (Pano)"},
+                        {"key" : "1:4", "text" : "1:4 (Skyscraper)"},
+                        {"key" : "5:3", "text" : "5:3 (Landscape)"}
+                      ].map(shape=>{
+                        return <option value={shape.key}>{shape.text}</option>
+                      })
+                    }
+                    {show_help && <FormHelperText>Shape presets to apply to width/height.  Height will be calculated on aspect ratio based on width.</FormHelperText>}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel htmlFor="lock_ratio">Lock Aspect Ratio</FormLabel>
+                  <Switch
+                    id="lock_ratio"
+                    isChecked={(job.lock_ratio==="yes"||job.lock_ratio===true)?true:false}
+                    isDisabled={job.aspect_ratio==="free"}
+                    onChange={(event) => {
+                      let updatedJob = JSON.parse(JSON.stringify(job));
+                      updatedJob.lock_ratio = event.target.checked ? true : false;
+                      setJob({ ...job, ...updatedJob });
+                    }}
+                  />
+                  {show_help && <FormHelperText>Lock width/height to selected aspect ratio.</FormHelperText>}
+                </FormControl>
+              </SimpleGrid> 
+              <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
+                <FormControl>
                   <FormLabel htmlFor="width">Width</FormLabel>
                   <NumberInput
                     id="width"
                     step={64}
-                    defaultValue={job.width_height?job.width_height[0]:1280}
+                    defaultValue={1280}
+                    value={job.width_height?job.width_height[0]:1280}
                     min={128}
                     max={2560}
                     clampValueOnBlur={true}
@@ -490,6 +544,13 @@ function MutatePage({ isAuthenticated, token }) {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       updatedJob.width_height=updatedJob.width_height || [1280,768]
                       updatedJob.width_height[0] = parseInt(value);
+                      if(updatedJob.aspect_ratio !== "free" && updatedJob.lock_ratio){
+                        let w = updatedJob.width_height[0]
+                        let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
+                        let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
+                        let w_h = [parseInt(w), parseInt(h_ratio/w_ratio * w)]
+                        updatedJob.width_height = w_h;
+                      }
                       setJob({ ...job, ...updatedJob });
                     }}
                   >
@@ -508,7 +569,8 @@ function MutatePage({ isAuthenticated, token }) {
                   <NumberInput
                     id="height"
                     step={64}
-                    defaultValue={job.width_height?job.width_height[1]:768}
+                    defaultValue={768}
+                    value={job.width_height?job.width_height[1]:768}
                     min={128}
                     max={2560}
                     clampValueOnBlur={true}
@@ -516,6 +578,13 @@ function MutatePage({ isAuthenticated, token }) {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       updatedJob.width_height=updatedJob.width_height || [1280,768]
                       updatedJob.width_height[1] = parseInt(value);
+                      if(updatedJob.aspect_ratio !== "free" && updatedJob.lock_ratio){
+                        let h = updatedJob.width_height[1]
+                        let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
+                        let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
+                        let w_h = [parseInt((w_ratio/h_ratio * h)), parseInt(h)]
+                        updatedJob.width_height = w_h;
+                      }
                       setJob({ ...job, ...updatedJob });
                     }}
                   >
