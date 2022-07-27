@@ -265,11 +265,11 @@ function MutatePage({ isAuthenticated, token }) {
   return (
     <>
       <Center>
-        <Box maxW={"1200px"}>
+        <Box maxW={"1024px"}>
           <Skeleton isLoaded={!loading}>
             <Center>
               <VStack>
-                <Heading size={"md"}>Mutate: {job ? job.uuid : 'Loading'}</Heading>
+                <Heading size={"sm"}>Mutate: {job ? job.uuid : 'Loading'}</Heading>
                 <Image src={`https://images.feverdreams.app/thumbs/512/${job.uuid}.jpg`}></Image>
               </VStack>
             </Center>
@@ -390,9 +390,9 @@ function MutatePage({ isAuthenticated, token }) {
                 Phrase, sentence, or string of words and phrases describing what the image should look like.  The words will be analyzed by the AI and will guide the diffusion process toward the image you describe.
                 These can include multiple prompts with different weights to adjust the relative importance of each element.
                 E.g:<br />
-                <p><Code>"A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation."</Code></p>
+                <p><Code variant={"outline"} p={5} mt={5} mb={5} rounded={"md"}>"A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation."</Code></p>
                 Notice that this prompt loosely follows a structure:
-                <p><Code>[subject], [prepositional details], [setting], [meta modifiers and artist]</Code></p>
+                <p><Code variant={"outline"} p={5} mt={5} mb={5} rounded={"md"}>[subject], [prepositional details], [setting], [meta modifiers and artist]</Code></p>
                 This is a good starting point for your experiments.   Writing prompts is an art in and of itself, browse around the site to get inspired!
               </FormHelperText>}
             </FormControl>
@@ -598,7 +598,7 @@ function MutatePage({ isAuthenticated, token }) {
                 </FormControl>
               </SimpleGrid>
             <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
-              <FormControl width={"sm"}>
+              <FormControl>
                 <FormLabel>OpenAI CLIP Models</FormLabel>
                 <VStack alignItems={"left"}>
                   {
@@ -624,7 +624,7 @@ function MutatePage({ isAuthenticated, token }) {
                   }
                 </VStack>
               </FormControl>
-              <FormControl width={"sm"}>
+              <FormControl>
                 <FormLabel>Additional CLIP Models</FormLabel>
                 <VStack alignItems={"left"}>
                   {
@@ -892,7 +892,7 @@ function MutatePage({ isAuthenticated, token }) {
             </FormControl>
             <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
               <FormControl>
-                <FormLabel htmlFor="use_horizontal_symmetry">Use Horizontal Symmetry</FormLabel>
+                <FormLabel htmlFor="use_horizontal_symmetry">Horizontal Symmetry</FormLabel>
                 <Switch
                   id="use_horizontal_symmetry"
                   isChecked={job.use_horizontal_symmetry}
@@ -905,7 +905,7 @@ function MutatePage({ isAuthenticated, token }) {
                 {show_help && <FormHelperText>Enforce symmetry over x axis of the image on [tr_ststeps for tr_st in transformation_steps] steps of the diffusion process</FormHelperText>}
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="use_vertical_symmetry">Use Vertical Symmetry</FormLabel>
+                <FormLabel htmlFor="use_vertical_symmetry">Vertical Symmetry</FormLabel>
                 <Switch
                   id="use_vertical_symmetry"
                   isChecked={job.use_vertical_symmetry}
