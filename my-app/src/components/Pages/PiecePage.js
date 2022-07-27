@@ -93,6 +93,7 @@ function PiecePage({ token }) {
     <>
       {error}
       <HStack mt={4} mb={4} maxW="1024" m="auto" position={'relative'}>
+      {data && (data.status==="archived" || data.status==="complete" || (data.status==="processing" && data.percent !==undefined)) &&
       <Image
           bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
           position={'absolute'}
@@ -109,11 +110,10 @@ function PiecePage({ token }) {
           src={
             data.status === 'processing'
               ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : !data.thumbnails
-                ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-                : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+              : `http://images.feverdreams.app/jpg/${data.uuid}.jpg`
           }
         />
+        }
         <Skeleton isLoaded={!loading} className='w-100'>
           <Flex className="w-100" flexDirection={'column'} justifyContent="space-between" alignItems='center'>
             <Flex className="w-100" pl="2" textAlign="left" alignItems="center" justifyContent="space-between">
@@ -228,6 +228,7 @@ function PiecePage({ token }) {
           </Flex>
         </Skeleton>
       </HStack>
+      {data && (data.status==="archived" || data.status==="complete" || (data.status==="processing" && data.percent !==undefined)) &&
         <Link>
         <Image
           bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
@@ -242,17 +243,30 @@ function PiecePage({ token }) {
           mt="3"
           mb="3"
           borderRadius="lg"
-          alt={data.text_prompt}
+          alt={data.text_prompts?data.text_prompts:data.text_prompt}
           objectFit="cover"
           src={
             data.status === 'processing'
               ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : !data.thumbnails
-                ? `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-                : `http://images.feverdreams.app/thumbs/1024/${data.uuid}.jpg`
+              : `http://images.feverdreams.app/jpg/${data.uuid}.jpg`
           }
         />
         </Link>
+      }
+      {data && (data.status==="rejected" || data.status==="failed") && 
+      <>
+        <Center>
+        <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}</Code>
+        </Center>
+      </>
+      }
+      {data && data.percent===undefined && (data.status==="processing" || data.status==="queued") && 
+      <>
+        <Center>
+        <Code my={3} p={4} borderRadius="md" maxW="1024">Job currently {data.status}...</Code>
+        </Center>
+      </>
+      }
       <VStack>
         <Box>
           <Stack direction="row">

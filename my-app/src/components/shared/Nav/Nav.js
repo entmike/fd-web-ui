@@ -162,7 +162,7 @@ export function Nav() {
                 key="/dream"
                 title={
                   <Button colorScheme="blue" size="sm">
-                    + New Dream
+                    Dream
                   </Button>
                 }
                 url="/dream"
@@ -170,13 +170,13 @@ export function Nav() {
             )}
             <NavLink
                 as={RouteLink}
-                key="/job-generator"
+                key="/create"
                 title={
-                  <Button colorScheme="blue" size="sm">
-                    + New Job
+                  <Button colorScheme="green" size="sm">
+                    Create
                   </Button>
                 }
-                url="/job-generator"
+                url="/mutate/default-lighthouse"
               />
           </HStack>
 
@@ -225,6 +225,13 @@ export function Nav() {
                     }
                   >
                     My Gallery
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      (window.location.href = `/myjobs/1`)
+                    }
+                  >
+                    My Jobs
                   </MenuItem>
                   <MenuItem
                     onClick={() =>

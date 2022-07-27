@@ -15,6 +15,7 @@ import MutatePage from "./components/Pages/MutatePage"
 import IncubatePage from "./components/Pages/MutatePage"
 import CreateDreamPage from "./components/Pages/CreateDreamPage"
 import JobsPage from "./components/Pages/JobsPage"
+import MyJobsPage from "./components/Pages/MyJobsPage"
 import PiecePage from "./components/Pages/PiecePage"
 import AgentStatusPage from "./components/Pages/AgentStatusPage"
 import ColorPage from "./components/Pages/ColorPage"
@@ -73,6 +74,7 @@ function App() {
                   element={<PiecePage token={token} />}
                 />
                 <Route path="/jobs" element={<JobsPage />}></Route>
+                <Route path="/myjobs/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
                 <Route
                   path="/dream"
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}
