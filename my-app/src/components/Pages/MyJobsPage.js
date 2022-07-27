@@ -34,6 +34,7 @@ function MyJobsPage({ isAuthenticated, token }) {
     let d = [];
     const prevURL = `/myjobs/${parseInt(params.page) - 1}`;
     const nextURL = `/myjobs/${parseInt(params.page) + 1}`;
+    const apiURL = `https://api.feverdreams.app/web/myjobs/${params.page}`
   for (let i = 0; i < 25; i++)
     d.push({
       render_type: 'render',
@@ -52,7 +53,7 @@ function MyJobsPage({ isAuthenticated, token }) {
   function fetchJobs() {
     setLoading(true);
 
-    let active = fetch(`https://api.feverdreams.app/web/myjobs/1`,{
+    let active = fetch(apiURL,{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
