@@ -1,13 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Button, Skeleton, Text, Textarea, FormControl, FormLabel, FormHelperText, Code, Link, Box } from '@chakra-ui/react';
+import { Button, Skeleton, Text, Textarea, FormControl, FormLabel, FormHelperText, Code, Link, Box, Select } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 // TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
 function CreateDreamPage({ isAuthenticated, token }) {
-  const [dream, setDream] = useState(null);
+  const [dream, setDream] = useState({});
   const [loading, setLoading] = useState(true);
-  const [dreamPrompt, setDreamPrompt] = useState('');
   const { user } = useAuth0();
 
   async function getDream(token) {
@@ -29,7 +28,6 @@ function CreateDreamPage({ isAuthenticated, token }) {
 
       if (dreamData) {
         setDream(dreamData);
-        setDreamPrompt(dreamData.dream);
       }
 
       setLoading(false);
@@ -50,6 +48,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
   async function handleInitiateDream() {
     try {
       setLoading(true);
+      console.log(dream)
       const { success: dreamSuccess } = await fetch(
         'https://api.feverdreams.app/web/dream',
         {
@@ -58,7 +57,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ dream: dreamPrompt }),
+          body: JSON.stringify({ dream: dream }),
         }
       )
         .then((response) => {
@@ -69,7 +68,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
         });
 
       // Simulate data return -mike
-      if (dreamSuccess) setDream({ count: 0, dream: dreamPrompt });
+      // if (dreamSuccess) setDream({ count: 0, dream: dreamPrompt });
 
       setLoading(false);
     } catch (error) {
@@ -81,8 +80,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
     setLoading(true);
     fetch(`https://api.feverdreams.app/awaken/${user.sub.split('|')[2]}`).then(
       (response) => {
-        setDream(null);
-        setDreamPrompt('');
+        setDream({});
         setLoading(false);
       }
     );
@@ -124,9 +122,45 @@ function CreateDreamPage({ isAuthenticated, token }) {
             <Textarea
               id="dreamprompt"
               placeholder="Your dream here..."
-              value={dreamPrompt}
-              onChange={(event) => setDreamPrompt(event.target.value)}
+              value={dream.prompt}
+              onChange={(event) => {
+                let updatedDream = JSON.parse(JSON.stringify(dream));
+                updatedDream.prompt = event.currentTarget.value;
+                setDream({ ...dream, ...updatedDream });
+              }}
             />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="diffusion_model">Diffusion Model</FormLabel>
+            <Select placeholder='Select Diffusion Model' defaultValue={"512x512_diffusion_uncond_finetune_008100"} value={dream.diffusion_model} onChange={(event) => {
+                let updatedDream = JSON.parse(JSON.stringify(dream));
+                let value = event.target.selectedOptions[0].value;
+                updatedDream.diffusion_model = value;
+                setDream({ ...dream, ...updatedDream });
+              }}>
+              {
+                [
+                  {"key" : "256x256_diffusion_uncond", "text" : "256x256_diffusion_uncond"},
+                  {"key" : "512x512_diffusion_uncond_finetune_008100", "text" : "512x512_diffusion_uncond_finetune_008100"},
+                  {"key" : "PulpSciFiDiffusion", "text" : "PulpSciFiDiffusion"},
+                  {"key" : "pixel_art_diffusion_hard_256", "text" : "pixel_art_diffusion_hard_256"},
+                  {"key" : "pixel_art_diffusion_soft_256", "text" : "pixel_art_diffusion_soft_256"},
+                  {"key" : "pixelartdiffusion4k", "text" : "pixelartdiffusion4k"},
+                  {"key" : "PADexpanded", "text" : "PADexpanded"},
+                  {"key" : "watercolordiffusion", "text" : "watercolordiffusion"},
+                  {"key" : "watercolordiffusion_2", "text" : "watercolordiffusion_2"},
+                  {"key" : "256x256_openai_comics_faces_v2.by_alex_spirin_114k", "text" : "256x256_openai_comics_faces_v2.by_alex_spirin_114k"},
+                  {"key" : "portrait_generator_v001_ema_0.9999_1MM", "text" : "portrait_generator_v001_ema_0.9999_1MM"},
+                  {"key" : "portrait_generator_v1.5_ema_0.9999_165000", "text" : "portrait_generator_v1.5_ema_0.9999_165000"},
+                  {"key" : "FeiArt_Handpainted_CG_Diffusion", "text" : "FeiArt_Handpainted_CG_Diffusion"},
+                  {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
+                  {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"}
+                ].map(diffusion_model=>{
+                  return <option value={diffusion_model.key}>{diffusion_model.text}</option>
+                })
+              }
+            </Select>
+            {<FormHelperText>Diffusion_model of choice.  Each model has its own "flavor".  Try them all to see what works for you.</FormHelperText>}
           </FormControl>
           <Button onClick={handleInitiateDream}>Dream</Button>
           <Button onClick={handleWakeUp} disabled={!dream}>
