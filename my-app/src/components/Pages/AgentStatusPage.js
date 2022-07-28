@@ -12,9 +12,11 @@ import {
   TableContainer,
   Skeleton,
   Badge,
-  HStack
+  HStack,
+  Link
 } from '@chakra-ui/react';
 import { dt } from '../../utils/dateUtils';
+import { Link as RouteLink } from 'react-router-dom';
 
 function AgentStatusPage() {
   let d = [];
@@ -80,7 +82,9 @@ function AgentStatusPage() {
                 return (
                   <Tr key={o.agent_id}>
                     <Td>
-                      <Skeleton isLoaded={!loading}>{o.agent_id}</Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        <RouteLink to={`/agentstatus/${o.agent_id}/1`}><Link color={"green.500"}>{o.agent_id}</Link></RouteLink>
+                      </Skeleton>
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}><Code>{o.bot_version}</Code></Skeleton>
