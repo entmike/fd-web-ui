@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {
+  Badge,
   Table,
   Thead,
   Tbody,
@@ -94,12 +95,11 @@ function JobsPage() {
                   <Tr>
                     <Th>Author</Th>
                     <Th>Job</Th>
-                    <Th>Job UUID</Th>
                     <Th>Agent</Th>
-                    <Th width={`75px`}>Timestamp</Th>
+                    <Th>Timestamp</Th>
                     <Th>Render Type</Th>
-                    <Th>Model Mode</Th>
-                    <Th>Progress %</Th>
+                    <Th>CLIP Models</Th>
+                    <Th>Diffusion Model</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -116,16 +116,11 @@ function JobsPage() {
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
-                                {o.experimental?"🧪":""}<Code>{o.uuid}</Code>
+                                <Code>{o.uuid}</Code>
                               </Link>
                             </Skeleton>
                           </Td>
                           <Td>
-                            <Skeleton isLoaded={!loading}>
-                              <CopyButton value={o.uuid} />
-                            </Skeleton>
-                          </Td>
-                          <Td width={`75px`}>
                               <Center>
                                 <Skeleton isLoaded={!loading}>
                                   <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
@@ -143,10 +138,14 @@ function JobsPage() {
                             </Skeleton>
                           </Td>
                           <Td>
-                            <Skeleton isLoaded={!loading}>{o.model}</Skeleton>
+                            <Skeleton isLoaded={!loading}>{
+                              o.clip_models && o.clip_models.map(clip_model=>{
+                                return <><Badge variant={"outline"}>{clip_model}</Badge><br/></>
+                              })
+                            }</Skeleton>
                           </Td>
                           <Td>
-                            <Skeleton isLoaded={!loading}>{o.percent}</Skeleton>
+                            <Skeleton isLoaded={!loading}><Badge variant={"outline"}>{o.diffusion_model}</Badge></Skeleton>
                           </Td>
                         </Tr>
                       );
@@ -182,7 +181,7 @@ function JobsPage() {
                           <Td>
                           <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
-                                {o.experimental?"🧪":""}<Code>{o.uuid}</Code>
+                                <Code>{o.uuid}</Code>
                               </Link>
                             </Skeleton>
                           </Td>

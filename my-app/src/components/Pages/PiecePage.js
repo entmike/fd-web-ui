@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
 import { MdIosShare } from "react-icons/md";
 import {
   Heading,
@@ -40,7 +40,8 @@ import {
   ModalBody,
   ModalCloseButton,
   ButtonGroup,
-  useBreakpointValue
+  useBreakpointValue,
+  useToast
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react'
 import { DreamAuthor } from '../shared/DreamAuthor';
@@ -59,8 +60,9 @@ function PiecePage({ token }) {
   const [textPrompt, setTextPrompt] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasCopied, onCopy } = useClipboard(textPrompt);
-
-  const params = useParams();
+  const { hasCopiedTags, onCopyTags } = useClipboard(data);
+  const toast = useToast()
+  const params = useParams()
 
   function fetchPiece() {
     const uuid = params.uuid;
@@ -171,9 +173,6 @@ function PiecePage({ token }) {
                     isDisabled
                     icon={<AiOutlineHeart />}
                   >
-                    {/* <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                    </svg> */}
                   </IconButton>
                   <IconButton
                     isRound
@@ -188,6 +187,24 @@ function PiecePage({ token }) {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
                   </IconButton>
+                  <IconButton
+                    isRound
+                    colorScheme={'green'}
+                    size="md"
+                    onClick={event=>{
+                      let tags = JSON.parse(JSON.stringify(data.discoart_tags))
+                      delete(tags._status)
+                      navigator.clipboard.writeText(JSON.stringify(tags, null, 2))
+                      toast({
+                        title: "DiscoArt tags copied.",
+                        description: "DiscoArt tags have been copied to your clipboard.",
+                        status: "success"
+                      })
+                    }}
+                    // ml={1}
+                    icon={<AiFillTags />}
+                  >
+                  </IconButton>                  
                   <Button
                     colorScheme={'green'}
                     size="xs"
@@ -233,7 +250,6 @@ function PiecePage({ token }) {
         <Image
           bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
           onClick={(() => {
-            console.log(data)
             let url = data.status === 'processing'
             ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
             : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
@@ -294,7 +310,6 @@ function PiecePage({ token }) {
               let badges = []
               const clip_models = ["RN101","RN50","RN50x16","RN50x4","RN50x64","ViTB16","ViTB32","ViTL14","ViTL14_336"]
               clip_models.map((model)=>{
-                console.log(model)
                 if (data.results[model]) badges.push(<Badge variant="outline" colorScheme="orange">{model}</Badge>)
               })
               return badges

@@ -65,12 +65,8 @@ function AgentStatusPage() {
               <Th>Version</Th>
               <Th>Last Seen</Th>
               <Th>Mode</Th>
-              <Th>CLIP Models</Th>
               <Th>Score</Th>
-              <Th>GPU</Th>
-              <Th>Temp.</Th>
-              <Th>GPU Util %</Th>
-              <Th>VRAM Util %</Th>
+              {/* <Th>GPU</Th> */}
               <Th>VRAM</Th>
             </Tr>
           </Thead>
@@ -78,7 +74,8 @@ function AgentStatusPage() {
             {data &&
               data.map((o, i) => {
                 console.log(o);
-                let gpustats = o.gpustats.split(', ');
+                // let gpustats = o.gpustats.split(', ');
+                let vram = (o.gpu && o.gpu.mem_total)?o.gpu.mem_total:"???"
 
                 return (
                   <Tr key={o.agent_id}>
@@ -109,36 +106,11 @@ function AgentStatusPage() {
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}>
-                        <HStack>
-                        {(()=>{
-                          let badges = []
-                          for(let model in o.clip_models){
-                            if(o.clip_models[model]){
-                              badges.push(<Badge variant={"outline"}>{model}</Badge>)
-                            }
-                          }
-                          return badges
-                        })()}
-                        </HStack>
+                        {o.score}
                       </Skeleton>
                     </Td>
                     <Td>
-                      <Skeleton isLoaded={!loading}>{o.score}</Skeleton>
-                    </Td>
-                    <Td>
-                      <Skeleton isLoaded={!loading}>{gpustats[0]}</Skeleton>
-                    </Td>
-                    <Td>
-                      <Skeleton isLoaded={!loading}>{gpustats[1]}</Skeleton>
-                    </Td>
-                    <Td>
-                      <Skeleton isLoaded={!loading}>{gpustats[2]}</Skeleton>
-                    </Td>
-                    <Td>
-                      <Skeleton isLoaded={!loading}>{gpustats[3]}</Skeleton>
-                    </Td>
-                    <Td>
-                      <Skeleton isLoaded={!loading}>{gpustats[4]}</Skeleton>
+                      <Skeleton isLoaded={!loading}>{vram}</Skeleton>
                     </Td>
                   </Tr>
                 );
