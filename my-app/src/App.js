@@ -18,6 +18,7 @@ import JobsPage from "./components/Pages/JobsPage"
 import MyJobsPage from "./components/Pages/MyJobsPage"
 import PiecePage from "./components/Pages/PiecePage"
 import AgentStatusPage from "./components/Pages/AgentStatusPage"
+import AgentJobsPage from "./components/Pages/AgentJobsPage"
 import ColorPage from "./components/Pages/ColorPage"
 import JobGenerator from "./components/Pages/JobGenerator"
 import FollowingPage from "./components/Pages/FollowingPage"
@@ -89,6 +90,7 @@ function App() {
                 />
                 <Route path="/job-generator" element={<JobGenerator />} />
                 <Route path="/agentstatus" element={<AgentStatusPage />} />
+                <Route path="/agentstatus/:agent/:page" element={<AgentJobsPage />} />
                 <Route path="/following" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
               </Routes>

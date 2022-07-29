@@ -138,6 +138,7 @@ export function Nav() {
             fontWeight="bold"
             whiteSpace="nowrap"
             pl={{ base: 2, md: 0 }}
+            display={{ base: 'none', md: 'flex' }}
           >
             <Link to="/">Fever Dreams</Link>
           </Text>
@@ -154,32 +155,42 @@ export function Nav() {
             display={{ base: 'none', md: 'flex' }}
           >
             {Links.map(({ title, url }) => (
-              <NavLink as={RouteLink} key={title} title={title} url={url} />
+              <NavLink as={RouteLink} key={title} title={title} url={url}/>
             ))}
-            {isAuthenticated && (
-              <NavLink
-                as={RouteLink}
-                key="/dream"
-                title={
-                  <Button colorScheme="blue" size="sm">
-                    Dream
-                  </Button>
-                }
-                url="/dream"
-              />
-            )}
-            <NavLink
-                as={RouteLink}
-                key="/create"
-                title={
-                  <Button colorScheme="green" size="sm">
-                    Create
-                  </Button>
-                }
-                url="/mutate/default-lighthouse"
-              />
           </HStack>
-
+          <Menu>
+              <MenuButton
+                colorScheme="green"
+                as={Button}
+                // rounded={'full'}
+                // variant={'link'}
+                cursor={'pointer'}
+                minW={0}
+                // pr="2"
+                // pl="1"
+              >Create...</MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/mutate/default-lighthouse`)
+                  }
+                >Default Lighthouse
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/mutate/default-portrait`)
+                  }
+                >Default Portrait
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/dream`)
+                  }
+                >Set Your Dream
+                </MenuItem>
+              </MenuList>
+            </Menu>
           <Flex marginLeft="auto" alignItems={'center'}>
             <IconButton
               m="1"

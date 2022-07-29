@@ -112,6 +112,25 @@ function MyJobsPage({ isAuthenticated, token }) {
                         </Td>
                         <Td>
                             <Skeleton isLoaded={!loading}>
+                                <Button isDisabled={!(o.status==="rejected" || o.status==="failed")} onClick={() => {
+                                    fetch(
+                                        `https://api.feverdreams.app/web/retry`,
+                                        {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            Authorization: `Bearer ${token}`,
+                                        },
+                                        body: JSON.stringify({ uuid: o.uuid }),
+                                        }
+                                    ).then((response) => {
+                                        return response.json();
+                                      })
+                                      .then((data) => {
+                                        fetchJobs();
+                                        return data;
+                                      });
+                                    }}>Retry</Button>
                                 <Button isDisabled>Edit</Button>
                                 <Button isDisabled>Cancel</Button>
                             </Skeleton>
