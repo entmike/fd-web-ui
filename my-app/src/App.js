@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import "./App.css"
 
 import { Nav } from "./components/shared/Nav"
+import { FdFooter } from "./components/shared/FdFooter.js"
 
 import { Hero } from "./components/Pages/HomePage"
 import UserGalleryPage from "./components/Pages/UserGalleryPage"
@@ -65,6 +66,7 @@ function App() {
                 <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/random" element={<RandomGalleryPage />} />
                 <Route path="/recent/:page" element={<RecentGalleryPage />} />
+                <Route path="/recent/:type/:page" element={<RecentGalleryPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/rgb/:r/:g/:b/:range/:amount/:page" element={<ColorPage />} />
 
@@ -95,6 +97,7 @@ function App() {
                 <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
               </Routes>
             </Box>
+            <FdFooter />
           </div>
         </Router>
       </InstantSearch>

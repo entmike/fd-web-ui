@@ -48,8 +48,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
   async function handleInitiateDream() {
     try {
       setLoading(true);
-      console.log(dream)
-      const { success: dreamSuccess } = await fetch(
+      const data = await fetch(
         'https://api.feverdreams.app/web/dream',
         {
           method: 'POST',
@@ -64,12 +63,10 @@ function CreateDreamPage({ isAuthenticated, token }) {
           return response.json();
         })
         .then((data) => {
-          return data;
+          return data
         });
 
-      // Simulate data return -mike
-      // if (dreamSuccess) setDream({ count: 0, dream: dreamPrompt });
-
+      if(data.success) setDream(data.dream)
       setLoading(false);
     } catch (error) {
       console.log('Unable to induce dream state');
@@ -91,7 +88,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
       {isAuthenticated ? (
         <Skeleton isLoaded={!loading}>
           <FormControl>
-            <FormLabel htmlFor="dreamprompt">Dream Count: {dream ? dream.count : 'not currently dreaming'}</FormLabel>
+            <FormLabel htmlFor="dreamprompt">Dream Count: {dream && dream.count !== undefined? dream.count : '[N/A Not currently dreaming]'}</FormLabel>
             <FormHelperText>
               <Box mb={5} p={5} borderRadius="md" borderWidth={1}>
                 <p>{`Dreams are used to give the Fever Dreams something to render when regular jobs cannot keep all the GPUs busy.  Dreams have a mad-libs placeholder convention such as the following example:`}<br/>

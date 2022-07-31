@@ -64,11 +64,12 @@ function AgentStatusPage() {
           <Thead>
             <Tr>
               <Th>Agent ID</Th>
-              <Th>Version</Th>
+              <Th>Bot Version</Th>
+              <Th>Discoart Version</Th>
+              <Th>GPU</Th>
               <Th>Last Seen</Th>
               <Th>Mode</Th>
               <Th>Score</Th>
-              {/* <Th>GPU</Th> */}
               <Th>VRAM</Th>
             </Tr>
           </Thead>
@@ -88,6 +89,12 @@ function AgentStatusPage() {
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}><Code>{o.bot_version}</Code></Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton isLoaded={!loading}><Code>{o.agent_discoart_version}</Code></Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton isLoaded={!loading}><Badge variant={"outline"} color={"green.500"}>{o.gpu && o.gpu.name}</Badge></Skeleton>
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}>{dt(o.last_seen)}</Skeleton>

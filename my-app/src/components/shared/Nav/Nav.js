@@ -122,7 +122,7 @@ export function Nav() {
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Flex h={16} alignItems={'center'}>
-          <IconButton
+          {/* <IconButton
             size={'md'}
             w="30px"
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -130,7 +130,7 @@ export function Nav() {
             display={{ md: 'none' }}
             mr={{ base: 2, md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
-          />
+          /> */}
           <Text
             bgGradient="linear(to-l, #7928CA, #FF0080)"
             bgClip="text"
@@ -147,7 +147,7 @@ export function Nav() {
             <CustomSearchBox />
           </Box>
 
-          <HStack
+          {/* <HStack
             as={'nav'}
             spacing={4}
             p={4}
@@ -157,7 +157,58 @@ export function Nav() {
             {Links.map(({ title, url }) => (
               <NavLink as={RouteLink} key={title} title={title} url={url}/>
             ))}
-          </HStack>
+          </HStack> */}
+          <Menu>
+              <MenuButton
+                colorScheme="blue"
+                as={Button}
+                // rounded={'full'}
+                // variant={'link'}
+                cursor={'pointer'}
+                minW={0}
+                // pr="2"
+                // pl="1"
+              >Browse</MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/1`)
+                  }
+                >All
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/general/1`)
+                  }
+                >General
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/portraits/1`)
+                  }
+                >Portraits
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/isometric/1`)
+                  }
+                >Isometric
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/pixel-art/1`)
+                  }
+                >Pixel Art
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/random`)
+                  }
+                >Random
+                </MenuItem>
+              </MenuList>
+            </Menu>
           <Menu>
               <MenuButton
                 colorScheme="green"
@@ -168,7 +219,7 @@ export function Nav() {
                 minW={0}
                 // pr="2"
                 // pl="1"
-              >Create...</MenuButton>
+              >Create</MenuButton>
               <MenuList>
                 <MenuItem
                   onClick={() =>
