@@ -234,3 +234,8 @@ IsometricDiffusionRevrart512px:
     rescale_timesteps: true
     timestep_respacing: ddim100
     use_scale_shift_norm: true
+
+liminal_diffusion_v1:
+  sha: 87c36b544a367fceb0ca127d0028cd8a6f6b6e069e529b22999259d69c14f042
+  sources:
+    - https://huggingface.co/BrainArtLabs/liminal_diffusion/resolve/main/liminal_diffusion_v1.pt
