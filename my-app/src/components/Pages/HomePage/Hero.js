@@ -6,41 +6,33 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { CaptionCarousel } from './CaptionCarousel.js';
-
+import { Stats } from '../../shared/Stats.js';
 export function Hero() {
   return (
     <Stack direction={{ base: 'column', md: 'column' }}>
       <Stack spacing={6} w={'full'} maxW={'lg'}>
         <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
           <Text
-            as={'span'}
-            position={'relative'}
-            _after={{
-              content: "''",
-              width: 'full',
-              height: useBreakpointValue({ base: '20%', md: '30%' }),
-              position: 'absolute',
-              bottom: 1,
-              left: 0,
-              bg: 'blue.400',
-              zIndex: -1,
-            }}
+            bgGradient="linear(to-l, #7928CA, #FF0080)"
+            bgClip="text"
+            // fontSize="lg"
+            fontWeight="bold"
+            whiteSpace="nowrap"
+            pl={{ base: 2, md: 0 }}
+            display={{ md: 'flex' }}
           >
-            Welcome
-          </Text>
-          <br />{' '}
-          <Text color={'blue.400'} as={'span'}>
             Fever Dreams
-          </Text>{' '}
+          </Text>
         </Heading>
-        <Text fontSize={{ base: 'md', lg: 'lg' }} color={'whiteAlpha.900'}>
+        {/* <Text fontSize={{ base: 'md', lg: 'lg' }} color={'whiteAlpha.900'}>
           Browse generative AI art created openly by other users.
-        </Text>
+        </Text> */}
         <Stack direction={{ base: 'column', md: 'row' }} spacing={4}></Stack>
       </Stack>
       <Center>
         <CaptionCarousel amount={10} />
       </Center>
+      <Stats />
     </Stack>
   );
 }

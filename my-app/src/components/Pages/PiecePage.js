@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
 import { MdIosShare } from "react-icons/md";
@@ -63,7 +64,8 @@ function PiecePage({ token }) {
   const { hasCopiedTags, onCopyTags } = useClipboard(data);
   const toast = useToast()
   const params = useParams()
-
+  const auth = useAuth0();
+  
   function fetchPiece() {
     const uuid = params.uuid;
 
@@ -88,8 +90,9 @@ function PiecePage({ token }) {
   }
 
   useEffect(() => {
+    console.log(auth)
     fetchPiece();
-    }, []);
+    }, [auth]);
 
   return (
     <>
@@ -222,6 +225,8 @@ function PiecePage({ token }) {
                     onClick={() => {
                           let url = data.status === 'processing'
                           ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+                          : data.origin==='upload'
+                          ? `${IMAGE_HOST}/images/${params.uuid}.png`
                           : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
                         window.open(url, "_blank")
                         // const link = document.createElement('a')
@@ -252,6 +257,8 @@ function PiecePage({ token }) {
           onClick={(() => {
             let url = data.status === 'processing'
             ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+            : data.origin==='upload'
+            ? `${IMAGE_HOST}/images/${params.uuid}.png`
             : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
           window.open(url, "_blank")})}
           maxH="1024"
@@ -272,17 +279,91 @@ function PiecePage({ token }) {
       {data && (data.status==="rejected" || data.status==="failed") && 
       <>
         <Center>
-        <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}</Code>
+        <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}
+
+        {auth && auth.isAuthenticated && data.str_author === auth.user.sub.split("|")[2] &&
+        <Center>
+          {(data && (data.status==="rejected" || data.status==="failed") || data.status==="queued") && <Button colorScheme={"blue"} onClick={() => {
+            window.location.href=`/edit/${data.uuid}`
+          }}>Edit</Button>}
+        {(data && (data.status==="rejected" || data.status==="failed")) && <Button colorScheme={"blue"}  isDisabled={!(data.status==="rejected" || data.status==="failed")} onClick={() => {
+        fetch(
+            `https://api.feverdreams.app/web/retry`,
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ uuid: data.uuid }),
+            }
+        ).then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            fetchPiece();
+            return data;
+          });
+          }}>Retry</Button>}
+          {(data.status==="rejected" || data.status==="failed" || data.status==="queued") && <Button colorScheme={"red"} isDisabled={!(data.status==="rejected" || data.status==="failed" || data.status==="queued")}  onClick={() => {
+          fetch(
+              `https://api.feverdreams.app/web/cancel`,
+              {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ uuid: data.uuid }),
+              }
+            ).then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              window.location.href=`/myjobs/1`
+              return data;
+            });
+          }}>Cancel</Button>}
+          </Center>}
+        </Code>
         </Center>
       </>
       }
       {data && data.percent===undefined && (data.status==="processing" || data.status==="queued") && 
-      <>
-        <Center>
-        <Code my={3} p={4} borderRadius="md" maxW="1024">Job currently {data.status}...</Code>
-        </Center>
-      </>
+          <Center>
+            <Code my={3} p={4} borderRadius="md" maxW="1024">Job currently {data.status}...
+             { auth && auth.isAuthenticated && data.str_author === auth.user.sub.split("|")[2] && 
+              <Center>
+              {(data.status==="queued") && <>
+                <Button colorScheme={"blue"} onClick={() => {
+                  window.location.href=`/edit/${data.uuid}`
+                }}>Edit</Button>
+              <Button colorScheme={"red"} isDisabled={!(data.status==="rejected" || data.status==="failed" || data.status==="queued")}  onClick={() => {
+                fetch(
+                    `https://api.feverdreams.app/web/cancel`,
+                    {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ uuid: data.uuid }),
+                    }
+                    ).then((response) => {
+                      return response.json();
+                    })
+                    .then((data) => {
+                      window.location.href=`/myjobs/1`
+                      return data;
+                    });
+                  }}>Cancel</Button>
+                </>
+              }</Center>             
+            }
+            </Code>
+          </Center>
       }
+      
       <VStack>
         <Box>
           <Stack direction="row">
@@ -311,6 +392,7 @@ function PiecePage({ token }) {
               const clip_models = ["RN101","RN50","RN50x16","RN50x4","RN50x64","ViTB16","ViTB32","ViTL14","ViTL14_336"]
               clip_models.map((model)=>{
                 if (data.results[model]) badges.push(<Badge variant="outline" colorScheme="orange">{model}</Badge>)
+                return null
               })
               return badges
             })()}

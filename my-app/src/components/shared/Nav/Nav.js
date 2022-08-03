@@ -144,7 +144,7 @@ export function Nav() {
           </Text>
 
           <Box p={{ base: 2, md: 4 }} pl={{ base: 4, md: 8 }} flex="1">
-            <CustomSearchBox />
+            {/* <CustomSearchBox /> */}
           </Box>
 
           {/* <HStack
@@ -163,9 +163,10 @@ export function Nav() {
                 colorScheme="blue"
                 as={Button}
                 // rounded={'full'}
-                // variant={'link'}
+                variant={'outline'}
                 cursor={'pointer'}
                 minW={0}
+
                 // pr="2"
                 // pl="1"
               >Browse</MenuButton>
@@ -214,7 +215,7 @@ export function Nav() {
                 colorScheme="green"
                 as={Button}
                 // rounded={'full'}
-                // variant={'link'}
+                variant={'outline'}
                 cursor={'pointer'}
                 minW={0}
                 // pr="2"
@@ -288,6 +289,13 @@ export function Nav() {
                   >
                     My Gallery
                   </MenuItem>
+                  {/* <MenuItem
+                    onClick={() =>
+                      (window.location.href = `/myuploads`)
+                    }
+                  >
+                    My Uploads
+                  </MenuItem> */}
                   <MenuItem
                     onClick={() =>
                       (window.location.href = `/myjobs/1`)

@@ -37,9 +37,10 @@ import {
 import { useAuth0 } from '@auth0/auth0-react';
 import { join, update } from 'lodash';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { id } from 'date-fns/locale';
 
 // TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
-function MutatePage({ isAuthenticated, token }) {
+function MutatePage({ isAuthenticated, token, mode }) {
   const [job, setJob] = useState({});
   const [show_help, setShowHelp] = useState({});
   //   const [text_prompt, setTextPrompt] = useState({});
@@ -65,6 +66,19 @@ function MutatePage({ isAuthenticated, token }) {
         })
         .then((data) => {
           data.experimental = true
+          if(mode==="edit"){
+            if(user){
+              let discord_id = user.sub.split("|")[2]
+              if(discord_id !== data.str_author){
+                data.editable = false
+              }else{
+                data.editable = (data.status == "queued" || data.status == "rejected")
+              }
+            }
+          }else{
+            data.editable = true
+          }
+          
           let isLegacy = data.discoart_tags?false:true
           if(data.text_prompts) {
             data.text_prompts = data.text_prompts
@@ -134,6 +148,7 @@ function MutatePage({ isAuthenticated, token }) {
                 text_clip_on_cpu: (data.text_clip_on_cpu !==undefined)?data.text_clip_on_cpu:false,
                 
                 aspect_ratio: (data.aspect_ratio !==undefined)?data.aspect_ratio:"free",
+                gpu_preference: (data.gpu_preference !==undefined)?data.gpu_preference:"medium",
                 lock_ratio: (data.lock_ratio !==undefined)?data.lock_ratio:false
               }
           }
@@ -170,6 +185,7 @@ function MutatePage({ isAuthenticated, token }) {
           data.transformation_percent = source.transformation_percent || [0.09]
           // UI-specific
           data.aspect_ratio = data.aspect_ratio || "free"
+          data.gpu_preference = data.gpu_preference || "medium"
           data.lock_ratio = data.lock_ratio || false
           // Legacy
           let cm = []
@@ -206,14 +222,13 @@ function MutatePage({ isAuthenticated, token }) {
   useEffect(() => {
     params && getJob(params.uuid);
   }, []);
-
-  async function submitMutate() {
+  
+  async function save() {
     try {
-      console.log(job)
       // return
       setLoading(true)      
       const { success: mutateSuccess, new_record: newRecord } = await fetch(
-        'https://api.feverdreams.app/web/mutate',
+        `https://api.feverdreams.app/web/${mode}`,
         {
           method: 'POST',
           headers: {
@@ -231,8 +246,13 @@ function MutatePage({ isAuthenticated, token }) {
           return data;
         });
       if (mutateSuccess) {
-        let uuid = newRecord.uuid;
-        window.location.href = `/piece/${uuid}`;
+        if(mode==="mutate"){
+          let uuid = newRecord.uuid;
+          window.location.href = `/piece/${uuid}`;
+        }
+        if(mode==="edit"){
+          window.location.href = `/piece/${job.uuid}`;
+        }
       }
       setLoading(false);
     } catch (error) {
@@ -275,7 +295,7 @@ function MutatePage({ isAuthenticated, token }) {
           <Skeleton isLoaded={!loading}>
             <Center>
               <VStack>
-                <Heading size={"sm"}>Mutate: {job ? job.uuid : 'Loading'}</Heading>
+                <Heading size={"sm"}>{mode==="mutate"?"Mutate":"Edit"}: {job ? job.uuid : 'Loading'}</Heading>
                 <Image src={`https://images.feverdreams.app/thumbs/512/${job.uuid}.jpg`}></Image>
               </VStack>
             </Center>
@@ -292,6 +312,26 @@ function MutatePage({ isAuthenticated, token }) {
                 {show_help && <FormHelperText>Show parameter help</FormHelperText>}
               </FormControl>
               <FormControl>
+                  <FormLabel htmlFor="gpu_preference">GPU Preference</FormLabel>
+                  <Select isDisabled = {!job.editable} id = "gpu_preference" defaultValue={"medium"} value={job.gpu_preference} onChange={(event) => {
+                      let updatedJob = JSON.parse(JSON.stringify(job));
+                      let value = event.target.selectedOptions[0].value;
+                      updatedJob.gpu_preference = value
+                      setJob({ ...job, ...updatedJob });
+                    }}>
+                    {
+                      [
+                        {"key" : "small", "text" : "Small (10-12 GB)"},
+                        {"key" : "medium", "text" : "Medium (24 GB)"},
+                        {"key" : "large", "text" : "Large (48 GB)"}
+                      ].map(shape=>{
+                        return <option value={shape.key}>{shape.text}</option>
+                      })
+                    }
+                  </Select>
+                  {show_help && <FormHelperText>Select your prefered GPU size.  Why not always pick "Large"?  Because you are a decent human being.</FormHelperText>}
+                </FormControl>
+              {/* <FormControl>
                 <FormLabel htmlFor="agent_preference">Agent Preference (temporary)</FormLabel>
                 <Input
                   id="agent_preference"
@@ -303,11 +343,11 @@ function MutatePage({ isAuthenticated, token }) {
                   }}
                 />
                 {show_help && <FormHelperText>Agent Preference (temporary) - Allows you to prefer a specific agent by ID for testing/sizing reasons.  Leave as "any" for normal behavior.</FormHelperText>}
-              </FormControl>
+              </FormControl> */}
             </SimpleGrid>
             <FormControl>
               <FormLabel htmlFor="text_prompts">Text Prompts</FormLabel>
-              { job.text_prompts && job.text_prompts.length === 0 && <IconButton onClick={event=>{
+              { job.text_prompts && job.text_prompts.length === 0 && <IconButton isDisabled = {!job.editable} onClick={event=>{
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.text_prompts.push("New Prompt:1")
                   setJob({ ...job, ...updatedJob });
@@ -329,7 +369,7 @@ function MutatePage({ isAuthenticated, token }) {
                   return <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
                     <FormControl>
                       <FormLabel htmlFor={`tp-weight-${index}`}>Weight</FormLabel>
-                      <NumberInput
+                      <NumberInput isDisabled = {!job.editable}
                         id={`tp-weight-${index}`}
                         step={0.1}
                         precision={2}
@@ -352,7 +392,7 @@ function MutatePage({ isAuthenticated, token }) {
                           <NumberDecrementStepper />
                         </NumberInputStepper>
                       </NumberInput>
-                      <IconButton key={`tp-row-${index}`} onClick={event=>{
+                      <IconButton isDisabled = {!job.editable} key={`tp-row-${index}`} onClick={event=>{
                         let updatedJob = JSON.parse(JSON.stringify(job));
                         updatedJob.text_prompts.splice(index,0,"New Prompt:1")
                         setJob({ ...job, ...updatedJob });
@@ -361,7 +401,7 @@ function MutatePage({ isAuthenticated, token }) {
                         aria-label='Add'
                         icon={<AddIcon />}
                       />
-                      <IconButton onClick={event=>{
+                      <IconButton isDisabled = {!job.editable} onClick={event=>{
                         let updatedJob = JSON.parse(JSON.stringify(job));
                         updatedJob.text_prompts.splice(index,1)
                         setJob({ ...job, ...updatedJob });
@@ -375,6 +415,7 @@ function MutatePage({ isAuthenticated, token }) {
                     <FormControl>
                       <FormLabel htmlFor={`tp-text-${index}`}>Text</FormLabel>
                       <Textarea
+                        isDisabled = {!job.editable}
                         id={`tp-text-${index}`}
                         type="text"
                         value={text}
@@ -405,7 +446,7 @@ function MutatePage({ isAuthenticated, token }) {
             <SimpleGrid columns={{sm: 1, md: 3}} spacing="20px">
               <FormControl>
                 <FormLabel htmlFor="seed">Image Seed</FormLabel>
-                <NumberInput
+                <NumberInput isDisabled = {!job.editable}
                   id="seed"
                   defaultValue={-1}
                   value={job.seed}
@@ -431,7 +472,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="steps">Steps</FormLabel>
-                <NumberInput
+                <NumberInput isDisabled = {!job.editable}
                   id="steps"
                   defaultValue={job.steps}
                   min={20}
@@ -458,7 +499,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="skip_steps">Skip Steps</FormLabel>
-                <NumberInput
+                <NumberInput isDisabled = {!job.editable}
                   id="skip_steps"
                   value={job.skip_steps}
                   defaultValue={0}
@@ -485,7 +526,7 @@ function MutatePage({ isAuthenticated, token }) {
               <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
                 <FormControl>
                   <FormLabel htmlFor="aspect_ratio">Aspect Ratio Presets</FormLabel>
-                  <Select id = "aspect_ratio" value={job.aspect_ratio} placeholder='Select an aspect ratio...' onChange={(event) => {
+                  <Select id = "aspect_ratio" isDisabled = {!job.editable} value={job.aspect_ratio} placeholder='Select an aspect ratio...' onChange={(event) => {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       let value = event.target.selectedOptions[0].value;
                       updatedJob.aspect_ratio = value
@@ -511,15 +552,14 @@ function MutatePage({ isAuthenticated, token }) {
                         return <option value={shape.key}>{shape.text}</option>
                       })
                     }
-                    {show_help && <FormHelperText>Shape presets to apply to width/height.  Height will be calculated on aspect ratio based on width.</FormHelperText>}
                   </Select>
+                  {show_help && <FormHelperText>Shape presets to apply to width/height.  Height will be calculated on aspect ratio based on width.</FormHelperText>}
                 </FormControl>
                 <FormControl>
                   <FormLabel htmlFor="lock_ratio">Lock Aspect Ratio</FormLabel>
-                  <Switch
+                  <Switch isDisabled = {!job.editable && job.aspect_ratio==="free"}
                     id="lock_ratio"
                     isChecked={(job.lock_ratio==="yes"||job.lock_ratio===true)?true:false}
-                    isDisabled={job.aspect_ratio==="free"}
                     onChange={(event) => {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       updatedJob.lock_ratio = event.target.checked ? true : false;
@@ -532,7 +572,7 @@ function MutatePage({ isAuthenticated, token }) {
               <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
                 <FormControl>
                   <FormLabel htmlFor="width">Width</FormLabel>
-                  <NumberInput
+                  <NumberInput isDisabled = {!job.editable}
                     id="width"
                     step={64}
                     defaultValue={1280}
@@ -566,7 +606,7 @@ function MutatePage({ isAuthenticated, token }) {
                 </FormControl>
                 <FormControl>
                   <FormLabel htmlFor="height">Height</FormLabel>
-                  <NumberInput
+                  <NumberInput isDisabled = {!job.editable}
                     id="height"
                     step={64}
                     defaultValue={768}
@@ -602,7 +642,7 @@ function MutatePage({ isAuthenticated, token }) {
               <SimpleGrid columns={{sm: 1, md: 3}} spacing="20px">
                 <FormControl>
                   <FormLabel htmlFor="diffusion_model">Diffusion Model</FormLabel>
-                  <Select placeholder='Select Diffusion Model' value={job.diffusion_model} onChange={(event) => {
+                  <Select placeholder='Select Diffusion Model' isDisabled = {!job.editable} value={job.diffusion_model} onChange={(event) => {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       let value = event.target.selectedOptions[0].value;
                       updatedJob.diffusion_model = value;
@@ -622,6 +662,8 @@ function MutatePage({ isAuthenticated, token }) {
                         {"key" : "256x256_openai_comics_faces_v2.by_alex_spirin_114k", "text" : "256x256_openai_comics_faces_v2.by_alex_spirin_114k"},
                         {"key" : "portrait_generator_v001_ema_0.9999_1MM", "text" : "portrait_generator_v001_ema_0.9999_1MM"},
                         {"key" : "portrait_generator_v1.5_ema_0.9999_165000", "text" : "portrait_generator_v1.5_ema_0.9999_165000"},
+                        {"key" : "portrait_generator_v003", "text" : "portrait_generator_v003"},
+                        {"key" : "portrait_generator_v004", "text" : "portrait_generator_v004"},
                         {"key" : "FeiArt_Handpainted_CG_Diffusion", "text" : "FeiArt_Handpainted_CG_Diffusion"},
                         {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
                         {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"}
@@ -634,7 +676,7 @@ function MutatePage({ isAuthenticated, token }) {
                 </FormControl>
                 <FormControl>
                   <FormLabel htmlFor="use_secondary_model">Use Secondary Model</FormLabel>
-                  <Switch
+                  <Switch isDisabled = {!job.editable}
                     id="use_secondary_model"
                     isChecked={job.use_secondary_model}
                     onChange={(event) => {
@@ -650,7 +692,7 @@ function MutatePage({ isAuthenticated, token }) {
                 </FormControl>
                 <FormControl>
                   <FormLabel htmlFor="diffusion_sampling_mode">Diffusion Sampling Mode</FormLabel>
-                  <RadioGroup
+                  <RadioGroup isDisabled = {!job.editable}
                     value={(job.diffusion_sampling_mode!==undefined)?job.diffusion_sampling_mode:(job.discoart_tags)?job.discoart_tags.diffusion_sampling_mode:"ddim"}
                     onChange={(value) => {
                       let updatedJob = JSON.parse(JSON.stringify(job));
@@ -684,7 +726,7 @@ function MutatePage({ isAuthenticated, token }) {
                       "RN50-quickgelu::openai",
                       "ViT-B-32-quickgelu::openai"
                     ].map(clipmodel=>{
-                      return <Checkbox value = {clipmodel} isChecked={hasClip(clipmodel)} onChange={(event) => {
+                      return <Checkbox value = {clipmodel} isChecked={hasClip(clipmodel)} isDisabled = {!job.editable} onChange={(event) => {
                         let updatedJob = JSON.parse(JSON.stringify(job));
                         updatedJob.clip_models = updateClip(event.target.value, event.target.checked)
                         setJob({ ...job, ...updatedJob });
@@ -716,7 +758,7 @@ function MutatePage({ isAuthenticated, token }) {
                       "ViT-L-14::laion400m_e31",
                       "ViT-L-14::laion400m_e32"
                     ].map(clipmodel=>{
-                      return <Checkbox value = {clipmodel} isChecked={hasClip(clipmodel)} onChange={(event) => {
+                      return <Checkbox isDisabled = {!job.editable} value = {clipmodel} isChecked={hasClip(clipmodel)} onChange={(event) => {
                         let updatedJob = JSON.parse(JSON.stringify(job));
                         updatedJob.clip_models = updateClip(event.target.value, event.target.checked)
                         setJob({ ...job, ...updatedJob });
@@ -729,7 +771,7 @@ function MutatePage({ isAuthenticated, token }) {
             <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
               <FormControl>
                 <FormLabel htmlFor="cutn_batches">Number of Cut Batches</FormLabel>
-                <NumberInput
+                <NumberInput isDisabled = {!job.editable}
                   id="cutn_batches"
                   step={1}
                   precision={0}
@@ -765,7 +807,7 @@ function MutatePage({ isAuthenticated, token }) {
                 <FormLabel htmlFor="clip_guidance_scale">
                   CLIP Guidance Scale
                 </FormLabel>
-                <NumberInput
+                <NumberInput isDisabled = {!job.editable}
                   id="clip_guidance_scale"
                   defaultValue={job.clip_guidance_scale}
                   min={1500}
@@ -790,7 +832,7 @@ function MutatePage({ isAuthenticated, token }) {
             </SimpleGrid>
             <FormControl>
               <FormLabel htmlFor="cut_overview">Cut Overview (cut_overview)</FormLabel>
-              <Input value={job.cut_overview} onChange={(event) => {
+              <Input isDisabled = {!job.editable} value={job.cut_overview} onChange={(event) => {
                   let value = event.currentTarget.value
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.cut_overview = value;
@@ -800,7 +842,7 @@ function MutatePage({ isAuthenticated, token }) {
             </FormControl>
             <FormControl>
                 <FormLabel htmlFor="cut_ic_pow">Cut Innercut Power (cut_ic_pow)</FormLabel>
-                <Input value={job.cut_ic_pow} onChange={(event) => {
+                <Input isDisabled = {!job.editable} value={job.cut_ic_pow} onChange={(event) => {
                     let value = event.currentTarget.value
                     let updatedJob = JSON.parse(JSON.stringify(job));
                     updatedJob.cut_ic_pow = value;
@@ -813,7 +855,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
             <FormControl>
               <FormLabel htmlFor="cut_innercut">Cut Innercut (cut_innercut)</FormLabel>
-              <Input value={job.cut_innercut} onChange={(event) => {
+              <Input isDisabled = {!job.editable} value={job.cut_innercut} onChange={(event) => {
                   let value = event.currentTarget.value
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.cut_innercut = value;
@@ -823,7 +865,7 @@ function MutatePage({ isAuthenticated, token }) {
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="cut_icgray_p">Cut Innercut Gray Percent (cut_icgray_p)</FormLabel>
-              <Input value={job.cut_icgray_p} onChange={(event) => {
+              <Input isDisabled = {!job.editable} value={job.cut_icgray_p} onChange={(event) => {
                   let value = event.currentTarget.value
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.cut_icgray_p = value;
@@ -834,7 +876,7 @@ function MutatePage({ isAuthenticated, token }) {
             <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
             <FormControl>
               <FormLabel htmlFor="range_scale">Range Scale</FormLabel>
-              <NumberInput
+              <NumberInput isDisabled = {!job.editable}
                 id="range_scale"
                 step={1}
                 precision={0}
@@ -860,7 +902,7 @@ function MutatePage({ isAuthenticated, token }) {
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="sat_scale">Saturation Scale</FormLabel>
-              <NumberInput
+              <NumberInput isDisabled = {!job.editable}
                 id="sat_scale"
                 step={0.1}
                 precision={0}
@@ -888,7 +930,7 @@ function MutatePage({ isAuthenticated, token }) {
             <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
               <FormControl>
                 <FormLabel htmlFor="clamp_grad">Clamp Grad</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="clamp_grad"
                   isChecked={job.clamp_grad}
                   onChange={(event) => {
@@ -904,7 +946,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="clamp_max">Clamp Max</FormLabel>
-                <NumberInput
+                <NumberInput isDisabled = {!job.editable}
                   id="clamp_max"
                   step={0.05}
                   precision={2}
@@ -932,7 +974,7 @@ function MutatePage({ isAuthenticated, token }) {
             </SimpleGrid>
             <FormControl>
               <FormLabel htmlFor="eta">ETA</FormLabel>
-              <NumberInput
+              <NumberInput isDisabled = {!job.editable}
                 id="eta"
                 step={0.1}
                 precision={2}
@@ -962,7 +1004,7 @@ function MutatePage({ isAuthenticated, token }) {
             <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
               <FormControl>
                 <FormLabel htmlFor="use_horizontal_symmetry">Horizontal Symmetry</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="use_horizontal_symmetry"
                   isChecked={job.use_horizontal_symmetry}
                   onChange={(event) => {
@@ -975,7 +1017,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="use_vertical_symmetry">Vertical Symmetry</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="use_vertical_symmetry"
                   isChecked={job.use_vertical_symmetry}
                   onChange={(event) => {
@@ -991,7 +1033,7 @@ function MutatePage({ isAuthenticated, token }) {
               <FormLabel htmlFor="transformation_percent">
                 Transformation Percent
               </FormLabel>
-              <Input value={JSON.stringify(job.transformation_percent)} onChange={(event) => {
+              <Input isDisabled = {!job.editable} value={JSON.stringify(job.transformation_percent)} onChange={(event) => {
                   let value = event.currentTarget.value
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.transformation_percent = JSON.parse(value);
@@ -1002,7 +1044,7 @@ function MutatePage({ isAuthenticated, token }) {
             <SimpleGrid columns={{sm: 2, md: 2, lg:4}} spacing="20px">
               <FormControl>
                 <FormLabel htmlFor="randomize_class">Randomize Class</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="randomize_class"
                   isChecked={job.randomize_class}
                   onChange={(event) => {
@@ -1015,7 +1057,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="skip_augs">Skip Augs</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="skip_augs"
                   checked={job.skip_augs}
                   onChange={(event) => {
@@ -1028,7 +1070,7 @@ function MutatePage({ isAuthenticated, token }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="clip_denoised">CLIP Denoised</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="clip_denoised"
                   isChecked={job.clip_denoised}
                   onChange={(event) => {
@@ -1039,9 +1081,9 @@ function MutatePage({ isAuthenticated, token }) {
                 />
                 {show_help && <FormHelperText>Determines whether CLIP discriminates a noisy or denoised image</FormHelperText>}
               </FormControl>
-              <FormControl>
+              {/* <FormControl>
                 <FormLabel htmlFor="fuzzy_prompt">Fuzzy Prompt</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="fuzzy_prompt"
                   isChecked={job.fuzzy_prompt}
                   onChange={(event) => {
@@ -1051,10 +1093,10 @@ function MutatePage({ isAuthenticated, token }) {
                   }}
                 />
                 {show_help && <FormHelperText>Controls whether to add multiple noisy prompts to the prompt losses. If True, can increase variability of image output. Experiment with this.</FormHelperText>}
-              </FormControl>
+              </FormControl> */}
               <FormControl>
                 <FormLabel htmlFor="nsfw">NSFW?</FormLabel>
-                <Switch
+                <Switch isDisabled = {!job.editable}
                   id="nsfw"
                   isChecked={(job.nsfw==="yes"||job.nsfw===true)?true:false}
                   onChange={(event) => {
@@ -1066,7 +1108,7 @@ function MutatePage({ isAuthenticated, token }) {
                 {show_help && <FormHelperText>Flag as NSFW. This does NOT mean you can render illegal or sexuallyexplicit content</FormHelperText>}
               </FormControl>
             </SimpleGrid>
-            <Button onClick={submitMutate}>Mutate</Button>
+            <Button  isDisabled = {!job.editable} onClick={save}>{mode==="edit"?"Edit":"Mutate"}</Button>
           </Skeleton>
         </Box>
       </Center>

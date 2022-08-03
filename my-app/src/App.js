@@ -24,6 +24,7 @@ import ColorPage from "./components/Pages/ColorPage"
 import JobGenerator from "./components/Pages/JobGenerator"
 import FollowingPage from "./components/Pages/FollowingPage"
 import MyProfile from "./components/Pages/MyProfile"
+import MyUploads from "./components/Pages/MyUploads"
 
 import SearchPage from "./components/Pages/SearchPage"
 import algoliasearch from "algoliasearch/lite"
@@ -84,7 +85,11 @@ function App() {
                 />
                 <Route
                   path="/mutate/:uuid"
-                  element={<MutatePage token={token} isAuthenticated={isAuthenticated} />}
+                  element={<MutatePage mode="mutate" token={token} isAuthenticated={isAuthenticated} />}
+                />
+                <Route
+                  path="/edit/:uuid"
+                  element={<MutatePage mode="edit" token={token} isAuthenticated={isAuthenticated} />}
                 />
                 <Route
                   path="/incubate/:uuid"
@@ -95,6 +100,7 @@ function App() {
                 <Route path="/agentstatus/:agent/:page" element={<AgentJobsPage />} />
                 <Route path="/following" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
+                <Route path="/myuploads" token={token} element={<MyUploads token={token} isAuthenticated={isAuthenticated}/>} />
               </Routes>
             </Box>
             <FdFooter />

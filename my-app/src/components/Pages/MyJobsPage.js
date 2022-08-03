@@ -92,8 +92,8 @@ function MyJobsPage({ isAuthenticated, token }) {
             <Thead>
                 <Tr>
                     <Th>Job</Th>
-                    <Th>Options (Coming Soon)</Th>
                     <Th>Status</Th>
+                    <Th>Options</Th>
                     <Th>Agent</Th>
                     <Th>Timestamp</Th>
                 </Tr>
@@ -111,8 +111,17 @@ function MyJobsPage({ isAuthenticated, token }) {
                         </Skeleton>
                         </Td>
                         <Td>
+                        <Skeleton isLoaded={!loading}>
+                            <Badge variant="outline" colorScheme={
+                                (o.status==="archived" || o.status==="complete")?"green":
+                                (o.status==="rejected" || o.status==="failed")?"red":
+                                (o.status==="queued" || o.status==="processing")?"blue":""
+                            }>{o.status}</Badge>
+                        </Skeleton>
+                        </Td>
+                        <Td>
                             <Skeleton isLoaded={!loading}>
-                                <Button isDisabled={!(o.status==="rejected" || o.status==="failed")} onClick={() => {
+                                {(o.status==="rejected" || o.status==="failed") && <Button size={"sm"} isDisabled={!(o.status==="rejected" || o.status==="failed")} colorScheme={"blue"} onClick={() => {
                                     fetch(
                                         `https://api.feverdreams.app/web/retry`,
                                         {
@@ -130,19 +139,30 @@ function MyJobsPage({ isAuthenticated, token }) {
                                         fetchJobs();
                                         return data;
                                       });
-                                    }}>Retry</Button>
-                                <Button isDisabled>Edit</Button>
-                                <Button isDisabled>Cancel</Button>
+                                    }}>Retry</Button>}
+                                {(o.status==="rejected" || o.status==="failed" || o.status=="queued") && <Button size={"sm"} colorScheme={"blue"} onClick={()=>{
+                                  window.location.href=`/edit/${o.uuid}`
+                                }}>Edit</Button>}
+                                {(o.status==="rejected" || o.status==="failed" || o.status=="queued") && <Button size={"sm"} colorScheme={"red"} onClick={() => {
+                                    fetch(
+                                        `https://api.feverdreams.app/web/cancel`,
+                                        {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            Authorization: `Bearer ${token}`,
+                                        },
+                                        body: JSON.stringify({ uuid: o.uuid }),
+                                        }
+                                    ).then((response) => {
+                                        return response.json();
+                                      })
+                                      .then((data) => {
+                                        fetchJobs();
+                                        return data;
+                                      });
+                                    }}>Cancel</Button>}
                             </Skeleton>
-                        </Td>
-                        <Td>
-                        <Skeleton isLoaded={!loading}>
-                            <Badge variant="outline" colorScheme={
-                                (o.status==="archived" || o.status==="complete")?"green":
-                                (o.status==="rejected" || o.status==="failed")?"red":
-                                (o.status==="queued" || o.status==="processing")?"blue":""
-                            }>{o.status}</Badge>
-                        </Skeleton>
                         </Td>
                         <Td>
                             <Skeleton isLoaded={!loading}>
