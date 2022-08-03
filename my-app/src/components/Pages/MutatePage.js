@@ -666,7 +666,8 @@ function MutatePage({ isAuthenticated, token, mode }) {
                         {"key" : "portrait_generator_v004", "text" : "portrait_generator_v004"},
                         {"key" : "FeiArt_Handpainted_CG_Diffusion", "text" : "FeiArt_Handpainted_CG_Diffusion"},
                         {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
-                        {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"}
+                        {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"},
+                        {"key" : "liminal_diffusion_v1", "text" : "liminal_diffusion_v1"}
                       ].map(diffusion_model=>{
                         return <option value={diffusion_model.key}>{diffusion_model.text}</option>
                       })

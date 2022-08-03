@@ -76,6 +76,12 @@ function PiecePage({ token }) {
       })
       .then((actualData) => {
         actualData.dominant_color = actualData.dominant_color || [0, 0, 0];
+        if(actualData.userdets.user_str === null){
+          actualData.userdets = {
+            user_str : actualData.str_author,
+            user_name : "Unknown User"
+          }
+        }
         setData(actualData);
         setTextPrompt(actualData.text_prompts?actualData.text_prompts:actualData.text_prompt);
         setError(null);
@@ -125,7 +131,10 @@ function PiecePage({ token }) {
               <Wrap className="w-100">
                 <WrapItem minWidth="360px" mr="auto!important" alignItems="center" justifyContent="left">
                   <Box>
-                    <DreamAuthor userdets={data.userdets} />
+                    <DreamAuthor userdets={(data && data.userdets)?data.userdets:{
+                      user_str : data.str_author,
+                      user_name : "New User"
+                    }} />
                   </Box>
                   <Box>
                     <Heading as="h4" size="sm">
@@ -138,7 +147,7 @@ function PiecePage({ token }) {
                     })()}
                     <Flex alignItems="center">
                       <Heading as="h5" pr="2" size="xs">
-                        {data.userdets.user_name}
+                        {(data && data.userdets)?data.userdets.user_name:"Unknown User"}
                       </Heading>
                       <Button
                         colorScheme='blue'
@@ -146,7 +155,7 @@ function PiecePage({ token }) {
                         size="xs"
                         onClick={() => {
                           fetch(
-                            `https://api.feverdreams.app/follow/${data.userdets.user_id_str}`,
+                            `https://api.feverdreams.app/follow/${data.str_author}`,
                             {
                               method: 'POST',
                               headers: {
@@ -166,7 +175,7 @@ function PiecePage({ token }) {
                   justifyContent="flex-end"
                   alignItems="center">
                   <ViewIcon />
-                  <Text ml={2} mr={2}>{data.views}</Text>
+                  <Text ml={2} mr={2}>{data && data.views}</Text>
                   <IconButton
                     isRound
                     colorScheme={'pink'}
