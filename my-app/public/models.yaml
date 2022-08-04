@@ -240,7 +240,7 @@ liminal_diffusion_v1:
   sources:
     - https://huggingface.co/BrainArtLabs/liminal_diffusion/resolve/main/liminal_diffusion_v1.pt
 
-floral_diffusion:
+floraldiffusion:
   sha: 197e9068f1ca0248fd89f9d6ca1f6f851783e04fddd0cc5b0020bfa655ed3aeb
   sources:
     - https://huggingface.co/jags/floraldiffusion/resolve/main/floraldiffusion.pt'

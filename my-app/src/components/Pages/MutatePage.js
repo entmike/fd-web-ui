@@ -671,7 +671,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                         {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
                         {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"},
                         {"key" : "liminal_diffusion_v1", "text" : "liminal_diffusion_v1"},
-                        {"key" : "floral_diffusion", "text" : "floral_diffusion"}
+                        {"key" : "floraldiffusion", "text" : "floraldiffusion"}
                       ].map(diffusion_model=>{
                         return <option value={diffusion_model.key}>{diffusion_model.text}</option>
                       })
