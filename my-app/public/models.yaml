@@ -239,3 +239,8 @@ liminal_diffusion_v1:
   sha: 87c36b544a367fceb0ca127d0028cd8a6f6b6e069e529b22999259d69c14f042
   sources:
     - https://huggingface.co/BrainArtLabs/liminal_diffusion/resolve/main/liminal_diffusion_v1.pt
+
+floral_diffusion:
+  sha: 197e9068f1ca0248fd89f9d6ca1f6f851783e04fddd0cc5b0020bfa655ed3aeb
+  sources:
+    - https://huggingface.co/jags/floraldiffusion/resolve/main/floraldiffusion.pt'

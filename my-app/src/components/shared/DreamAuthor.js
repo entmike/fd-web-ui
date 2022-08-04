@@ -12,11 +12,9 @@ export function DreamAuthor(props) {
           boxSize="60px"
           mr="3"
           src={
-            props.userdets.avatar
-              ? props.userdets.avatar
-              : '/avatar-placeholder.gif'
+            props.userdets.picture?props.userdets.picture:props.userdets.avatar?props.userdets.avatar:'/avatar-placeholder.gif'
           }
-          alt={`Avatar of ${props.userdets.user_name}`}
+          alt={`Avatar of ${props.userdets.nickname?props.userdets.nickname:props.userdets.user_name?props.userdets.user_name:"Unknown"}`}
         />
       </Flex>
     </Link>

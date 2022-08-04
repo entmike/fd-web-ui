@@ -79,7 +79,7 @@ function PiecePage({ token }) {
         if(actualData.userdets.user_str === null){
           actualData.userdets = {
             user_str : actualData.str_author,
-            user_name : "Unknown User"
+            nickname : "Unknown User"
           }
         }
         setData(actualData);
@@ -147,7 +147,7 @@ function PiecePage({ token }) {
                     })()}
                     <Flex alignItems="center">
                       <Heading as="h5" pr="2" size="xs">
-                        {(data && data.userdets)?data.userdets.user_name:"Unknown User"}
+                        {(data && data.userdets)?data.userdets.nickname:"Unknown User"}
                       </Heading>
                       <Button
                         colorScheme='blue'

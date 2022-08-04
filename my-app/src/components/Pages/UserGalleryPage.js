@@ -63,10 +63,12 @@ export default function UserGalleryPage({ token }) {
     });
   };
 
-  const userAvatar = userDetails
-    ? userDetails.avatar
-    : '/avatar-placeholder.png';
-  const userNameGallery = userDetails ? userDetails.user_name : 'Loading';
+  let userAvatar = '/avatar-placeholder.png';
+  let userNameGallery = "Loading..."
+  if(userDetails){
+    userAvatar = userDetails.picture?userDetails.picture:userDetails.avatar
+    userNameGallery = userDetails.nickname?userDetails.nickname:userDetails.user_name
+  }
 
   return (
     <>

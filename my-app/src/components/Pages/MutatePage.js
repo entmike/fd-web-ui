@@ -313,7 +313,10 @@ function MutatePage({ isAuthenticated, token, mode }) {
               </FormControl>
               <FormControl>
                   <FormLabel htmlFor="gpu_preference">GPU Preference</FormLabel>
-                  <Select isDisabled = {!job.editable} id = "gpu_preference" defaultValue={"medium"} value={job.gpu_preference} onChange={(event) => {
+                  <Select isDisabled = {!job.editable} 
+                      id = "gpu_preference"
+                      defaultValue={"medium"}
+                      value={job.gpu_preference} onChange={(event) => {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       let value = event.target.selectedOptions[0].value;
                       updatedJob.gpu_preference = value
@@ -449,7 +452,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                 <NumberInput isDisabled = {!job.editable}
                   id="seed"
                   defaultValue={-1}
-                  value={job.seed}
+                  value={job.set_seed}
                   min={-1}
                   max={2 ** 32}
                   clampValueOnBlur={true}
@@ -811,6 +814,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                 <NumberInput isDisabled = {!job.editable}
                   id="clip_guidance_scale"
                   defaultValue={job.clip_guidance_scale}
+                  value={job.clip_guidance_scale}
                   min={1500}
                   max={100000}
                   onChange={(value) => {
