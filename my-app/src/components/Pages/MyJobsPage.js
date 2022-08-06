@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useParams} from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Badge,
   Table,
@@ -24,17 +24,24 @@ import {
   Skeleton,
   Center,
   Button,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  RadioGroup,
+  Radio
+
 } from '@chakra-ui/react';
 import { dt } from '../../utils/dateUtils';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
 function MyJobsPage({ isAuthenticated, token }) {
     const params = useParams();
+    let navigate = useNavigate();
     const { user } = useAuth0();
     let d = [];
-    const prevURL = `/myjobs/${parseInt(params.page) - 1}`;
-    const nextURL = `/myjobs/${parseInt(params.page) + 1}`;
-    const apiURL = `https://api.feverdreams.app/web/myjobs/${params.page}`
+    const prevURL = `/myjobs/${params.status}/${parseInt(params.page) - 1}`;
+    const nextURL = `/myjobs/${params.status}/${parseInt(params.page) + 1}`;
+    const apiURL = `https://api.feverdreams.app/web/myjobs/${params.status}/${params.page}`
   for (let i = 0; i < 25; i++)
     d.push({
       render_type: 'render',
@@ -78,9 +85,25 @@ function MyJobsPage({ isAuthenticated, token }) {
   // https://exerror.com/react-hook-useeffect-has-a-missing-dependency/
   useEffect(() => {
     fetchJobs();
-  }, [params.page]);
+  }, [params.page, params.status]);
   return (
     isAuthenticated?<>
+        <FormControl>
+          <FormLabel htmlFor="status">Job Status</FormLabel>
+          <RadioGroup
+            value={params.status}
+            onChange={(value) => {
+              navigate(`/myjobs/${value}/${parseInt(params.page)}`)
+            }}
+          >
+            <Radio mr={5} value="all">All</Radio>
+            <Radio mr={5} value="failed">Failed</Radio>
+            <Radio mr={5} value="queued">Queued</Radio>
+          </RadioGroup>
+          <FormHelperText>
+            Filter by job type
+          </FormHelperText>
+        </FormControl>
         <PaginationNav
             pageNumber={params.page}
             prevURL={prevURL}

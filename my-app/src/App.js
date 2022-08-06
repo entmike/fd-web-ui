@@ -78,7 +78,7 @@ function App() {
                   element={<PiecePage token={token} />}
                 />
                 <Route path="/jobs" element={<JobsPage />}></Route>
-                <Route path="/myjobs/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
+                <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
                 <Route
                   path="/dream"
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}

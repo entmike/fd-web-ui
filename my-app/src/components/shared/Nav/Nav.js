@@ -298,7 +298,7 @@ export function Nav() {
                   </MenuItem> */}
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `/myjobs/1`)
+                      (window.location.href = `/myjobs/all/1`)
                     }
                   >
                     My Jobs
