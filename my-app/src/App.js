@@ -13,6 +13,7 @@ import UserGalleryPage from "./components/Pages/UserGalleryPage"
 import RandomGalleryPage from "./components/Pages/RandomGalleryPage"
 import RecentGalleryPage from "./components/Pages/RecentGalleryPage"
 import MutatePage from "./components/Pages/MutatePage"
+import MutateStablePage from "./components/Pages/MutateStablePage"
 import IncubatePage from "./components/Pages/MutatePage"
 import CreateDreamPage from "./components/Pages/CreateDreamPage"
 import JobsPage from "./components/Pages/JobsPage"
@@ -82,6 +83,14 @@ function App() {
                 <Route
                   path="/dream"
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}
+                />
+                <Route
+                  path="/stable/mutate/:uuid"
+                  element={<MutateStablePage mode="mutate" token={token} isAuthenticated={isAuthenticated} />}
+                />
+                <Route
+                  path="/stable/edit/:uuid"
+                  element={<MutateStablePage mode="edit" token={token} isAuthenticated={isAuthenticated} />}
                 />
                 <Route
                   path="/mutate/:uuid"

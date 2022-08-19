@@ -153,7 +153,21 @@ function CreateDreamPage({ isAuthenticated, token }) {
                   {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
                   {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"},
                   {"key" : "liminal_diffusion_v1", "text" : "liminal_diffusion_v1"},
-                  {"key" : "floraldiffusion", "text" : "floraldiffusion"}
+                  {"key" : "floraldiffusion", "text" : "floraldiffusion"},
+                  {"key" : "concept_art_generator_v000-1_alpha", "text" : "concept_art_generator_v000-1_alpha"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_010000", "text" : "512x512_diffusion_uncond_entmike_landscapes_010000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_020000", "text" : "512x512_diffusion_uncond_entmike_landscapes_020000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_070000", "text" : "512x512_diffusion_uncond_entmike_landscapes_070000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_130000", "text" : "512x512_diffusion_uncond_entmike_landscapes_130000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_025000", "text" : "512x512_diffusion_uncond_entmike_ffhq_025000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_145000", "text" : "512x512_diffusion_uncond_entmike_ffhq_145000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_260000", "text" : "512x512_diffusion_uncond_entmike_ffhq_260000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_470000", "text" : "512x512_diffusion_uncond_entmike_ffhq_470000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_605000", "text" : "512x512_diffusion_uncond_entmike_ffhq_605000"},
+                  {"key" : "PaintPourDiffusion_v1.0", "text":"PaintPourDiffusion_v1.0"},
+                  {"key" : "PaintPourDiffusion_v1.1", "text":"PaintPourDiffusion_v1.1"},
+                  {"key" : "PaintPourDiffusion_v1.2", "text":"PaintPourDiffusion_v1.2"},
+                  {"key" : "PaintPourDiffusion_v1.3", "text":"PaintPourDiffusion_v1.3"},
                 ].map(diffusion_model=>{
                   return <option value={diffusion_model.key}>{diffusion_model.text}</option>
                 })

@@ -201,6 +201,12 @@ export function Nav() {
                   }
                 >Pixel Art
                 </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/paint-pour/1`)
+                  }
+                >Paint and Pour
+                </MenuItem>
                 <MenuDivider />
                 <MenuItem
                   onClick={() =>

@@ -89,17 +89,14 @@ function JobsPage() {
         <TabPanels>
           <TabPanel>
             <TableContainer>
-              <Table variant="simple">
+              <Table>
                 <TableCaption>List of active jobs</TableCaption>
                 <Thead>
                   <Tr>
                     <Th>Author</Th>
                     <Th>Job</Th>
-                    <Th>Agent</Th>
-                    <Th>Timestamp</Th>
-                    <Th>Render Type</Th>
-                    <Th>CLIP Models</Th>
-                    <Th>Diffusion Model</Th>
+                    <Th>Agent/GPU Size</Th>
+                    <Th>Models</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -107,45 +104,52 @@ function JobsPage() {
                     data.active.map((o, i) => {
                       return (
                         <Tr key={o.uuid}>
-                          <Th>
+                          <Td>
                             <Skeleton isLoaded={!loading}>
-                              <DreamAuthor userdets={o.userdets} />
-                              <Text>{o && o.userdets?o.userdets.user_name:"Unknown"}</Text>
+                                <DreamAuthor userdets={o.userdets} />
+                                <Text>{o && o.userdets?o.userdets.nickname:"Unknown"}</Text>
                             </Skeleton>
-                          </Th>
+                          </Td>
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
-                                <Code>{o.uuid}</Code>
+                                <>
+                                  <Code>{o.uuid}</Code>
+                                  <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.render_type?o.render_type:"Unknown"}</Badge><br/>
+                                </>
                               </Link>
                             </Skeleton>
-                          </Td>
-                          <Td>
-                              <Center>
-                                <Skeleton isLoaded={!loading}>
-                                  <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
-                                </Skeleton>
-                              </Center>
-                          </Td>
-                          <Td>
                             <Skeleton isLoaded={!loading}>
                               {dt(o.timestamp)}
                             </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <>
+                                <Text w={400} noOfLines={4} wordBreak={"break-all"}>{o.text_prompts?o.text_prompts:o.text_prompt}</Text>
+                                {/* {o.text_prompts?o.text_prompts:o.text_prompt} */}
+                              </>
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <>
+                                <Text>Processing Time: {o.processingTime?(o.processingTime/1000):""}</Text>
+                              </>
+                            </Skeleton>
                           </Td>
                           <Td>
                             <Skeleton isLoaded={!loading}>
-                              {o.render_type}
+                              <>
+                                <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
+                                <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.gpu_preference?o.gpu_preference:"Unknown"}</Badge>
+                              </>
                             </Skeleton>
                           </Td>
                           <Td>
                             <Skeleton isLoaded={!loading}>{
-                              o.clip_models && o.clip_models.map(clip_model=>{
-                                return <><Badge variant={"outline"}>{clip_model}</Badge><br/></>
-                              })
-                            }</Skeleton>
-                          </Td>
-                          <Td>
-                            <Skeleton isLoaded={!loading}><Badge variant={"outline"}>{o.diffusion_model}</Badge></Skeleton>
+                              <>
+                                <Badge variant={"outline"} colorScheme={"green"}>{o.diffusion_model}</Badge><br/>
+                                {o.clip_models && o.clip_models.map(clip_model=>{
+                                  return <><Badge variant={"outline"}>{clip_model}</Badge><br/></>
+                                })}
+                              </>}</Skeleton>
                           </Td>
                         </Tr>
                       );
@@ -162,9 +166,8 @@ function JobsPage() {
                   <Tr>
                     <Th>Author</Th>
                     <Th>Job</Th>
-                    <Th width={`75px`}>Timestamp</Th>
-                    <Th>Render Type</Th>
-                    <Th>Model Mode</Th>
+                    <Th>GPU Size</Th>
+                    <Th>Models</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -173,30 +176,44 @@ function JobsPage() {
                       // let gpustats = o.gpustats.split(", ")
                       return (
                         <Tr key={o.uuid}>
-                          <Th>
-                            <Skeleton isLoaded={!loading}>
-                              <DreamAuthor userdets={o.userdets} />
-                            </Skeleton>
-                          </Th>
                           <Td>
-                          <Skeleton isLoaded={!loading}>
+                            <Skeleton isLoaded={!loading}>
+                                <DreamAuthor userdets={o.userdets} />
+                                <Text>{o && o.userdets?o.userdets.nickname:"Unknown"}</Text>
+                            </Skeleton>
+                          </Td>
+                          <Td>
+                            <Skeleton isLoaded={!loading}>
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
-                                <Code>{o.uuid}</Code>
+                                <>
+                                  <Code>{o.uuid}</Code>
+                                  <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.render_type?o.render_type:"Unknown"}</Badge><br/>
+                                </>
                               </Link>
                             </Skeleton>
-                          </Td>
-                          <Td>
                             <Skeleton isLoaded={!loading}>
-                              {dt(o.timestamp)}
+                              {o.timestamp?dt(o.timestamp):"?"}
+                            </Skeleton>
+                            <Skeleton isLoaded={!loading}>
+                              <>
+                                <Text w={400} noOfLines={4} wordBreak={"break-all"}>{o.text_prompts?o.text_prompts:o.text_prompt}</Text>
+                                {/* {o.text_prompts?o.text_prompts:o.text_prompt} */}
+                              </>
                             </Skeleton>
                           </Td>
                           <Td>
                             <Skeleton isLoaded={!loading}>
-                              {o.render_type}
+                              <Badge variant={"outline"}>{o && o.gpu_preference?o.gpu_preference:"Unknown"}</Badge>
                             </Skeleton>
                           </Td>
                           <Td>
-                            <Skeleton isLoaded={!loading}>{o.model}</Skeleton>
+                            <Skeleton isLoaded={!loading}>{
+                              <>
+                                <Badge variant={"outline"} colorScheme={"green"}>{o.diffusion_model}</Badge><br/>
+                                {o.clip_models && o.clip_models.map(clip_model=>{
+                                  return <><Badge variant={"outline"}>{clip_model}</Badge><br/></>
+                                })}
+                              </>}</Skeleton>
                           </Td>
                         </Tr>
                       );

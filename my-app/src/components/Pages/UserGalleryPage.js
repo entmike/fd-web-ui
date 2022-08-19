@@ -43,10 +43,10 @@ export default function UserGalleryPage({ token }) {
       .then((response) => response.json())
       .then((actualData) => {
         setError(null);
+        setLoading(false);
         setData({
           feed: actualData,
         });
-        setLoading(false);
       });
   }, [params.user_id, params.page]);
 
@@ -107,7 +107,7 @@ export default function UserGalleryPage({ token }) {
         prevURL={prevURL}
         nextURL={nextURL}
       />
-      {data && data.feed && <FeedGrid dreams={data.feed} loading={loading} />}
+      <FeedGrid dreams={data&&data.feed?data.feed:null} loading={loading} />
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

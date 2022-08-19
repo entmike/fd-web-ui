@@ -144,6 +144,9 @@ function MyJobsPage({ isAuthenticated, token }) {
                         </Td>
                         <Td>
                             <Skeleton isLoaded={!loading}>
+                            <Button size={"sm"} colorScheme={"green"} onClick={() => {
+                                navigate(`/piece/${o.uuid}`)
+                            }}>Details</Button>
                                 {(o.status==="rejected" || o.status==="failed") && <Button size={"sm"} isDisabled={!(o.status==="rejected" || o.status==="failed")} colorScheme={"blue"} onClick={() => {
                                     fetch(
                                         `https://api.feverdreams.app/web/retry`,
@@ -163,10 +166,10 @@ function MyJobsPage({ isAuthenticated, token }) {
                                         return data;
                                       });
                                     }}>Retry</Button>}
-                                {(o.status==="rejected" || o.status==="failed" || o.status=="queued") && <Button size={"sm"} colorScheme={"blue"} onClick={()=>{
-                                  window.location.href=`/edit/${o.uuid}`
+                                {(o.status==="rejected" || o.status==="failed" || o.status==="queued") && <Button size={"sm"} colorScheme={"blue"} onClick={()=>{
+                                  navigate(`/edit/${o.uuid}`)
                                 }}>Edit</Button>}
-                                {(o.status==="rejected" || o.status==="failed" || o.status=="queued") && <Button size={"sm"} colorScheme={"red"} onClick={() => {
+                                {(o.status==="rejected" || o.status==="failed" || o.status==="queued") && <Button size={"sm"} colorScheme={"red"} onClick={() => {
                                     fetch(
                                         `https://api.feverdreams.app/web/cancel`,
                                         {
@@ -189,9 +192,12 @@ function MyJobsPage({ isAuthenticated, token }) {
                         </Td>
                         <Td>
                             <Skeleton isLoaded={!loading}>
-                                {o.status!="queued" &&
-                                    <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
+                              <Link onClick={()=>{
+                                  navigate(`/agentstatus/${o.agent_id}/1`)
+                                }}> {o.status!=="queued" &&
+                                  <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
                                 }
+                                </Link>
                             </Skeleton>
                         </Td>
                         <Td>

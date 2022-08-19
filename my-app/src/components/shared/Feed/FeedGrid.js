@@ -2,32 +2,28 @@ import React from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { Skeleton, Center, Box } from '@chakra-ui/react';
 import { Preview } from './Preview';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-/*
-type Dreams = {
-  uuid: string ,
-  thumbnails: ?Array<Number>
-}
-
-type Loading = boolean;
-*/
 const FeedGrid = ({ dreams, loading }) => {
-  console.log('dreams', dreams);
+  const { pathname } = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return (
     <ResponsiveMasonry
       columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 4 }}
     >
       <Masonry gutter="16x">
         {loading &&
-          [...Array(50)].map((i) => (
-            <Skeleton
+          [...Array(50)].map((i, index) => (<Skeleton
               margin=".25em"
               borderRadius="lg"
               minHeight="100px"
-              key={i}
-            />
-          ))}
+              key={index}
+            />)
+          )}
         {!loading &&
           dreams.map(({ uuid, thumbnails }) => (
             <Skeleton
@@ -36,6 +32,7 @@ const FeedGrid = ({ dreams, loading }) => {
               minHeight="50px"
               min-width="360px"
               isLoaded={!loading}
+              key={uuid}
             >
               <Center>
                 <Preview thumbnails={thumbnails} key={uuid} uuid={uuid} />

@@ -42,7 +42,9 @@ import { id } from 'date-fns/locale';
 // TODO: This isAuthenticated/token stuff should be in a context <- Agreed, -Mike.
 function MutatePage({ isAuthenticated, token, mode }) {
   const [job, setJob] = useState({});
-  const [show_help, setShowHelp] = useState({});
+  let sh = localStorage.getItem("show-mutate-help");
+  let showhelp = (sh==='false')?false:true
+  const [show_help, setShowHelp] = useState(showhelp);
   //   const [text_prompt, setTextPrompt] = useState({});
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
@@ -164,6 +166,8 @@ function MutatePage({ isAuthenticated, token, mode }) {
           data.cutn_batches = source.cutn_batches
           data.range_scale = source.range_scale
           data.sat_scale = source.sat_scale
+          data.tv_scale = source.tv_scale
+          data.clip_guidance_scale = source.clip_guidance_scale
           data.clamp_grad = source.clamp_grad
           data.clamp_max = source.clamp_max
           data.eta = source.eta
@@ -306,6 +310,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                   id="show_help"
                   isChecked = {show_help}
                   onChange={(event) => {
+                    localStorage.setItem("show-mutate-help",event.target.checked)
                     setShowHelp(event.target.checked)
                   }}
                 />
@@ -326,7 +331,8 @@ function MutatePage({ isAuthenticated, token, mode }) {
                       [
                         {"key" : "small", "text" : "Small (10-12 GB)"},
                         {"key" : "medium", "text" : "Medium (24 GB)"},
-                        {"key" : "large", "text" : "Large (48 GB)"}
+                        {"key" : "large", "text" : "Large (48 GB)"},
+                        // {"key" : "titan", "text" : "Titan (80 GB)"}
                       ].map(shape=>{
                         return <option value={shape.key}>{shape.text}</option>
                       })
@@ -671,7 +677,21 @@ function MutatePage({ isAuthenticated, token, mode }) {
                         {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
                         {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"},
                         {"key" : "liminal_diffusion_v1", "text" : "liminal_diffusion_v1"},
-                        {"key" : "floraldiffusion", "text" : "floraldiffusion"}
+                        {"key" : "floraldiffusion", "text" : "floraldiffusion"},
+                        {"key" : "concept_art_generator_v000-1_alpha", "text" : "concept_art_generator_v000-1_alpha"},
+                        {"key" : "512x512_diffusion_uncond_entmike_landscapes_010000", "text" : "512x512_diffusion_uncond_entmike_landscapes_010000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_landscapes_020000", "text" : "512x512_diffusion_uncond_entmike_landscapes_020000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_landscapes_070000", "text" : "512x512_diffusion_uncond_entmike_landscapes_070000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_landscapes_130000", "text" : "512x512_diffusion_uncond_entmike_landscapes_130000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_ffhq_025000", "text" : "512x512_diffusion_uncond_entmike_ffhq_025000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_ffhq_145000", "text" : "512x512_diffusion_uncond_entmike_ffhq_145000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_ffhq_260000", "text" : "512x512_diffusion_uncond_entmike_ffhq_260000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_ffhq_470000", "text" : "512x512_diffusion_uncond_entmike_ffhq_470000"},
+                        {"key" : "512x512_diffusion_uncond_entmike_ffhq_605000", "text" : "512x512_diffusion_uncond_entmike_ffhq_605000"},
+                        {"key" : "PaintPourDiffusion_v1.0", "text":"PaintPourDiffusion_v1.0"},
+                        {"key" : "PaintPourDiffusion_v1.1", "text":"PaintPourDiffusion_v1.1"},
+                        {"key" : "PaintPourDiffusion_v1.2", "text":"PaintPourDiffusion_v1.2"},
+                        {"key" : "PaintPourDiffusion_v1.3", "text":"PaintPourDiffusion_v1.3"},
                       ].map(diffusion_model=>{
                         return <option value={diffusion_model.key}>{diffusion_model.text}</option>
                       })
@@ -782,7 +802,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                   precision={0}
                   defaultValue={job.cutn_batches}
                   min={0}
-                  max={8}
+                  max={16}
                   onChange={(value) => {
                     let updatedJob = JSON.parse(JSON.stringify(job));
                     updatedJob.cutn_batches = parseFloat(value);
@@ -810,14 +830,13 @@ function MutatePage({ isAuthenticated, token, mode }) {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="clip_guidance_scale">
-                  CLIP Guidance Scale
+                  CLIP Guidance Scale (🥳 Now actually works!)
                 </FormLabel>
                 <NumberInput isDisabled = {!job.editable}
                   id="clip_guidance_scale"
-                  defaultValue={job.clip_guidance_scale}
                   value={job.clip_guidance_scale}
-                  min={1500}
-                  max={100000}
+                  min={0}
+                  max={500000}
                   onChange={(value) => {
                     let updatedJob = JSON.parse(JSON.stringify(job));
                     updatedJob.clip_guidance_scale = parseInt(value);
@@ -879,7 +898,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                 }}/>
               {show_help && <FormHelperText>In addition to the overall cut schedule, a portion of the cuts can be set to be grayscale instead of color. This may help with improved definition of shapes and edges, especially in the early diffusion steps where the image structure is being defined.</FormHelperText>}
             </FormControl>
-            <SimpleGrid columns={{sm: 1, md: 2}} spacing="20px">
+            <SimpleGrid columns={{sm: 1, md: 3}} spacing="20px">
             <FormControl>
               <FormLabel htmlFor="range_scale">Range Scale</FormLabel>
               <NumberInput isDisabled = {!job.editable}
@@ -889,7 +908,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
                 defaultValue={job.range_scale}
                 value={job.range_scale}
                 min={0.01}
-                max={100}
+                max={50000}
                 onChange={(value) => {
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.range_scale = parseFloat(value);
@@ -910,12 +929,12 @@ function MutatePage({ isAuthenticated, token, mode }) {
               <FormLabel htmlFor="sat_scale">Saturation Scale</FormLabel>
               <NumberInput isDisabled = {!job.editable}
                 id="sat_scale"
-                step={0.1}
+                step={1}
                 precision={0}
                 defaultValue={0}
                 value={job.sat_scale}
-                min={0.01}
-                max={100}
+                min={0}
+                max={50000}
                 onChange={(value) => {
                   let updatedJob = JSON.parse(JSON.stringify(job));
                   updatedJob.sat_scale = parseFloat(value);
@@ -930,6 +949,32 @@ function MutatePage({ isAuthenticated, token, mode }) {
               </NumberInput>
               {show_help && <FormHelperText>
                 Optional, set to zero to turn off. If used, sat_scale will help mitigate oversaturation. If your image is too saturated, increase sat_scale to reduce the saturation.
+              </FormHelperText>}
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="tv_scale">TV Scale (🥳 Now actually works!)</FormLabel>
+              <NumberInput isDisabled = {!job.editable}
+                id="tv_scale"
+                step={1}
+                precision={0}
+                defaultValue={0}
+                value={job.tv_scale}
+                min={0}
+                max={10000}
+                onChange={(value) => {
+                  let updatedJob = JSON.parse(JSON.stringify(job));
+                  updatedJob.tv_scale = parseFloat(value);
+                  setJob({ ...job, ...updatedJob });
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              {show_help && <FormHelperText>
+                Total variance denoising. Optional, set to zero to turn off. Controls "smoothness" of final output. If used, tv_scale will try to smooth out your final image to reduce overall noise. If your image is too "crunchy", increase tv_scale. TV denoising is good at preserving edges while smoothing away noise in flat regions.
               </FormHelperText>}
             </FormControl>
             </SimpleGrid>

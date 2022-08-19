@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
@@ -52,10 +52,7 @@ import { dt } from '../../utils/dateUtils';
 function PiecePage({ token }) {
   const IMAGE_HOST = 'https://images.feverdreams.app';
 
-  const [data, setData] = useState({
-    userdets: {},
-    dominant_color: [0, 0, 0],
-  });
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [textPrompt, setTextPrompt] = useState([]);
@@ -65,26 +62,32 @@ function PiecePage({ token }) {
   const toast = useToast()
   const params = useParams()
   const auth = useAuth0();
+  const navigate = useNavigate();  
   
   function fetchPiece() {
     const uuid = params.uuid;
-
+    
     fetch(`https://api.feverdreams.app/job/${uuid}`)
       .then((response) => {
         let obj = response.json();
         return obj;
       })
       .then((actualData) => {
-        actualData.dominant_color = actualData.dominant_color || [0, 0, 0];
-        if(actualData.userdets.user_str === null){
-          actualData.userdets = {
-            user_str : actualData.str_author,
-            nickname : "Unknown User"
+        if(actualData){
+          actualData.dominant_color = actualData.dominant_color || [0, 0, 0];
+          if(actualData.userdets.user_str === null){
+            actualData.userdets = {
+              user_str : actualData.str_author,
+              nickname : "Unknown User"
+            }
           }
+          setData(actualData);
+          setTextPrompt(actualData.text_prompts?actualData.text_prompts:actualData.text_prompt);
+          setError(null);
+        }else{
+          setError(`This piece (${uuid}) does not exist.`)
         }
-        setData(actualData);
-        setTextPrompt(actualData.text_prompts?actualData.text_prompts:actualData.text_prompt);
-        setError(null);
+        
       })
       .catch((err) => {
         setError(err.message);
@@ -103,6 +106,7 @@ function PiecePage({ token }) {
   return (
     <>
       {error}
+      {!error && <>
       <HStack mt={4} mb={4} maxW="1024" m="auto" position={'relative'}>
       {data && (data.status==="archived" || data.status==="complete" || (data.status==="processing" && data.percent !==undefined)) &&
       <Image
@@ -132,7 +136,7 @@ function PiecePage({ token }) {
                 <WrapItem minWidth="360px" mr="auto!important" alignItems="center" justifyContent="left">
                   <Box>
                     <DreamAuthor userdets={(data && data.userdets)?data.userdets:{
-                      user_str : data.str_author,
+                      user_str : data && data.str_author,
                       user_name : "New User"
                     }} />
                   </Box>
@@ -220,7 +224,7 @@ function PiecePage({ token }) {
                   <Button
                     colorScheme={'green'}
                     size="xs"
-                    onClick={() => (window.location.href = `/mutate/${params.uuid}`)}
+                    onClick={() => (navigate(`/mutate/${params.uuid}`))}
                     ml={1}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
@@ -287,13 +291,15 @@ function PiecePage({ token }) {
       }
       {data && (data.status==="rejected" || data.status==="failed") && 
       <>
-        <Center>
-        <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}
-
-        {auth && auth.isAuthenticated && data.str_author === auth.user.sub.split("|")[2] &&
+        <VStack>
+          <Center>
+          <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}
+          </Code>
+          </Center>
+          {auth && auth.isAuthenticated && data.str_author === auth.user.sub.split("|")[2] &&
         <Center>
           {(data && (data.status==="rejected" || data.status==="failed") || data.status==="queued") && <Button colorScheme={"blue"} onClick={() => {
-            window.location.href=`/edit/${data.uuid}`
+            navigate(`/edit/${data.uuid}`)
           }}>Edit</Button>}
         {(data && (data.status==="rejected" || data.status==="failed")) && <Button colorScheme={"blue"}  isDisabled={!(data.status==="rejected" || data.status==="failed")} onClick={() => {
         fetch(
@@ -329,23 +335,24 @@ function PiecePage({ token }) {
               return response.json();
             })
             .then((data) => {
-              window.location.href=`/myjobs/1`
+              navigate(`/myjobs/all/1`)
               return data;
             });
           }}>Cancel</Button>}
           </Center>}
-        </Code>
-        </Center>
+        </VStack>
       </>
       }
       {data && data.percent===undefined && (data.status==="processing" || data.status==="queued") && 
+        <VStack>
           <Center>
-            <Code my={3} p={4} borderRadius="md" maxW="1024">Job currently {data.status}...
+            <Code my={3} p={4} borderRadius="md" maxW="1024">Job currently {data.status}...<br/><br/>            
+            Refresh the page for updates.  (Live refresh and progress updates coming "soon"...)
              { auth && auth.isAuthenticated && data.str_author === auth.user.sub.split("|")[2] && 
               <Center>
               {(data.status==="queued") && <>
                 <Button colorScheme={"blue"} onClick={() => {
-                  window.location.href=`/edit/${data.uuid}`
+                  navigate(`/edit/${data.uuid}`)
                 }}>Edit</Button>
               <Button colorScheme={"red"} isDisabled={!(data.status==="rejected" || data.status==="failed" || data.status==="queued")}  onClick={() => {
                 fetch(
@@ -362,7 +369,7 @@ function PiecePage({ token }) {
                       return response.json();
                     })
                     .then((data) => {
-                      window.location.href=`/myjobs/1`
+                      navigate(`/myjobs/all/1`)
                       return data;
                     });
                   }}>Cancel</Button>
@@ -371,12 +378,11 @@ function PiecePage({ token }) {
             }
             </Code>
           </Center>
+          </VStack>
       }
-      
-      <VStack>
+      {data && <VStack>
         <Box>
           <Stack direction="row">
-            {data.experimental && <Badge variant="outline" colorScheme="blue">🧪 Experimental</Badge>}
             <Badge variant="outline" colorScheme="blue">
               {data.status}
             </Badge>
@@ -438,7 +444,8 @@ function PiecePage({ token }) {
           </HStack>
         </Box>
         <Link color={'green.400'} href={`https://api.feverdreams.app/job/${data.uuid}`}>Metadata</Link>
-      </VStack>
+      </VStack>}
+    </>}
     </>
   );
 }

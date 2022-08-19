@@ -63,14 +63,14 @@ function AgentStatusPage() {
           <TableCaption>List of active agents running</TableCaption>
           <Thead>
             <Tr>
-              <Th>Agent ID</Th>
-              <Th>Bot Version</Th>
-              <Th>Discoart Version</Th>
-              <Th>GPU</Th>
+              <Th>Agent</Th>
+              <Th>Specs</Th>
+              <Th>Storage</Th>
+              <Th>Memory</Th>
               <Th>Last Seen</Th>
+              <Th>Pending Command</Th>
               <Th>Mode</Th>
               <Th>Score</Th>
-              <Th>VRAM</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -79,25 +79,41 @@ function AgentStatusPage() {
                 console.log(o);
                 // let gpustats = o.gpustats.split(', ');
                 let vram = (o.gpu && o.gpu.mem_total)?o.gpu.mem_total:"???"
-
+                let temperature = (o.gpu && o.gpu.temperature)?o.gpu.temperature:"???"
                 return (
                   <Tr key={o.agent_id}>
                     <Td>
                       <Skeleton isLoaded={!loading}>
-                        <RouteLink to={`/agentstatus/${o.agent_id}/1`}><Link color={"green.500"}>{o.agent_id}</Link></RouteLink>
+                        <RouteLink to={`/agentstatus/${o.agent_id}/1`}><Link color={"green.500"}>{o.agent_id}</Link></RouteLink><br/>
+                        <Badge>{o.bot_version}</Badge><Badge ml={"5"}>{o.agent_discoart_version}</Badge><br/>
                       </Skeleton>
                     </Td>
                     <Td>
-                      <Skeleton isLoaded={!loading}><Code>{o.bot_version}</Code></Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        <Badge variant={"outline"} color={"green.500"}>{o.gpu && o.gpu.name}</Badge><br/>
+                        <Code>{Math.ceil(vram/1024)} GB VRAM</Code> | <Code>{Math.ceil(temperature)}C</Code>
+                      </Skeleton>
                     </Td>
                     <Td>
-                      <Skeleton isLoaded={!loading}><Code>{o.agent_discoart_version}</Code></Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        Free: <Code>{Math.ceil(o.free_space/1024/1024/1024)} GB</Code><br />
+                        Used: <Code>{Math.ceil(o.used_space/1024/1024/1024)} GB</Code><br />
+                      </Skeleton>
                     </Td>
                     <Td>
-                      <Skeleton isLoaded={!loading}><Badge variant={"outline"} color={"green.500"}>{o.gpu && o.gpu.name}</Badge></Skeleton>
+                      <Skeleton isLoaded={!loading}>
+                        {o.memory && <>
+                        Free: <Code>{Math.ceil(o.memory.free/1024/1024)} GB</Code><br />
+                        Used: <Code>{Math.ceil(o.memory.used/1024/1024)} GB</Code><br />
+                        Total: <Code>{Math.ceil(o.memory.total/1024/1024)} GB</Code><br />
+                        </>}
+                      </Skeleton>
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}>{dt(o.last_seen)}</Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton isLoaded={!loading}>{o.command}</Skeleton>
                     </Td>
                     <Td>
                       <Skeleton isLoaded={!loading}>
@@ -119,9 +135,6 @@ function AgentStatusPage() {
                       <Skeleton isLoaded={!loading}>
                         {o.score}
                       </Skeleton>
-                    </Td>
-                    <Td>
-                      <Skeleton isLoaded={!loading}>{vram}</Skeleton>
                     </Td>
                   </Tr>
                 );
