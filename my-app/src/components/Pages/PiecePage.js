@@ -67,7 +67,7 @@ function PiecePage({ token }) {
   function fetchPiece() {
     const uuid = params.uuid;
     
-    fetch(`https://api.feverdreams.app/job/${uuid}`)
+    fetch(`https://api.feverdreams.app/v2/job/${uuid}`)
       .then((response) => {
         let obj = response.json();
         return obj;
@@ -443,7 +443,7 @@ function PiecePage({ token }) {
             })()}
           </HStack>
         </Box>
-        <Link color={'green.400'} href={`https://api.feverdreams.app/job/${data.uuid}`}>Metadata</Link>
+        <Link color={'green.400'} href={`https://api.feverdreams.app/v2/job/${data.uuid}`}>Metadata</Link>
       </VStack>}
     </>}
     </>

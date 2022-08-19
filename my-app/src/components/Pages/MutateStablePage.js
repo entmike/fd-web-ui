@@ -43,7 +43,9 @@ import { id } from 'date-fns/locale';
 function MutateStablePage({ isAuthenticated, token, mode }) {
   const [job, setJob] = useState({});
   let sh = localStorage.getItem("show-mutate-help");
+  let pr = localStorage.getItem("private-settings");
   let showhelp = (sh==='false')?false:true
+  let privatesettings = (pr==='true')?true:false
   const [show_help, setShowHelp] = useState(showhelp);
   //   const [text_prompt, setTextPrompt] = useState({});
   const [loading, setLoading] = useState(true);
@@ -76,6 +78,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
             str_author : discord_id,
             gpu_preference : "medium",
             editable : true,
+            private : privatesettings,
             nsfw: false,
             width_height:[ 1024, 512 ],
             seed: -1,
@@ -181,10 +184,23 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                 {show_help && <FormHelperText>Show parameter help</FormHelperText>}
               </FormControl>
               <FormControl>
+                <FormLabel htmlFor="private">Private Settings</FormLabel>
+                <Switch isDisabled = {!job.editable}
+                  id="private"
+                  isChecked={(job.private===true)?true:false}
+                  onChange={(event) => {
+                    localStorage.setItem("private-settings",event.target.checked)
+                    let updatedJob = JSON.parse(JSON.stringify(job));
+                    updatedJob.private = event.target.checked ? true : false;
+                    setJob({ ...job, ...updatedJob });
+                  }}
+                />
+                {show_help && <FormHelperText>Keep settings private</FormHelperText>}
+              </FormControl>
+              {/* <FormControl>
                   <FormLabel htmlFor="gpu_preference">GPU Preference</FormLabel>
                   <Select isDisabled = {!job.editable} 
                       id = "gpu_preference"
-                      defaultValue={"medium"}
                       value={job.gpu_preference} onChange={(event) => {
                       let updatedJob = JSON.parse(JSON.stringify(job));
                       let value = event.target.selectedOptions[0].value;
@@ -203,7 +219,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                     }
                   </Select>
                   {show_help && <FormHelperText>Select your prefered GPU size.  Why not always pick "Large"?  Because you are a decent human being.</FormHelperText>}
-                </FormControl>
+                </FormControl> */}
               {/* <FormControl>
                 <FormLabel htmlFor="agent_preference">Agent Preference (temporary)</FormLabel>
                 <Input
@@ -243,7 +259,6 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                 <FormLabel htmlFor="seed">Image Seed</FormLabel>
                 <NumberInput isDisabled = {!job.editable}
                   id="seed"
-                  defaultValue={-1}
                   value={job.seed}
                   min={-1}
                   max={2 ** 32}
@@ -268,7 +283,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                 <FormLabel htmlFor="steps">Steps</FormLabel>
                 <NumberInput isDisabled = {!job.editable}
                   id="steps"
-                  defaultValue={job.steps}
+                  value={job.steps}
                   min={10}
                   max={150}
                   clampValueOnBlur={true}
@@ -324,9 +339,8 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                 id="eta"
                 step={0.1}
                 precision={2}
-                defaultValue={0.8}
                 value={job.eta}
-                min={0.01}
+                min={0.0}
                 max={10}
                 onChange={(value) => {
                   let updatedJob = JSON.parse(JSON.stringify(job));
@@ -397,7 +411,6 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                   <NumberInput isDisabled = {!job.editable}
                     id="width"
                     step={64}
-                    defaultValue={1280}
                     value={job.width_height?job.width_height[0]:1280}
                     min={128}
                     max={2560}
@@ -431,7 +444,6 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                   <NumberInput isDisabled = {!job.editable}
                     id="height"
                     step={64}
-                    defaultValue={768}
                     value={job.width_height?job.width_height[1]:768}
                     min={128}
                     max={2560}
@@ -472,7 +484,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                     setJob({ ...job, ...updatedJob });
                   }}
                 />
-                {show_help && <FormHelperText>Flag as NSFW. This does NOT mean you can render illegal or sexually explicit content</FormHelperText>}
+                {show_help && <FormHelperText>Flag as NSFW. This does NOT mean may can render racist, illegal, or sexually explicit content</FormHelperText>}
               </FormControl>
             <Button isDisabled = {!job.editable} onClick={save}>{mode==="edit"?"Edit":"Mutate"}</Button>
           </Skeleton>
