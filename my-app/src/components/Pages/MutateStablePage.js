@@ -44,8 +44,11 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
   const [job, setJob] = useState({});
   let sh = localStorage.getItem("show-mutate-help");
   let pr = localStorage.getItem("private-settings");
-  let showhelp = (sh==='false')?false:true
+    let showhelp = (sh==='false')?false:true
   let privatesettings = (pr==='true')?true:false
+  // let bs = localStorage.getItem("batch-size");
+  // let batchSize = (bs && bs<=5)?bs:1
+  const [batchSize, setBatchSize] = useState(1);
   const [show_help, setShowHelp] = useState(showhelp);
   //   const [text_prompt, setTextPrompt] = useState({});
   const [loading, setLoading] = useState(true);
@@ -121,7 +124,8 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
     try {
       // return
       setLoading(true)
-      console.log(job)
+      let j = JSON.parse(JSON.stringify(job))
+      j.batch_size = batchSize
       const { success: mutateSuccess, new_record: newRecord } = await fetch(
         `https://api.feverdreams.app/web/stable/${mode}`,
         {
@@ -130,7 +134,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ job: job }),
+          body: JSON.stringify({ job: j }),
         }
       )
         .then((response) => {
@@ -170,7 +174,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                 <Image src={`https://images.feverdreams.app/thumbs/512/${job.uuid}.jpg`}></Image>
               </VStack>
             </Center>
-            <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
+            <SimpleGrid columns={{sm: 3, md: 3}} spacing="20px">
               <FormControl>
                 <FormLabel htmlFor="show_help">🤔 Show Help</FormLabel>
                 <Switch
@@ -196,6 +200,29 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                   }}
                 />
                 {show_help && <FormHelperText>Keep settings private</FormHelperText>}
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="batch_size">Batch Size</FormLabel>
+                <NumberInput isDisabled = {!job.editable}
+                  id="batch_size"
+                  value={batchSize}
+                  min={1}
+                  max={5}
+                  clampValueOnBlur={true}
+                  onChange={(value) => {
+                    let bs = parseInt(value);
+                    setBatchSize(bs);
+                  }}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                {show_help && <FormHelperText>
+                  Number of images to generate.  As a friendly reminder, Fever Dreams is not your personal NFT generator.
+                </FormHelperText>}
               </FormControl>
               {/* <FormControl>
                   <FormLabel htmlFor="gpu_preference">GPU Preference</FormLabel>
@@ -236,7 +263,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
             </SimpleGrid>
             <FormControl>
               <FormLabel htmlFor="prompt">Prompt</FormLabel>
-                {job.prompt && 
+                {job.prompt !==undefined && 
                     <FormControl>
                       <FormLabel htmlFor={`prompt`}>Text</FormLabel>
                       <Textarea
@@ -245,8 +272,10 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         type="text"
                         value={job.prompt}
                         onChange={(event) => {
+                          let prompt = event.target.value
+                          // if(!prompt) prompt=" "
                           let updatedJob = JSON.parse(JSON.stringify(job));
-                          updatedJob.prompt = event.target.value;
+                          updatedJob.prompt = prompt;
                           setJob({ ...job, ...updatedJob });
                         }}
                       />
@@ -484,7 +513,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                     setJob({ ...job, ...updatedJob });
                   }}
                 />
-                {show_help && <FormHelperText>Flag as NSFW. This does NOT mean may can render racist, illegal, or sexually explicit content</FormHelperText>}
+                {show_help && <FormHelperText>Flag as NSFW. This does NOT mean may render racist, illegal, or sexually explicit content</FormHelperText>}
               </FormControl>
             <Button isDisabled = {!job.editable} onClick={save}>{mode==="edit"?"Edit":"Mutate"}</Button>
           </Skeleton>

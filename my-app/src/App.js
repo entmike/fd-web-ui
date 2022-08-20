@@ -35,9 +35,9 @@ import { InstantSearch } from "react-instantsearch-hooks-web"
 const searchClient = algoliasearch("SBW45H5QPH", "735cfe2686474a143a610f864474b2f2")
 
 function App() {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
-  const [token, setToken] = useState("badtoken")
-
+  const {user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const [token, setToken] = useState(null)
+  const [userId, setUserId] = useState(null)
   const getToken = async () => {
     let token
 
@@ -47,6 +47,10 @@ function App() {
       })
 
       setToken(token)
+      if(user){
+        let userId = user.sub.split("|")[2]
+        setUserId(userId)
+      }
     } catch (e) {
       console.log("Not logged in")
     }
@@ -54,7 +58,7 @@ function App() {
 
   useEffect(() => {
     getToken()
-  })
+  },[user,isAuthenticated])
 
   return (
     <ChakraProvider>
@@ -76,7 +80,7 @@ function App() {
                 <Route path="/" element={<Hero />} />
                 <Route
                   path={'/piece/:uuid'}
-                  element={<PiecePage token={token} />}
+                  element={<PiecePage token={token} isAuthenticated={isAuthenticated} user={userId}/>}
                 />
                 <Route path="/jobs" element={<JobsPage />}></Route>
                 <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
@@ -90,7 +94,7 @@ function App() {
                 />
                 <Route
                   path="/stable/edit/:uuid"
-                  element={<MutateStablePage mode="edit" token={token} isAuthenticated={isAuthenticated} />}
+                  element={<MutateStablePage mode="edit" token={token} isAuthenticated={isAuthenticated} user={userId}/>}
                 />
                 <Route
                   path="/mutate/:uuid"
