@@ -117,7 +117,7 @@ export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isAuthenticated, logout, user } = useAuth0();
-
+  const navigate = useNavigate();
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -159,6 +159,9 @@ export function Nav() {
             ))}
           </HStack> */}
           <Menu>
+              {/* <Button variant={'outline'} colorScheme="blue" onClick={() =>
+                (window.location.href = `/recent/stable/1`)
+              }>Browse</Button> */}
               <MenuButton
                 colorScheme="blue"
                 as={Button}
@@ -173,9 +176,30 @@ export function Nav() {
               <MenuList>
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/recent/1`)
+                    (window.location.href = `/recent/stable/1`)
                   }
-                >All
+                >Recent
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/random`)
+                  }
+                >Random
+                </MenuItem>
+                {/*
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/stable/1`)
+                  }
+                >All Stable
+                </MenuItem>
+                 <MenuDivider />
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/disco/1`)
+                  }
+                >All Disco
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -206,18 +230,13 @@ export function Nav() {
                     (window.location.href = `/recent/paint-pour/1`)
                   }
                 >Paint and Pour
-                </MenuItem>
-                <MenuDivider />
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/random`)
-                  }
-                >Random
-                </MenuItem>
+                </MenuItem> */}
+                
               </MenuList>
-            </Menu>
-          <Menu>
-              <MenuButton
+              <Button variant={'outline'} colorScheme="green" onClick={() =>
+                navigate(`/mutate/2c63a23fcfc693c67d5ff5767ace6dd954af52b743aa342dca52ac9d5d108752`)
+              }>Create</Button>
+              {/* <MenuButton
                 colorScheme="green"
                 as={Button}
                 // rounded={'full'}
@@ -230,9 +249,16 @@ export function Nav() {
               <MenuList>
                 <MenuItem
                   onClick={() =>
+                    (window.location.href = `/stable/mutate/stable-6dd81264-9c21-44c3-8739-5cf93f426115`)
+                  }
+                >Stable Diffusion
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onClick={() =>
                     (window.location.href = `/mutate/default-lighthouse`)
                   }
-                >Default Lighthouse
+                >Disco Diffusion
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -240,17 +266,16 @@ export function Nav() {
                   }
                 >Default Portrait
                 </MenuItem>
-                <MenuDivider />
                 <MenuItem
                   onClick={() =>
                     (window.location.href = `/dream`)
                   }
-                >Set Your Dream
+                >Dream
                 </MenuItem>
-              </MenuList>
+                </MenuList> */}
             </Menu>
           <Flex marginLeft="auto" alignItems={'center'}>
-            <IconButton
+            {/* <IconButton colorScheme={"purple"}
               m="1"
               onClick={() => {
                 window.open('https://discord.gg/yNDqCnzCbs', '_blank');
@@ -262,7 +287,7 @@ export function Nav() {
                 />
               }
               display={{ base: 'none', md: 'block' }}
-            />
+            /> */}
             <IconButton
               m="1"
               onClick={toggleColorMode}
@@ -327,6 +352,11 @@ export function Nav() {
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
+                  onClick={() => (window.location.href = `https://discord.gg/yNDqCnzCbs`)}
+                  >
+                    Discord
+                  </MenuItem>
+                  <MenuItem
                     onClick={() => logout({ returnTo: window.location.origin })}
                   >
                     Log Out
@@ -356,6 +386,13 @@ export function Nav() {
             </Stack>
           </Box>
         ) : null}
+      </Box>
+      <Box m={5} mb={0} p={5} borderWidth={1} rounded={"md"}>
+        <Text>
+          ℹ️ Disco Diffusion creation functionality is offline until approximately Friday while website and database maintenance is carried out.
+          Your existing Disco Diffusion renders will not be unavailable during this time, however they have NOT been deleted.
+          Stable Diffusion functionality is not affected.  See Discord chat for more details.
+        </Text>
       </Box>
     </>
   );

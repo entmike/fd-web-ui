@@ -20,9 +20,9 @@ import {
         px={{ base: 2, md: 4 }}
         py={'5'}
         shadow={'xl'}
-        border={'1px solid'}
-        borderColor={useColorModeValue('gray.800', 'gray.500')}
-        rounded={'md'}>
+        border={'3px solid'}
+        borderColor={useColorModeValue('white.500', 'white.500')}
+        rounded={'xl'}>
         <Flex justifyContent={'space-between'}>
           <Box pl={{ base: 2, md: 4 }}>
             <StatLabel fontWeight={'medium'} isTruncated>{title}</StatLabel>
@@ -46,7 +46,7 @@ import {
     const [, setError] = useState(null);
     const [, setLoading] = useState(true);
     function fetchStats(amount) {
-      let url = `https://api.feverdreams.app/landingstats`;
+      let url = `https://api.feverdreams.app/v3/landingstats`;
       console.log(url);
       fetch(url)
         .then((response) => {
@@ -69,13 +69,13 @@ import {
     }, []);
     return (
       data && <Center>
-        <Box minW={{ xl : "7xl", lg:"5xl"}} maxW={{ xl : "7xl", lg:"5xl"}} mx={'auto'} pt={5} px={{ base: 12, sm: 12, md: 17 }}>
+        <Box minW={{ xl : "7xl", lg:"5xl"}} maxW={{ xl : "7xl", lg:"5xl"}} mx={'auto'} px={{ base: 12, sm: 12, md: 17 }}>
           <chakra.h1
             textAlign={'center'}
             fontSize={'2xl'}
-            py={10}
+            py={5}
             fontWeight={'bold'}>
-            Create and Browse generative AI art created openly by other users.
+            Create and Browse generative AI art created by other users.
           </chakra.h1>
           <SimpleGrid columns={{ base: 1, md: 3, lg: 3 }} spacing={{ base: 5, lg: 5 }}>
             <StatsCard

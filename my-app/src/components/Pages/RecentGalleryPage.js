@@ -14,13 +14,16 @@ export default function RecentGalleryPage() {
   const params = useParams();
   const headers = {
     all : "Images",
-    general : "General Images",
-    portraits : "Portraits",
-    isometric : "Isometric Images",
-    "pixel-art" : "Pixel Art"
+    stable : "Stable Diffusion Images",
+    disco : "Disco Diffusion Images",
+    general : "General (Disco Diffusion)",
+    portraits : "Portraits (Disco Diffusion)",
+    isometric : "Isometric (Disco Diffusion)",
+    "pixel-art" : "Pixel Art (Disco Diffusion)",
+    "paint-pour" : "Paint and Pour (Disco Diffusion)",
   }
   const type = params.type || "all"
-  const apiURL = `https://api.feverdreams.app/v2/recent/${type}/50/${params.page}`;
+  const apiURL = `https://api.feverdreams.app/v3/recent/${type}/50/${params.page}`;
 
   const prevURL = `/recent/${type}/${parseInt(params.page) - 1}`;
   const nextURL = `/recent/${type}/${parseInt(params.page) + 1}`;

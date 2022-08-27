@@ -49,7 +49,7 @@ function JobsPage() {
   function fetchStatus(type, amount, user_id) {
     setLoading(true);
 
-    let active = fetch(`https://api.feverdreams.app/web/queue/processing/`)
+    let active = fetch(`https://api.feverdreams.app/v3/public_queue/processing`)
       .then((response) => {
         return response.json();
       })
@@ -57,7 +57,7 @@ function JobsPage() {
         return actualData;
       });
 
-    let queued = fetch(`https://api.feverdreams.app/web/up_next`)
+    let queued = fetch(`https://api.feverdreams.app/v3/public_queue/queued`)
       .then((response) => {
         return response.json();
       })
@@ -66,7 +66,6 @@ function JobsPage() {
       });
 
     Promise.all([active, queued]).then((data) => {
-      console.log(data);
       setData({
         active: data[0],
         waiting: data[1],
@@ -102,6 +101,13 @@ function JobsPage() {
                 <Tbody>
                   {data &&
                     data.active.map((o, i) => {
+                      let prompt = "Unknown Prompt"
+                      if (o.algo==="stable"){
+                        prompt = o.prompt   // TODO: Params
+                      }
+                      if (o.algo==="disco"){
+                        prompt = o.text_prompts
+                      }
                       return (
                         <Tr key={o.uuid}>
                           <Td>
@@ -115,7 +121,7 @@ function JobsPage() {
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
                                 <>
                                   <Code>{o.uuid}</Code>
-                                  <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.render_type?o.render_type:"Unknown"}</Badge><br/>
+                                  <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.algo?o.algo:"Unknown"}</Badge><br/>
                                 </>
                               </Link>
                             </Skeleton>
@@ -173,7 +179,14 @@ function JobsPage() {
                 <Tbody>
                   {data &&
                     data.waiting.map((o, i) => {
-                      // let gpustats = o.gpustats.split(", ")
+                      let prompt = "Unknown Prompt"
+                      if (o.algo==="stable"){
+                        if (o.params)
+                          prompt = o.params.prompt   // TODO: Params
+                      }
+                      if (o.algo==="disco"){
+                        prompt = o.text_prompts
+                      }
                       return (
                         <Tr key={o.uuid}>
                           <Td>
@@ -187,7 +200,7 @@ function JobsPage() {
                               <Link color="green.500" href={`/piece/${o.uuid}`} target="_blank">
                                 <>
                                   <Code>{o.uuid}</Code>
-                                  <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.render_type?o.render_type:"Unknown"}</Badge><br/>
+                                  <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.algo?o.algo:"Unknown"}</Badge><br/>
                                 </>
                               </Link>
                             </Skeleton>
@@ -196,8 +209,7 @@ function JobsPage() {
                             </Skeleton>
                             <Skeleton isLoaded={!loading}>
                               <>
-                                <Text w={400} noOfLines={4} wordBreak={"break-all"}>{o.text_prompts?o.text_prompts:o.text_prompt}</Text>
-                                {/* {o.text_prompts?o.text_prompts:o.text_prompt} */}
+                                <Text w={400} noOfLines={4} wordBreak={"break-all"}>{prompt}</Text>
                               </>
                             </Skeleton>
                           </Td>

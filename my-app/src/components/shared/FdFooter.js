@@ -12,6 +12,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
+import { SiDiscord } from 'react-icons/si';
 
 // import AppStoreBadge from '@/components/AppStoreBadge';
 // import PlayStoreBadge from '@/components/PlayStoreBadge';
@@ -66,7 +67,18 @@ export function FdFooter() {
 
           <Stack align={'flex-start'}>
             <ListHeader>Community</ListHeader>
-            <Link href={'https://discord.gg/yNDqCnzCbs'}>Discord</Link>
+            {/* <Link href={'https://discord.gg/yNDqCnzCbs'}>Discord</Link> */}
+            <Stack direction={'row'} spacing={6}>
+            <SocialButton label={'Twitter'} href={'https://twitter.com/FeverDreamsAI'}>
+              <FaTwitter/>
+            </SocialButton>
+            <SocialButton label={'Discord'} href={'https://discord.gg/yNDqCnzCbs'}>
+              <SiDiscord />
+            </SocialButton>
+            <SocialButton label={'Instagram'} href={'https://www.instagram.com/feverdreamsai'}>
+              <FaInstagram />
+            </SocialButton>
+          </Stack>
           </Stack>
 
           <Stack align={'flex-start'}>
@@ -102,18 +114,7 @@ export function FdFooter() {
           spacing={4}
           justify={{ md: 'space-between' }}
           align={{ md: 'center' }}>
-          {/* <Text>© 2022 Chakra Templates. All rights reserved</Text> */}
-          <Stack direction={'row'} spacing={6}>
-            <SocialButton label={'Twitter'} href={'https://twitter.com/FeverDreamsAI'}>
-              <FaTwitter />
-            </SocialButton>
-            {/* <SocialButton label={'YouTube'} href={'#'}>
-              <FaYoutube />
-            </SocialButton> */}
-            <SocialButton label={'Instagram'} href={'https://www.instagram.com/feverdreamsai'}>
-              <FaInstagram />
-            </SocialButton>
-          </Stack>
+          <Text>© 2022 Fever Dreams. All rights reserved</Text>
         </Container>
       </Box>
     </Box>

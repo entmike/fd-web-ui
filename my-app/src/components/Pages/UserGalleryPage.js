@@ -38,7 +38,7 @@ export default function UserGalleryPage({ token }) {
   useEffect(() => {
     setLoading(true);
     fetch(
-      `https://api.feverdreams.app/userfeed/${params.user_id}/50/${params.page}`
+      `https://api.feverdreams.app/v3/userfeed/${params.user_id}/50/${params.page}`
     )
       .then((response) => response.json())
       .then((actualData) => {

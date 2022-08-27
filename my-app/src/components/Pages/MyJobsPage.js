@@ -41,7 +41,7 @@ function MyJobsPage({ isAuthenticated, token }) {
     let d = [];
     const prevURL = `/myjobs/${params.status}/${parseInt(params.page) - 1}`;
     const nextURL = `/myjobs/${params.status}/${parseInt(params.page) + 1}`;
-    const apiURL = `https://api.feverdreams.app/web/myjobs/${params.status}/${params.page}`
+    const apiURL = `https://api.feverdreams.app/v3/myjobs/${params.status}/${params.page}`
   for (let i = 0; i < 25; i++)
     d.push({
       render_type: 'render',
@@ -149,7 +149,7 @@ function MyJobsPage({ isAuthenticated, token }) {
                             }}>Details</Button>
                                 {(o.status==="rejected" || o.status==="failed") && <Button size={"sm"} isDisabled={!(o.status==="rejected" || o.status==="failed")} colorScheme={"blue"} onClick={() => {
                                     fetch(
-                                        `https://api.feverdreams.app/web/retry`,
+                                        `https://api.feverdreams.app/v3/retry`,
                                         {
                                         method: 'POST',
                                         headers: {
@@ -171,7 +171,7 @@ function MyJobsPage({ isAuthenticated, token }) {
                                 }}>Edit</Button>}
                                 {(o.status==="rejected" || o.status==="failed" || o.status==="queued") && <Button size={"sm"} colorScheme={"red"} onClick={() => {
                                     fetch(
-                                        `https://api.feverdreams.app/web/cancel`,
+                                        `https://api.feverdreams.app/v3/cancel`,
                                         {
                                         method: 'POST',
                                         headers: {

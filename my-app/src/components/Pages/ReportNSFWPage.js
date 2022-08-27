@@ -58,14 +58,12 @@ function PiecePage({ isAuthenticated, token, user}) {
 
   const [data, setData] = useState(null);
   const [mutateEndpoint, setMutateEndpoint] = useState('/mutate');
-  const [nsfwEndpoint, setNSFWEndpoint] = useState('https://api.feverdreams.app/reportnsfw');
   const [editEndpoint, setEditEndpoint] = useState('/edit');
   const [loading, setLoading] = useState(true);
   const [isModified, setIsModified] = useState(false);
   const [error, setError] = useState(null);
   const [textPrompt, setTextPrompt] = useState([]);
   const [seed, setSeed] = useState(0);
-  const [steps, setSteps] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasCopied, onCopy } = useClipboard(textPrompt);
   const { hasCopiedTags, onCopyTags } = useClipboard(data);
@@ -73,19 +71,15 @@ function PiecePage({ isAuthenticated, token, user}) {
   const params = useParams()
   const navigate = useNavigate();  
   
-  function fetchPiece() {
+  function fetchPiece(token) {
+    console.log(user)
     const uuid = params.uuid;
-    let headers
+    let options = {}
     if (token) {
-      headers = {
-        "Content-Type" : "application/json",
-        "Authorization" : `Bearer ${token}`
-      }
-      console.log(headers)
-    }else{
-      console.log("Not logged in")
+      options['Content-Type'] = 'application/json'
+      options['Authorization'] = `Bearer ${token}`
     }
-    fetch(`https://api.feverdreams.app/v3/job/${uuid}`, {headers})
+    fetch(`https://api.feverdreams.app/v2/job/${uuid}`, options)
       .then((response) => {
         let obj = response.json();
         return obj;
@@ -100,19 +94,12 @@ function PiecePage({ isAuthenticated, token, user}) {
             }
           }
           if(!actualData.algo) actualData.algo="disco"
-          
           setData(actualData);
-          
-          if(actualData.algo === "stable"){
-            if(actualData.params){
-              setTextPrompt(actualData.params.prompt);
-              setSeed(actualData.params.seed);
-              setSteps(actualData.params.steps);
-            }else{
-              setTextPrompt("Private");
-              setSeed("Private");
-              setSteps("Private");
-            }
+          if(actualData.algo==="alpha" || actualData.algo==="stable"){
+            setMutateEndpoint('/stable/mutate')
+            setEditEndpoint('/stable/edit')
+            setTextPrompt(actualData.prompt);
+            setSeed(actualData.seed);
           }else{
             setTextPrompt(actualData.text_prompts?actualData.text_prompts:actualData.text_prompt);
             if(actualData.results){
@@ -138,8 +125,8 @@ function PiecePage({ isAuthenticated, token, user}) {
   }
 
   useEffect(() => {
-    fetchPiece();
-    }, [token, user, isAuthenticated]);
+    fetchPiece(token);
+    }, [token]);
   
   useEffect(()=>{
     if(isModified){
@@ -147,53 +134,11 @@ function PiecePage({ isAuthenticated, token, user}) {
       setIsModified(false)
     }
   },[data])
-
-  async function reportNSFW() {
-    setLoading(true)
-    const { success, message } = await fetch(
-      nsfwEndpoint,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ 
-          job: data 
-        }),
-      }
-    )
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      setLoading(false);
-      return data;
-    })
-    .catch(error=>{
-      setLoading(false)
-      return {
-        success : false,
-        message : error.message
-      }
-    })
-    let status=success?"success":"error"
-    toast({
-      title: message,
-      description: message,
-      status: status
-    })
-  }
-
-
-
-
-
   async function update() {
     setLoading(true)
     console.log(data)
     const { success, message } = await fetch(
-      `https://api.feverdreams.app/v3/create/update`,
+      `https://api.feverdreams.app/web/stable/update`,
       {
         method: 'POST',
         headers: {
@@ -266,7 +211,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                   </Box>
                   <Box>
                     <Heading as="h4" size="sm">
-                      {/* {params.uuid} */}
+                      {params.uuid}
                     </Heading>
                     {data && data.timestamp && (()=>{
                       return <Text fontSize={"xs"}>
@@ -601,7 +546,7 @@ function PiecePage({ isAuthenticated, token, user}) {
             Seed: {seed}
           </Badge>
           <Badge variant="outline" colorScheme="green">
-            Steps: {steps}
+            Steps: {data.steps}
           </Badge>
           <Box>
             <HStack>
@@ -616,11 +561,9 @@ function PiecePage({ isAuthenticated, token, user}) {
               })()}
               </HStack>
             </Box>
-            {/* <Link color={'green.400'} href={`https://api.feverdreams.app/v2/job/${data.uuid}`}>Metadata</Link> */}
+            <Link color={'green.400'} href={`https://api.feverdreams.app/v2/job/${data.uuid}`}>Metadata</Link>
         </>}
-        {data && <Link color={'red.400'} onClick={() =>{
-          reportNSFW()
-        } }>Report NSFW</Link>}
+        {data && <Link color={'red.400'} href={`https://www.feverdreams.app/reportnsfw/${data.uuid}`}>Report NSFW</Link>}
         <Box>
           <HStack>
             {data && data.results && (()=>{

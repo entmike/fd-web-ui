@@ -89,14 +89,14 @@ function App() {
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}
                 />
                 <Route
-                  path="/stable/mutate/:uuid"
+                  path="/mutate/:uuid"
                   element={<MutateStablePage mode="mutate" token={token} isAuthenticated={isAuthenticated} />}
                 />
                 <Route
-                  path="/stable/edit/:uuid"
+                  path="/edit/:uuid"
                   element={<MutateStablePage mode="edit" token={token} isAuthenticated={isAuthenticated} user={userId}/>}
                 />
-                <Route
+                {/* <Route
                   path="/mutate/:uuid"
                   element={<MutatePage mode="mutate" token={token} isAuthenticated={isAuthenticated} />}
                 />
@@ -107,7 +107,7 @@ function App() {
                 <Route
                   path="/incubate/:uuid"
                   element={<IncubatePage token={token} isAuthenticated={isAuthenticated} />}
-                />
+                /> */}
                 <Route path="/job-generator" element={<JobGenerator />} />
                 <Route path="/agentstatus" element={<AgentStatusPage />} />
                 <Route path="/agentstatus/:agent/:page" element={<AgentJobsPage />} />
