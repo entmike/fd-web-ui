@@ -127,6 +127,54 @@ function CreateDreamPage({ isAuthenticated, token }) {
               }}
             />
           </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="diffusion_model">Diffusion Model</FormLabel>
+            <Select placeholder='Select Diffusion Model' defaultValue={"512x512_diffusion_uncond_finetune_008100"} value={dream.diffusion_model} onChange={(event) => {
+                let updatedDream = JSON.parse(JSON.stringify(dream));
+                let value = event.target.selectedOptions[0].value;
+                updatedDream.diffusion_model = value;
+                setDream({ ...dream, ...updatedDream });
+              }}>
+              {
+                [
+                  {"key" : "256x256_diffusion_uncond", "text" : "256x256_diffusion_uncond"},
+                  {"key" : "512x512_diffusion_uncond_finetune_008100", "text" : "512x512_diffusion_uncond_finetune_008100"},
+                  {"key" : "PulpSciFiDiffusion", "text" : "PulpSciFiDiffusion"},
+                  {"key" : "pixel_art_diffusion_hard_256", "text" : "pixel_art_diffusion_hard_256"},
+                  {"key" : "pixel_art_diffusion_soft_256", "text" : "pixel_art_diffusion_soft_256"},
+                  {"key" : "pixelartdiffusion4k", "text" : "pixelartdiffusion4k"},
+                  {"key" : "PADexpanded", "text" : "PADexpanded"},
+                  {"key" : "watercolordiffusion", "text" : "watercolordiffusion"},
+                  {"key" : "watercolordiffusion_2", "text" : "watercolordiffusion_2"},
+                  {"key" : "256x256_openai_comics_faces_v2.by_alex_spirin_114k", "text" : "256x256_openai_comics_faces_v2.by_alex_spirin_114k"},
+                  {"key" : "portrait_generator_v001_ema_0.9999_1MM", "text" : "portrait_generator_v001_ema_0.9999_1MM"},
+                  {"key" : "portrait_generator_v1.5_ema_0.9999_165000", "text" : "portrait_generator_v1.5_ema_0.9999_165000"},
+                  {"key" : "FeiArt_Handpainted_CG_Diffusion", "text" : "FeiArt_Handpainted_CG_Diffusion"},
+                  {"key" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration", "text" : "Ukiyo-e_Diffusion_All_V1.by_thegenerativegeneration"},
+                  {"key" : "IsometricDiffusionRevrart512px", "text" : "IsometricDiffusionRevrart512px"},
+                  {"key" : "liminal_diffusion_v1", "text" : "liminal_diffusion_v1"},
+                  {"key" : "floraldiffusion", "text" : "floraldiffusion"},
+                  {"key" : "concept_art_generator_v000-1_alpha", "text" : "concept_art_generator_v000-1_alpha"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_010000", "text" : "512x512_diffusion_uncond_entmike_landscapes_010000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_020000", "text" : "512x512_diffusion_uncond_entmike_landscapes_020000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_070000", "text" : "512x512_diffusion_uncond_entmike_landscapes_070000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_landscapes_130000", "text" : "512x512_diffusion_uncond_entmike_landscapes_130000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_025000", "text" : "512x512_diffusion_uncond_entmike_ffhq_025000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_145000", "text" : "512x512_diffusion_uncond_entmike_ffhq_145000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_260000", "text" : "512x512_diffusion_uncond_entmike_ffhq_260000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_470000", "text" : "512x512_diffusion_uncond_entmike_ffhq_470000"},
+                  {"key" : "512x512_diffusion_uncond_entmike_ffhq_605000", "text" : "512x512_diffusion_uncond_entmike_ffhq_605000"},
+                  {"key" : "PaintPourDiffusion_v1.0", "text":"PaintPourDiffusion_v1.0"},
+                  {"key" : "PaintPourDiffusion_v1.1", "text":"PaintPourDiffusion_v1.1"},
+                  {"key" : "PaintPourDiffusion_v1.2", "text":"PaintPourDiffusion_v1.2"},
+                  {"key" : "PaintPourDiffusion_v1.3", "text":"PaintPourDiffusion_v1.3"},
+                ].map(diffusion_model=>{
+                  return <option value={diffusion_model.key}>{diffusion_model.text}</option>
+                })
+              }
+            </Select>
+            {<FormHelperText>Diffusion_model of choice.  Each model has its own "flavor".  Try them all to see what works for you.</FormHelperText>}
+          </FormControl>
           <Button onClick={handleInitiateDream}>Dream</Button>
           <Button onClick={handleWakeUp} disabled={!dream}>
             Wake Up

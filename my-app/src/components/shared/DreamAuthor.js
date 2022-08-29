@@ -14,7 +14,7 @@ export function DreamAuthor(props) {
           src={
             props.userdets.picture?props.userdets.picture:props.userdets.avatar?props.userdets.avatar:'/avatar-placeholder.gif'
           }
-          alt={`Avatar of ${props.userdets.nickname?props.userdets.nickname:props.userdets.user_name?props.userdets.user_name:"Unknown"}`}
+          alt={`Avatar of ${props.userdets.nickname?props.userdets.nickname:props.userdets.display_name?props.userdets.display_name:"Unknown"}`}
         />
       </Flex>
     </Link>

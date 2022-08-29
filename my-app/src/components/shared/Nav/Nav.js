@@ -43,6 +43,7 @@ import debounce from 'lodash.debounce';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { LoginButton } from './LoginButton';
 import { Profile } from './Profile';
+import { last } from 'lodash';
 
 let Links = [
   { title: 'Random', url: '/random' },
@@ -114,10 +115,21 @@ const CustomSearchBox = (props) => {
 };
 
 export function Nav() {
+  let ack = 0
+  if(localStorage.getItem("lastAck")) ack = parseInt(localStorage.getItem("lastAck"))
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isAuthenticated, logout, user } = useAuth0();
+  const [ lastAck, setLastAck] = useState(ack);
+  const [ announcement, setAnnouncement] = useState({
+    text : `ℹ️ Disco Diffusion creation functionality is offline while website and database maintenance is carried out.
+    Your existing Disco Diffusion renders will not be unavailable during this time, however they have NOT been deleted.
+    Stable Diffusion functionality is not affected.  See Discord announcements for more details.`,
+    id : 1
+  })
   const navigate = useNavigate();
+  
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -174,18 +186,37 @@ export function Nav() {
                 // pl="1"
               >Browse</MenuButton>
               <MenuList>
-                <MenuItem
+              <MenuItem
                   onClick={() =>
-                    (window.location.href = `/recent/stable/1`)
+                    (window.location.href = `/myfavs/1`)
                   }
-                >Recent
+                >My Favorites
                 </MenuItem>
                 <MenuDivider />
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/random`)
+                    (window.location.href = `/recent/stable/1`)
                   }
-                >Random
+                >Recent Art
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/dream/1`)
+                  }
+                >Recent Dreams
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/random/stable/50`)
+                  }
+                >Random Art
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/random/dream/50`)
+                  }
+                >Random Dreams
                 </MenuItem>
                 {/*
                 <MenuItem
@@ -233,10 +264,11 @@ export function Nav() {
                 </MenuItem> */}
                 
               </MenuList>
-              <Button variant={'outline'} colorScheme="green" onClick={() =>
+              </Menu><Menu>
+              {/* <Button variant={'outline'} colorScheme="green" onClick={() =>
                 navigate(`/mutate/2c63a23fcfc693c67d5ff5767ace6dd954af52b743aa342dca52ac9d5d108752`)
-              }>Create</Button>
-              {/* <MenuButton
+              }>Create</Button> */}
+              <MenuButton
                 colorScheme="green"
                 as={Button}
                 // rounded={'full'}
@@ -249,12 +281,12 @@ export function Nav() {
               <MenuList>
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/stable/mutate/stable-6dd81264-9c21-44c3-8739-5cf93f426115`)
+                    (navigate(`/mutate/2c63a23fcfc693c67d5ff5767ace6dd954af52b743aa342dca52ac9d5d108752`))
                   }
                 >Stable Diffusion
                 </MenuItem>
                 <MenuDivider />
-                <MenuItem
+                {/* <MenuItem
                   onClick={() =>
                     (window.location.href = `/mutate/default-lighthouse`)
                   }
@@ -265,14 +297,14 @@ export function Nav() {
                     (window.location.href = `/mutate/default-portrait`)
                   }
                 >Default Portrait
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/dream`)
+                    (navigate(`/dream`))
                   }
                 >Dream
                 </MenuItem>
-                </MenuList> */}
+                </MenuList>
             </Menu>
           <Flex marginLeft="auto" alignItems={'center'}>
             {/* <IconButton colorScheme={"purple"}
@@ -387,13 +419,18 @@ export function Nav() {
           </Box>
         ) : null}
       </Box>
-      <Box m={5} mb={0} p={5} borderWidth={1} rounded={"md"}>
+      {announcement && announcement.id > lastAck && <Box m={5} mb={0} p={5} borderWidth={1} rounded={"md"}>
         <Text>
-          ℹ️ Disco Diffusion creation functionality is offline until approximately Friday while website and database maintenance is carried out.
-          Your existing Disco Diffusion renders will not be unavailable during this time, however they have NOT been deleted.
-          Stable Diffusion functionality is not affected.  See Discord chat for more details.
+          {announcement.text}
         </Text>
+        <Center>
+          <Button size={"sm"} colorScheme={"green"} onClick={()=>{
+            localStorage.setItem("lastAck",announcement.id)
+            setLastAck(announcement.id)
+          }}>Got it.</Button>
+        </Center>
       </Box>
+      }
     </>
   );
 }

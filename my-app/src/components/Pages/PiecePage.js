@@ -5,6 +5,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
 import { MdIosShare } from "react-icons/md";
+import { useAuth0 } from '@auth0/auth0-react';
+import FeedGrid from '../shared/Feed/FeedGrid';
+
 import {
   Heading,
   SimpleGrid,
@@ -55,9 +58,12 @@ import { dt } from '../../utils/dateUtils';
 
 function PiecePage({ isAuthenticated, token, user}) {
   const IMAGE_HOST = 'https://images.feverdreams.app';
-
+  const { loginWithRedirect } = useAuth0();
   const [data, setData] = useState(null);
+  const [related, setRelated] = useState(null);
+  const [isPinned, setIsPinned] = useState(false);
   const [mutateEndpoint, setMutateEndpoint] = useState('/mutate');
+  const [upscaleEndpoint, setUpscaleEndpoint] = useState('https://api.feverdreams.app/upscale');
   const [nsfwEndpoint, setNSFWEndpoint] = useState('https://api.feverdreams.app/reportnsfw');
   const [editEndpoint, setEditEndpoint] = useState('/edit');
   const [loading, setLoading] = useState(true);
@@ -81,9 +87,8 @@ function PiecePage({ isAuthenticated, token, user}) {
         "Content-Type" : "application/json",
         "Authorization" : `Bearer ${token}`
       }
-      console.log(headers)
     }else{
-      console.log("Not logged in")
+      // console.log("Not logged in")
     }
     fetch(`https://api.feverdreams.app/v3/job/${uuid}`, {headers})
       .then((response) => {
@@ -93,6 +98,11 @@ function PiecePage({ isAuthenticated, token, user}) {
       .then((actualData) => {
         if(actualData){
           actualData.dominant_color = actualData.dominant_color || [0, 0, 0];
+          if(actualData.pinned){
+            setIsPinned(true)
+          }else{
+            setIsPinned(false)
+          }
           if(actualData.userdets.user_str === null){
             actualData.userdets = {
               user_str : actualData.str_author,
@@ -126,20 +136,31 @@ function PiecePage({ isAuthenticated, token, user}) {
         }else{
           setError(`This piece (${uuid}) does not exist.`)
         }
-        
+        return actualData
       })
-      .catch((err) => {
-        setError(err.message);
-        setData(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then((actualData)=>{
+        fetch(`https://api.feverdreams.app/v3/related/${actualData.uuid}/10/1`, {headers})
+        .then((response) => {
+          let obj = response.json();
+          return obj;
+        })
+        .then(relatedData=>{
+          console.log(relatedData)
+          setRelated(relatedData)
+        })
+        })
+        .catch((err) => {
+          setError(err.message);
+          setData(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
   }
 
   useEffect(() => {
     fetchPiece();
-    }, [token, user, isAuthenticated]);
+    }, [token, user, isAuthenticated, params.uuid]);
   
   useEffect(()=>{
     if(isModified){
@@ -275,7 +296,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                     })()}
                     <Flex alignItems="center">
                       <Heading as="h5" pr="2" size="xs">
-                        {(data && data.userdets)?data.userdets.nickname:"Unknown User"}
+                        {(data && data.userdets)?data.userdets.nickname?data.userdets.nickname:data.userdets.display_name:"Unknown User"}
                       </Heading>
                       <Button
                         colorScheme='blue'
@@ -308,10 +329,32 @@ function PiecePage({ isAuthenticated, token, user}) {
                     isRound
                     colorScheme={'pink'}
                     size="md"
-                    onClick={() => (window.location.href = ``)}
+                    onClick={() => {
+                      if(!isAuthenticated){
+                        loginWithRedirect()
+                      }else{
+                        let method = "POST"
+                        if(isPinned) {
+                          method = "DELETE"
+                        }else{
+                          method = "POST"
+                        }
+                        setIsPinned(!isPinned)
+                        fetch(
+                          `https://api.feverdreams.app/pin/${data.uuid}`,
+                          {
+                            method: method,
+                            headers: {
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${token}`,
+                            },
+                            body: JSON.stringify({ }),
+                          }
+                        )
+                      }
+                     }}
                     // ml={1}
-                    isDisabled
-                    icon={<AiOutlineHeart />}
+                    icon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
                   >
                   </IconButton>
                   <IconButton
@@ -391,6 +434,44 @@ function PiecePage({ isAuthenticated, token, user}) {
                       ml={1}
                     ><DownloadIcon />Download</Button>
                   }
+                  {data && ((user === data.str_author && data.algo==="stable" && !data.upscaled)) && <Button
+                    colorScheme={'green'}
+                    size="xs"
+                    isDisabled = {data.upscale_requested}
+                    onClick={() => {
+                      let headers
+                      if (token) {
+                        headers = {
+                          "Content-Type" : "application/json",
+                          "Authorization" : `Bearer ${token}`
+                        }
+                      }else{
+                        // console.log("Not logged in")
+                      }
+                      fetch(`${upscaleEndpoint}/${params.uuid}`,{headers})
+                      .then((response) => {
+                        return response.json();
+                      })
+                      .then((d) => {
+                        let updatedData = JSON.parse(JSON.stringify(data));
+                        updatedData.upscale_requested = true
+                        setData({ ...data, ...updatedData });
+                        setIsModified(true)
+                        return d;
+                      });
+                    }}
+                    ml={1}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+                    </svg>
+                    {data.upscale_requested?"Upscale Requested":"Request Upscale"}
+                  </Button>
+                  }
+                  {data && data.upscaled && <Button colorScheme={'green'} size="xs" onClick={() => {
+                    let url = `${IMAGE_HOST}/images/${params.uuid}_upscaled.png`
+                    window.open(url, "_blank")}}><DownloadIcon />Download Upscaled</Button>
+                  }
                 </WrapItem>
               </Wrap>
             </Flex>
@@ -435,8 +516,7 @@ function PiecePage({ isAuthenticated, token, user}) {
       <>
         <VStack>
           <Center>
-          <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}
-          </Code>
+          <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}</Code>
           </Center>
           {isAuthenticated && data.str_author === user &&
         <Center>
@@ -524,7 +604,7 @@ function PiecePage({ isAuthenticated, token, user}) {
       }
       <Skeleton isLoaded={!loading} className='w-100'>
       {data && <VStack> 
-        {isAuthenticated && data.algo==="stable" && (user === data.str_author) &&
+        {isAuthenticated && data.origin !=="dream" && data.algo==="stable" && (user === data.str_author) &&
           <SimpleGrid columns={{sm: 1, md: 3}} spacing="20px">
             <FormControl>
               <FormLabel htmlFor="private">Private Settings</FormLabel>
@@ -640,6 +720,12 @@ function PiecePage({ isAuthenticated, token, user}) {
             })()}
           </HStack>
         </Box>
+        {related && related.length > 0 &&
+        <Box w={"100%"} maxW={1024}>
+          <Heading size={"md"}>Related</Heading>
+          <FeedGrid dreams={related} loading={loading} isAuthenticated={isAuthenticated} token={token} user={user}/>
+        </Box>
+      }
       </VStack>}
       </Skeleton>
     </>}

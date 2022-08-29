@@ -31,6 +31,7 @@ import SearchPage from "./components/Pages/SearchPage"
 import algoliasearch from "algoliasearch/lite"
 
 import { InstantSearch } from "react-instantsearch-hooks-web"
+import MyLikesPage from "components/Pages/MyLikesPage"
 
 const searchClient = algoliasearch("SBW45H5QPH", "735cfe2686474a143a610f864474b2f2")
 
@@ -69,10 +70,10 @@ function App() {
             <Box p={5} width={"100%"}>
               <Routes>
                 {/* Gallery pages */}
-                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated}/>} />
-                <Route path="/random" element={<RandomGalleryPage />} />
-                <Route path="/recent/:page" element={<RecentGalleryPage />} />
-                <Route path="/recent/:type/:page" element={<RecentGalleryPage />} />
+                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
+                <Route path="/random/:type/:amount" element={<RandomGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
+                <Route path="/recent/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
+                <Route path="/recent/:type/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/rgb/:r/:g/:b/:range/:amount/:page" element={<ColorPage />} />
 
@@ -84,6 +85,7 @@ function App() {
                 />
                 <Route path="/jobs" element={<JobsPage />}></Route>
                 <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
+                <Route path="/myfavs/:page" element={<MyLikesPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
                 <Route
                   path="/dream"
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}

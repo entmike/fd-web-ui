@@ -5,7 +5,7 @@ import { Preview } from './Preview';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const FeedGrid = ({ dreams, loading }) => {
+const FeedGrid = ({ dreams, loading, isAuthenticated, token, user}) => {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -25,17 +25,17 @@ const FeedGrid = ({ dreams, loading }) => {
             />)
           )}
         {!loading &&
-          dreams.map(({ uuid, thumbnails }) => (
+          dreams.map((piece) => (
             <Skeleton
               margin=".25em"
               borderRadius="lg"
               minHeight="50px"
               min-width="360px"
               isLoaded={!loading}
-              key={uuid}
+              key={piece.uuid}
             >
               <Center>
-                <Preview thumbnails={thumbnails} key={uuid} uuid={uuid} />
+                <Preview piece={piece} key={piece.uuid} isAuthenticated={isAuthenticated} token={token} user = {user}/>
               </Center>
             </Skeleton>
           ))}
