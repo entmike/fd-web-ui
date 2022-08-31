@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import {
   Box,
+  Center,
   Container,
   Stack,
   SimpleGrid,
@@ -58,47 +59,35 @@ export function FdFooter() {
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}>
       <Container as={Stack} maxW={'6xl'} py={10}>
+      <ListHeader>Friends of Fever Dreams</ListHeader>
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={8}>
           {/* <Stack align={'flex-start'}>
             <ListHeader>About</ListHeader>
             <Link href={'#'}>About Fever Dreams</Link>
             <Link href={'#'}>Contact</Link>
           </Stack> */}
+          <Box borderWidth={1} p={5} borderRadius="md" h={"100%"}>
+          <Link href={'http://www.redmond.ai/'} target="_blank">
+            <Image src="/friends/redmond-logo.png" h={14}/><br />
+          </Link>
+          <Text fontSize={"xs"}>Donating hardware and infrastructure to Fever Dreams.  Your high-performance AI cloud infrastructure. Dedicated or on-demand 80gb A100s and world record storage performance.</Text>
+          </Box>
 
-          <Stack align={'flex-start'}>
-            <ListHeader>Community</ListHeader>
-            {/* <Link href={'https://discord.gg/yNDqCnzCbs'}>Discord</Link> */}
-            <Stack direction={'row'} spacing={6}>
-            <SocialButton label={'Twitter'} href={'https://twitter.com/FeverDreamsAI'}>
-              <FaTwitter/>
-            </SocialButton>
-            <SocialButton label={'Discord'} href={'https://discord.gg/yNDqCnzCbs'}>
-              <SiDiscord />
-            </SocialButton>
-            <SocialButton label={'Instagram'} href={'https://www.instagram.com/feverdreamsai'}>
-              <FaInstagram />
-            </SocialButton>
-          </Stack>
-          </Stack>
-
-          <Stack align={'flex-start'}>
-          <ListHeader>Friends of Fever Dreams</ListHeader>
-            <Box borderWidth={1} p={5} borderRadius="md">
-            <Link href={'https://www.runpod.io/blog/accelerate-your-generate-art-with-disco-diffusion-and-runpod?ref=feverdreams'} target="_blank"><span style={{
-              fontFamily:`Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"`,
-              fontWeight:700
-            }}>Run<span style={{ color:`rgb(103, 58, 183)`}}>Pod</span></span></Link>
-            <Text fontSize={"xs"}>GPU compute superheros like RunPod and other community members make this project possible.  Visit their website and see how you can take your AI art to the next level!</Text>
-            </Box>
-          </Stack>
-          
-          <Stack align={'flex-start'}>
-            <ListHeader>Powered by DiscoArt</ListHeader>
-            <Box borderWidth={1} p={5} borderRadius="md">
-              <Link href={'https://github.com/jina-ai/discoart'} target="_blank"><Image src="/friends/jina-ai-logo-color.svg" height={8}></Image></Link>
-              <Text fontSize={"xs"}>Jina AI makes creating and integrating Disco Diffusion workflows simple with DiscoArt.  Visit their repo and give their GitHub Repository  a ⭐!</Text>
-            </Box>
-          </Stack>
+          <Box borderWidth={1} p={5} borderRadius="md" h={"100%"}>
+          <Link href={'https://www.runpod.io/blog/accelerate-your-generate-art-with-disco-diffusion-and-runpod?ref=feverdreams'} target="_blank"><span style={{
+            fontFamily:`Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"`,
+            fontWeight:700,
+            fontSize:32
+          }}>Run<span style={{ color:`rgb(103, 58, 183)`}}>Pod</span></span></Link>
+          <Text mt={5} fontSize={"xs"}>GPU compute superheros like RunPod and other community members make this project possible.  Visit their website and see how you can take your AI art to the next level!</Text>
+          </Box>
+        
+          <Box borderWidth={1} p={5} borderRadius="md" h={"100%"}>
+            <Link href={'https://github.com/jina-ai/discoart'} target="_blank">
+              <Image src="/friends/jina-ai-logo-color.svg" h={12} mb={5}/>
+            </Link>
+            <Text fontSize={"xs"}>Jina AI makes creating and integrating Disco Diffusion workflows simple with DiscoArt.  Visit their repo and give their GitHub Repository  a ⭐!</Text>
+          </Box>
         </SimpleGrid>
       </Container>
 
@@ -114,7 +103,18 @@ export function FdFooter() {
           spacing={4}
           justify={{ md: 'space-between' }}
           align={{ md: 'center' }}>
-          <Text>© 2022 Fever Dreams. All rights reserved</Text>
+          {/* <Text>© 2022 Fever Dreams. All rights reserved</Text> */}
+          <Stack direction={'row'} spacing={6}>
+            <SocialButton label={'Twitter'} href={'https://twitter.com/FeverDreamsAI'}>
+              <FaTwitter/>
+            </SocialButton>
+            <SocialButton label={'Discord'} href={'https://discord.gg/yNDqCnzCbs'}>
+              <SiDiscord />
+            </SocialButton>
+            <SocialButton label={'Instagram'} href={'https://www.instagram.com/feverdreamsai'}>
+              <FaInstagram />
+            </SocialButton>
+          </Stack>
         </Container>
       </Box>
     </Box>

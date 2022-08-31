@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Image, HStack, Button, IconButton } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { Previewcaption } from './Previewcaption';
+import { PreviewOverlay } from './PreviewOverlay';
 import { useState, useEffect } from 'react';
 
 export function Preview({piece, isAuthenticated, token, user}) {
@@ -24,17 +24,15 @@ export function Preview({piece, isAuthenticated, token, user}) {
       onTouchStart={touchover}
       onMouseOver={over}
       onMouseOut={out}>
-      <Link to={`/piece/${piece.uuid}`}>
-        <Image
-          src={`http://images.feverdreams.app/thumbs/1024/${piece.uuid}.jpg`}
-          alt={piece.uuid}
-          transition="0.2s ease-in-out"
-          // objectFit="contain"
-          style={{ objectFit: 'cover' }}
-          _hover={{ transform: 'scale(1.1)' }}
-        />
-      </Link>
-      <Previewcaption piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>
+      <Image
+        src={`http://images.feverdreams.app/thumbs/1024/${piece.preferredImage || piece.uuid}.jpg`}
+        alt={piece.uuid}
+        transition="0.2s ease-in-out"
+        // objectFit="contain"
+        style={{ objectFit: 'cover' }}
+        _hover={{ transform: 'scale(1.1)' }}
+      />
+      <PreviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>
     </Box>
   );
 }

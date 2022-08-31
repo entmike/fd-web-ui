@@ -9,6 +9,17 @@ import { useAuth0 } from '@auth0/auth0-react';
 import FeedGrid from '../shared/Feed/FeedGrid';
 
 import {
+  NumberInput,
+  NumberInputField,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInputStepper,
+  Select,
+  TabPanel,
+  Tabs,
+  Tab,
+  TabList,
+  TabPanels,
   Heading,
   SimpleGrid,
   Link,
@@ -47,6 +58,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  ModalFooter,
   ButtonGroup,
   useBreakpointValue,
   useToast
@@ -60,6 +72,7 @@ function PiecePage({ isAuthenticated, token, user}) {
   const IMAGE_HOST = 'https://images.feverdreams.app';
   const { loginWithRedirect } = useAuth0();
   const [data, setData] = useState(null);
+  const [augmentation, setAugmentation] = useState(null);
   const [related, setRelated] = useState(null);
   const [isPinned, setIsPinned] = useState(false);
   const [mutateEndpoint, setMutateEndpoint] = useState('/mutate');
@@ -110,7 +123,26 @@ function PiecePage({ isAuthenticated, token, user}) {
             }
           }
           if(!actualData.algo) actualData.algo="disco"
-          
+          actualData.images = []
+          actualData.images.push({
+            label : "Original",
+            hash : actualData.uuid
+          })
+          if(actualData.augs) {
+            actualData.augs.map((aug, index)=>{
+              if(aug.status==="complete"){
+                actualData.images.push({
+                  label : `Augmentation ${(index+1)}`,
+                  hash : aug.augid,
+                  params : aug.params
+                })
+              }
+            })
+          }
+          actualData.selectedTab = 0
+          actualData.images.map((image, index)=>{
+            if(image.hash===actualData.preferredImage) actualData.selectedTab = index
+          })
           setData(actualData);
           
           if(actualData.algo === "stable"){
@@ -207,8 +239,31 @@ function PiecePage({ isAuthenticated, token, user}) {
   }
 
 
-
-
+  function doUpscale(){
+    setLoading(true)
+    console.log(augmentation)
+    fetch(`${upscaleEndpoint}/${params.uuid}`,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ 
+        uuid: data.uuid,
+        augmentation : augmentation
+      })
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((d) => {
+      let updatedData = JSON.parse(JSON.stringify(data));
+      updatedData.upscale_requested = true
+      setData({ ...data, ...updatedData });
+      setIsModified(true)
+      return d;
+    });
+  }
 
   async function update() {
     setLoading(true)
@@ -248,8 +303,84 @@ function PiecePage({ isAuthenticated, token, user}) {
       status: status
     })
   }
+  
   return (
     <>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Augment</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+            {augmentation && <>
+              <FormControl>
+                <FormLabel htmlFor="private">Face Enhance</FormLabel>
+                <Switch
+                  id="face_enhance"
+                  isChecked={(augmentation.face_enhance===true)?true:false}
+                  onChange={(event) => {
+                    let updatedAugmentation = JSON.parse(JSON.stringify(augmentation));
+                    updatedAugmentation.face_enhance = event.target.checked ? true : false;
+                    setAugmentation({ ...augmentation, ...updatedAugmentation });
+                  }}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="model_name">Model</FormLabel>
+                <Select id = "model_name" placeholder='Select a model' value={augmentation.model_name} onChange={(event) => {
+                  let updatedAugmentation = JSON.parse(JSON.stringify(augmentation));
+                  let value = event.target.selectedOptions[0].value;
+                  updatedAugmentation.model_name = value
+                  setAugmentation({ ...augmentation, ...updatedAugmentation});
+                }}>
+                {
+                [
+                  {"key" : "RealESRGAN_x4plus", "text" : "RealESRGAN_x4plus"},
+                  {"key" : "RealESRGAN_x4plus_anime_6B", "text" : "RealESRGAN_x4plus_anime_6B"},
+                  {"key" : "RealESRGAN_x2plus", "text" : "RealESRGAN_x2plus"},
+                  // {"key" : "realesr-general-x4v3.pth", "text" : "realesr-general-x4v3.pth"}
+                  // {"key" : "realesr-animevideov3", "text" : "realesr-animevideov3"}
+                ].map(shape=>{
+                  return <option value={shape.key}>{shape.text}</option>
+                })
+                }
+                </Select>
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="outscale">Scale</FormLabel>
+                <NumberInput
+                  id="outscale"
+                  step={1}
+                  value={augmentation.outscale}
+                  min={1}
+                  max={4}
+                  clampValueOnBlur={true}
+                  onChange={(value) => {
+                    let updatedAugmentation = JSON.parse(JSON.stringify(augmentation));
+                    updatedAugmentation.outscale = parseInt(value)
+                    setAugmentation({ ...augmentation, ...updatedAugmentation});
+                  }}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper/>
+                    <NumberDecrementStepper/>
+                  </NumberInputStepper>
+                </NumberInput>
+                </FormControl>
+            </>}
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme='blue' mr={3} onClick={onClose}>Cancel</Button>
+              <Button colorScheme='green' mr={3} onClick={()=>{               
+                doUpscale()
+                onClose()
+              }}>Augment</Button>
+              {/* <Button variant='ghost'>Secondary Action</Button> */}
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       {error}
       {!error && <>
       <HStack mt={4} mb={4} maxW="1024" m="auto" position={'relative'}>
@@ -434,43 +565,25 @@ function PiecePage({ isAuthenticated, token, user}) {
                       ml={1}
                     ><DownloadIcon />Download</Button>
                   }
-                  {data && ((user === data.str_author && data.algo==="stable" && !data.upscaled)) && <Button
+                  {data && ((user === data.str_author && data.algo==="stable")) && <Button
                     colorScheme={'green'}
                     size="xs"
-                    isDisabled = {data.upscale_requested}
-                    onClick={() => {
-                      let headers
-                      if (token) {
-                        headers = {
-                          "Content-Type" : "application/json",
-                          "Authorization" : `Bearer ${token}`
-                        }
-                      }else{
-                        // console.log("Not logged in")
+                    onClick={()=>{
+                      let newAugmentation = {
+                        model_name : "RealESRGAN_x4plus",
+                        face_enhance : false,
+                        outscale : 2
                       }
-                      fetch(`${upscaleEndpoint}/${params.uuid}`,{headers})
-                      .then((response) => {
-                        return response.json();
-                      })
-                      .then((d) => {
-                        let updatedData = JSON.parse(JSON.stringify(data));
-                        updatedData.upscale_requested = true
-                        setData({ ...data, ...updatedData });
-                        setIsModified(true)
-                        return d;
-                      });
+                      setAugmentation({...augmentation, ...newAugmentation})
+                      onOpen()
                     }}
                     ml={1}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
                       <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
                     </svg>
-                    {data.upscale_requested?"Upscale Requested":"Request Upscale"}
+                    Augment
                   </Button>
-                  }
-                  {data && data.upscaled && <Button colorScheme={'green'} size="xs" onClick={() => {
-                    let url = `${IMAGE_HOST}/images/${params.uuid}_upscaled.png`
-                    window.open(url, "_blank")}}><DownloadIcon />Download Upscaled</Button>
                   }
                 </WrapItem>
               </Wrap>
@@ -478,40 +591,63 @@ function PiecePage({ isAuthenticated, token, user}) {
           </Flex>
         </Skeleton>
       </HStack>
-      {data && (data.status==="archived" || data.status==="complete" || (data.status==="processing" && data.percent !==undefined)) &&
-        <Link>
-        <Image
-          bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
-          onClick={(() => {
-            let url = ""
-            if(data.algo==="disco") url = data.status === 'processing'
-              ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : data.origin==='upload'
-              ? `${IMAGE_HOST}/images/${params.uuid}.png`
-              : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
-            
-            if(data.algo==="alpha" || data.algo=="stable") url = (data.status === 'complete' || data.status === 'archived')
-              ? `${IMAGE_HOST}/images/${params.uuid}.png`
-              : `${IMAGE_HOST}/${data.status}.jpg`
-            window.open(url, "_blank")
-          })}
-          maxH="1024"
-          m="auto"
-          mt="3"
-          mb="3"
-          borderRadius="lg"
-          alt={
-            (data.algo === "disco")?data.text_prompts?data.text_prompts:data.text_prompt:data.prompt
-          }
-          objectFit="cover"
-          src={
-            data.status === 'processing'
-              ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : `http://images.feverdreams.app/jpg/${data.uuid}.jpg`
-          }
-        />
-        </Link>
-      }
+        {data && (data.status==="archived" || data.status==="complete") && 
+          <Center>
+          <Box w={1024}>
+            <Tabs variant={"solid-rounded"} index={data.selectedTab} onChange={index=>{
+              let updatedData = JSON.parse(JSON.stringify(data));
+              updatedData.selectedTab = index
+              setData({ ...data, ...updatedData });
+            }}>
+              <TabList>
+                {data.images && data.images.map(image=>{
+                  return <Tab>{image.label}</Tab>
+                })}
+              </TabList>
+              <TabPanels>
+                {data.images && data.images.map(image=>{
+                  return <TabPanel>
+                    {isAuthenticated && data.str_author === user && data.preferredImage != image.hash && <Button colorScheme={"green"} onClick={(event) => {
+                      let updatedData = JSON.parse(JSON.stringify(data));
+                      updatedData.preferredImage = image.hash
+                      setData({ ...data, ...updatedData });
+                      setIsModified(true)
+                    }}>Make Preferred Image</Button>}
+                    {image.params &&
+                    <>
+                      <Badge mr={3} variant={"outline"}>{image.params.model_name}</Badge>
+                      <Badge mr={3} variant={"outline"}>Face Enhance: {image.params.face_enhance.toString()}</Badge>
+                      <Badge mr={3} variant={"outline"}>Scale: {image.params.outscale}</Badge>
+                    </>
+                    }
+                    <Link>
+                      <Image
+                        onClick={(() => {
+                          let url = ""
+                          url = `${IMAGE_HOST}/images/${image.hash}.png`
+                          window.open(url, "_blank")
+                        })}
+                        maxH="1024"
+                        m="auto"
+                        mt="3"
+                        mb="3"
+                        borderRadius="lg"
+                        alt={
+                          (data.algo === "disco")?data.text_prompts?data.text_prompts:data.text_prompt:data.prompt
+                        }
+                        objectFit="cover"
+                        src={`http://images.feverdreams.app/jpg/${image.hash}.jpg`
+                        }
+                      />
+                    </Link>
+                  </TabPanel>
+                })}
+              </TabPanels>
+            </Tabs>
+          </Box>
+          </Center>
+        }
+      
       {data && (data.status==="rejected" || data.status==="failed") && 
       <>
         <VStack>
