@@ -13,7 +13,7 @@ export default function ColorPage() {
 
   const params = useParams();
 
-  const apiURL = `https://api.feverdreams.app/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${params.amount}/${params.page}`;
+  const apiURL = `${process.env.REACT_APP_api_url}/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${params.amount}/${params.page}`;
 
   const prevURL = `/rgb/${params.r}/${params.g}/${params.b}/${params.range}/${
     params.amount

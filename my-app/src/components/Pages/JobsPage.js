@@ -49,7 +49,7 @@ function JobsPage() {
   function fetchStatus(type, amount, user_id) {
     setLoading(true);
 
-    let active = fetch(`https://api.feverdreams.app/v3/public_queue/processing`)
+    let active = fetch(`${process.env.REACT_APP_api_url}/v3/public_queue/processing`)
       .then((response) => {
         return response.json();
       })
@@ -57,7 +57,7 @@ function JobsPage() {
         return actualData;
       });
 
-    let queued = fetch(`https://api.feverdreams.app/v3/public_queue/queued`)
+    let queued = fetch(`${process.env.REACT_APP_api_url}/v3/public_queue/queued`)
       .then((response) => {
         return response.json();
       })

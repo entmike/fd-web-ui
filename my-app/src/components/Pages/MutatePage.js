@@ -55,7 +55,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
 
     try {
       const jobData = await fetch(
-        `https://api.feverdreams.app/job/${job_uuid}`,
+        `${process.env.REACT_APP_api_url}/job/${job_uuid}`,
         {
           // headers: {
           //   'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ function MutatePage({ isAuthenticated, token, mode }) {
       // return
       setLoading(true)      
       const { success: mutateSuccess, new_record: newRecord } = await fetch(
-        `https://api.feverdreams.app/web/${mode}`,
+        `${process.env.REACT_APP_api_url}/web/${mode}`,
         {
           method: 'POST',
           headers: {

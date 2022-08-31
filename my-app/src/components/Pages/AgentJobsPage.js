@@ -33,7 +33,7 @@ function AgentJobsPage() {
     let d = [];
     const prevURL = `/agentstatus/${params.agent}/${parseInt(params.page) - 1}`;
     const nextURL = `/agentstatus/${params.agent}/${parseInt(params.page) + 1}`;
-    const apiURL = `https://api.feverdreams.app/web/agentjobs/${params.agent}/${params.page}`
+    const apiURL = `${process.env.REACT_APP_api_url}/web/agentjobs/${params.agent}/${params.page}`
   for (let i = 0; i < 25; i++)
     d.push({
       render_type: 'render',

@@ -46,7 +46,7 @@ import {
     const [, setError] = useState(null);
     const [, setLoading] = useState(true);
     function fetchStats(amount) {
-      let url = `https://api.feverdreams.app/v3/landingstats`;
+      let url = `${process.env.REACT_APP_api_url}/v3/landingstats`;
       console.log(url);
       fetch(url)
         .then((response) => {

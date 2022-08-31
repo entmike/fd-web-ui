@@ -14,7 +14,7 @@ export default function RandomGalleryPage({isAuthenticated, token, user}) {
       if(!params) return
       console.log(params)
       setLoading(true);
-      const url = `https://api.feverdreams.app/random/${params.type}/50`;
+      const url = `${process.env.REACT_APP_api_url}/random/${params.type}/50`;
       fetch(url)
         .then((response) => response.json())
         .then((actualData) => {

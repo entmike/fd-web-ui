@@ -60,7 +60,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
     }
     try {
       const jobData = await fetch(
-        `https://api.feverdreams.app/v3/meta/${job_uuid}`,
+        `${process.env.REACT_APP_api_url}/v3/meta/${job_uuid}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
       let j = JSON.parse(JSON.stringify(job))
       j.batch_size = batchSize
       const { success: mutateSuccess, results: results } = await fetch(
-        `https://api.feverdreams.app/v3/create/${mode}`,
+        `${process.env.REACT_APP_api_url}/v3/create/${mode}`,
         {
           method: 'POST',
           headers: {

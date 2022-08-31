@@ -13,7 +13,7 @@ export default function FollowingPage({ isAuthenticated, token }) {
 
   const params = useParams();
 
-  const apiURL = `https://api.feverdreams.app/following`;
+  const apiURL = `${process.env.REACT_APP_api_url}/following`;
 
   const prevURL = `/following/${parseInt(params.page) - 1}`;
   const nextURL = `/following/${parseInt(params.page) + 1}`;
@@ -22,7 +22,7 @@ export default function FollowingPage({ isAuthenticated, token }) {
     setLoading(true);
     try {
       const jobData = await fetch(
-        `https://api.feverdreams.app/following`,
+        `${process.env.REACT_APP_api_url}/following`,
         {
           headers: {
             'Content-Type': 'application/json',

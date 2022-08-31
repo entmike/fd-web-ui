@@ -76,8 +76,8 @@ function PiecePage({ isAuthenticated, token, user}) {
   const [related, setRelated] = useState(null);
   const [isPinned, setIsPinned] = useState(false);
   const [mutateEndpoint, setMutateEndpoint] = useState('/mutate');
-  const [upscaleEndpoint, setUpscaleEndpoint] = useState('https://api.feverdreams.app/upscale');
-  const [nsfwEndpoint, setNSFWEndpoint] = useState('https://api.feverdreams.app/reportnsfw');
+  const [upscaleEndpoint, setUpscaleEndpoint] = useState(`${process.env.REACT_APP_api_url}/upscale`);
+  const [nsfwEndpoint, setNSFWEndpoint] = useState(`${process.env.REACT_APP_api_url}/reportnsfw`);
   const [editEndpoint, setEditEndpoint] = useState('/edit');
   const [loading, setLoading] = useState(true);
   const [isModified, setIsModified] = useState(false);
@@ -103,7 +103,7 @@ function PiecePage({ isAuthenticated, token, user}) {
     }else{
       // console.log("Not logged in")
     }
-    fetch(`https://api.feverdreams.app/v3/job/${uuid}`, {headers})
+    fetch(`${process.env.REACT_APP_api_url}/v3/job/${uuid}`, {headers})
       .then((response) => {
         let obj = response.json();
         return obj;
@@ -171,7 +171,7 @@ function PiecePage({ isAuthenticated, token, user}) {
         return actualData
       })
       .then((actualData)=>{
-        fetch(`https://api.feverdreams.app/v3/related/${actualData.uuid}/10/1`, {headers})
+        fetch(`${process.env.REACT_APP_api_url}/v3/related/${actualData.uuid}/10/1`, {headers})
         .then((response) => {
           let obj = response.json();
           return obj;
@@ -269,7 +269,7 @@ function PiecePage({ isAuthenticated, token, user}) {
     setLoading(true)
     console.log(data)
     const { success, message } = await fetch(
-      `https://api.feverdreams.app/v3/create/update`,
+      `${process.env.REACT_APP_api_url}/v3/create/update`,
       {
         method: 'POST',
         headers: {
@@ -435,7 +435,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                         size="xs"
                         onClick={() => {
                           fetch(
-                            `https://api.feverdreams.app/follow/${data.str_author}`,
+                            `${process.env.REACT_APP_api_url}/follow/${data.str_author}`,
                             {
                               method: 'POST',
                               headers: {
@@ -472,7 +472,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                         }
                         setIsPinned(!isPinned)
                         fetch(
-                          `https://api.feverdreams.app/pin/${data.uuid}`,
+                          `${process.env.REACT_APP_api_url}/pin/${data.uuid}`,
                           {
                             method: method,
                             headers: {
@@ -661,7 +661,7 @@ function PiecePage({ isAuthenticated, token, user}) {
           }}>Edit</Button>} */}
         {(data && (data.status==="rejected" || data.status==="failed")) && <Button colorScheme={"blue"}  isDisabled={!(data.status==="rejected" || data.status==="failed")} onClick={() => {
         fetch(
-            `https://api.feverdreams.app/web/retry`,
+            `${process.env.REACT_APP_api_url}/web/retry`,
             {
             method: 'POST',
             headers: {
@@ -680,7 +680,7 @@ function PiecePage({ isAuthenticated, token, user}) {
           }}>Retry</Button>}
           {(data.status==="rejected" || data.status==="failed" || data.status==="queued") && <Button colorScheme={"red"} isDisabled={!(data.status==="rejected" || data.status==="failed" || data.status==="queued")}  onClick={() => {
           fetch(
-              `https://api.feverdreams.app/web/cancel`,
+              `${process.env.REACT_APP_api_url}/web/cancel`,
               {
               method: 'POST',
               headers: {
@@ -714,7 +714,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                 }}>Edit</Button>
               <Button colorScheme={"red"} isDisabled={!(data.status==="rejected" || data.status==="failed" || data.status==="queued")}  onClick={() => {
                 fetch(
-                    `https://api.feverdreams.app/web/cancel`,
+                    `${process.env.REACT_APP_api_url}/web/cancel`,
                     {
                     method: 'POST',
                     headers: {
@@ -832,7 +832,7 @@ function PiecePage({ isAuthenticated, token, user}) {
               })()}
               </HStack>
             </Box>
-            {/* <Link color={'green.400'} href={`https://api.feverdreams.app/v2/job/${data.uuid}`}>Metadata</Link> */}
+            {/* <Link color={'green.400'} href={`${process.env.REACT_APP_api_url}/v2/job/${data.uuid}`}>Metadata</Link> */}
         </>}
         {data && <Link color={'red.400'} onClick={() =>{
           reportNSFW()

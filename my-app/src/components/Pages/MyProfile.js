@@ -16,7 +16,7 @@ function MyProfile({ isAuthenticated, token }) {
     try {
       setLoading(true);
       const { success: profileSuccess } = await fetch(
-        'https://api.feverdreams.app/web/profile',
+        `${process.env.REACT_APP_api_url}/web/profile`,
         {
           method: 'POST',
           headers: {
@@ -57,7 +57,7 @@ function MyProfile({ isAuthenticated, token }) {
   useEffect(() => {
     if (userDetails.dummy && user) {
         setLoading(true);
-        fetch(`https://api.feverdreams.app/user/${user.sub.split("|")[2]}`)
+        fetch(`${process.env.REACT_APP_api_url}/user/${user.sub.split("|")[2]}`)
           .then((response) => response.json())
           .then((actualData) => {
             setLoading(false);

@@ -37,7 +37,7 @@ function IncubatePage({ isAuthenticated, token }) {
 
     try {
       const jobData = await fetch(
-        `https://api.feverdreams.app/job/${job_uuid}`,
+        `${process.env.REACT_APP_api_url}/job/${job_uuid}`,
         {
           // headers: {
           //   'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ function IncubatePage({ isAuthenticated, token }) {
       setLoading(true);
       console.log(job)
       const { success: mutateSuccess, new_record: newRecord } = await fetch(
-        'https://api.feverdreams.app/web/incubate',
+        `${process.env.REACT_APP_api_url}/web/incubate`,
         {
           method: 'POST',
           headers: {

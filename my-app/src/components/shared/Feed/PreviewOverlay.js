@@ -90,7 +90,7 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                 }
                 setIsPinned(!isPinned)
                 fetch(
-                  `https://api.feverdreams.app/pin/${piece.uuid}`,
+                  `${process.env.REACT_APP_api_url}/pin/${piece.uuid}`,
                   {
                     method: method,
                     headers: {
@@ -128,7 +128,7 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                 }
                 setIsHidden(!isHidden)
                 fetch(
-                  `https://api.feverdreams.app/hide/${piece.uuid}`,
+                  `${process.env.REACT_APP_api_url}/hide/${piece.uuid}`,
                   {
                     method: method,
                     headers: {

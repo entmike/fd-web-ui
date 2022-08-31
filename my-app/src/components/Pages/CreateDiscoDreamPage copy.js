@@ -13,7 +13,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
     setLoading(true);
 
     try {
-      const dreamData = await fetch('https://api.feverdreams.app/web/dream', {
+      const dreamData = await fetch(`${process.env.REACT_APP_api_url}/web/dream`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
     try {
       setLoading(true);
       const data = await fetch(
-        'https://api.feverdreams.app/web/dream',
+        `${process.env.REACT_APP_api_url}/web/dream`,
         {
           method: 'POST',
           headers: {
@@ -75,7 +75,7 @@ function CreateDreamPage({ isAuthenticated, token }) {
 
   function handleWakeUp() {
     setLoading(true);
-    fetch(`https://api.feverdreams.app/awaken/${user.sub.split('|')[2]}`).then(
+    fetch(`${process.env.REACT_APP_api_url}/awaken/${user.sub.split('|')[2]}`).then(
       (response) => {
         setDream({});
         setLoading(false);

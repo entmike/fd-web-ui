@@ -26,7 +26,7 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
   useEffect(() => {
     if (!userDetails) {
       setUserIsLoading(true);
-      fetch(`https://api.feverdreams.app/user/${params.user_id}`)
+      fetch(`${process.env.REACT_APP_api_url}/user/${params.user_id}`)
         .then((response) => response.json())
         .then((actualData) => {
           setUserIsLoading(false);
@@ -47,7 +47,7 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
       console.log("Not logged in")
     }
     fetch(
-      `https://api.feverdreams.app/v3/userfeed/${params.user_id}/50/${params.page}`, {headers}
+      `${process.env.REACT_APP_api_url}/v3/userfeed/${params.user_id}/50/${params.page}`, {headers}
     )
       .then((response) => response.json())
       .then((actualData) => {
@@ -63,7 +63,7 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
   const nextURL = `/gallery/${params.user_id}/${parseInt(params.page) + 1}`;
 
   const handleFollowClick = () => {
-    fetch(`https://api.feverdreams.app/follow/${userDetails.user_id_str}`, {
+    fetch(`${process.env.REACT_APP_api_url}/follow/${userDetails.user_id_str}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

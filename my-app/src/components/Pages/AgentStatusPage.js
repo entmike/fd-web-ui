@@ -38,7 +38,7 @@ function AgentStatusPage() {
   const [loading, setLoading] = useState(true);
 
   function fetchStatus(type, amount, user_id) {
-    let url = `https://api.feverdreams.app/agentstats`;
+    let url = `${process.env.REACT_APP_api_url}/agentstats`;
     fetch(url)
       .then((response) => {
         return response.json();

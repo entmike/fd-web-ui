@@ -33,7 +33,7 @@ function MyUploads({ isAuthenticated, token }) {
                 console.log(documentArray)
                 formData.append('file', documentArray, documentArray.name)
                 await fetch(
-                    `https://api.feverdreams.app/web/uploadart`,
+                    `${process.env.REACT_APP_api_url}/web/uploadart`,
                     {
                         method: 'POST',
                         headers: {

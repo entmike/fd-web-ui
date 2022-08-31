@@ -38,7 +38,7 @@ export function CaptionCarousel({ amount }) {
   const top = useBreakpointValue({ base: '90%', md: '50%' });
   const side = useBreakpointValue({ base: '30%', md: '40px' });
   function fetchFeed(amount) {
-    let url = `https://api.feverdreams.app/random/${amount}/pano`;
+    let url = `${process.env.REACT_APP_api_url}/random/${amount}/pano`;
     console.log(url);
     fetch(url)
       .then((response) => {

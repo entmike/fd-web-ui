@@ -24,7 +24,7 @@ export default function RecentGalleryPage({isAuthenticated, token, user}) {
     "paint-pour" : "Paint and Pour (Disco Diffusion)",
   }
   const type = params.type || "all"
-  const apiURL = `https://api.feverdreams.app/v3/recent/${type}/50/${params.page}`;
+  const apiURL = `${process.env.REACT_APP_api_url}/v3/recent/${type}/50/${params.page}`;
 
   const prevURL = `/recent/${type}/${parseInt(params.page) - 1}`;
   const nextURL = `/recent/${type}/${parseInt(params.page) + 1}`;
