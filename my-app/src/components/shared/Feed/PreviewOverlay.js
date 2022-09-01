@@ -152,6 +152,11 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
               </HStack>
             </Link>
             </div>
+            {piece.params && piece.params.prompt && 
+            <div style={authorStyle}>
+                <small> {piece.params.prompt}</small>
+            </div>
+            }
             {/* <small> Time: { timestamp } </small> */}
           </Box>
         </Box>
