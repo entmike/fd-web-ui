@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton} from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton, Button} from '@chakra-ui/react';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
@@ -10,6 +10,8 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
   const navigate = useNavigate()
   const { loginWithRedirect } = useAuth0()
   const [isPinned, setIsPinned] = useState(piece.pinned?true:false)
+  const [pinLoading, setIsPinLoading] = useState(false)
+  const [delta, setDelta] = useState(0)
   const [isHidden, setIsHidden] = useState(piece.hide?true:false)
   let duration = 0.2
   let interestedStyle = {
@@ -26,7 +28,7 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
   let uninterestedStyle = {
     visibility: "hidden",
     opacity: 0.4,
-    transition: `visibility 0s ${duration}s, opacity ${duration}s linear, backdrop-filter ${duration}s;`,
+    transition: `visibility 0s ${duration}s, opacity ${duration}s linear, backdrop-filter ${duration}s`,
     position : "absolute",
     top : 0,
     left : 0,
@@ -60,21 +62,22 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
     maskStyle = {}
   }
   useEffect(() => {
-    console.log(piece)
-    console.log(user)
+    // console.log(piece)
+    // console.log(user)
   }, [isPinned, isHidden]);
 
     return (
     <Box style={maskStyle}>
         <Box style={overlayStyle} onClick={()=>{navigate(`/piece/${piece.uuid}`)}}>
-          <IconButton
+          <Button
             style={{
               position : "absolute",
               top : 0,
               left : 0,
               zIndex : 1
             }}
-            isRound
+            // isRound
+            isLoading = {pinLoading}
             colorScheme={'pink'}
             size="md"
             onClick={(e) => {
@@ -88,7 +91,7 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                 }else{
                   method = "POST"
                 }
-                setIsPinned(!isPinned)
+                setIsPinLoading(true)
                 fetch(
                   `${process.env.REACT_APP_api_url}/pin/${piece.uuid}`,
                   {
@@ -99,11 +102,28 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                     },
                     body: JSON.stringify({ }),
                   }
-                )
+                ).then(r=>{
+                  if(isPinned){
+                    setIsPinned(false)
+                    if(piece.pinned) {
+                      setDelta(-1)
+                    }else{
+                      setDelta(0)
+                    }
+                  }else{
+                    setIsPinned(true)
+                    if(!piece.pinned) {
+                      setDelta(+1)
+                    }else{
+                      setDelta(0)
+                    }
+                  }
+                  setIsPinLoading(false)
+                })
               }
             }}
-            icon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
-          />
+            leftIcon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
+          >{(piece && piece.likes?piece.likes:0)+delta}</Button>
           {piece.userdets.user_str === user && 
           <IconButton
             style={{

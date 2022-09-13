@@ -75,11 +75,13 @@ function PiecePage({ isAuthenticated, token, user}) {
   const [augmentation, setAugmentation] = useState(null);
   const [related, setRelated] = useState(null);
   const [isPinned, setIsPinned] = useState(false);
+  const [delta, setDelta] = useState(0)
   const [mutateEndpoint, setMutateEndpoint] = useState('/mutate');
   const [upscaleEndpoint, setUpscaleEndpoint] = useState(`${process.env.REACT_APP_api_url}/upscale`);
   const [nsfwEndpoint, setNSFWEndpoint] = useState(`${process.env.REACT_APP_api_url}/reportnsfw`);
   const [editEndpoint, setEditEndpoint] = useState('/edit');
   const [loading, setLoading] = useState(true);
+  const [pinLoading, setPinLoading] = useState(false);
   const [isModified, setIsModified] = useState(false);
   const [error, setError] = useState(null);
   const [textPrompt, setTextPrompt] = useState([]);
@@ -456,8 +458,9 @@ function PiecePage({ isAuthenticated, token, user}) {
                   alignItems="center">
                   <ViewIcon />
                   <Text ml={2} mr={2}>{data && data.views}</Text>
-                  <IconButton
-                    isRound
+                  <Button
+                    // isRound
+                    isLoading = {pinLoading}
                     colorScheme={'pink'}
                     size="md"
                     onClick={() => {
@@ -470,7 +473,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                         }else{
                           method = "POST"
                         }
-                        setIsPinned(!isPinned)
+                        setPinLoading(true)
                         fetch(
                           `${process.env.REACT_APP_api_url}/pin/${data.uuid}`,
                           {
@@ -481,13 +484,30 @@ function PiecePage({ isAuthenticated, token, user}) {
                             },
                             body: JSON.stringify({ }),
                           }
-                        )
+                        ).then(r=>{
+                          if(isPinned){
+                            setIsPinned(false)
+                            if(data.pinned) {
+                              setDelta(-1)
+                            }else{
+                              setDelta(0)
+                            }
+                          }else{
+                            setIsPinned(true)
+                            if(!data.pinned) {
+                              setDelta(+1)
+                            }else{
+                              setDelta(0)
+                            }
+                          }
+                          setPinLoading(false)
+                        })
                       }
                      }}
                     // ml={1}
-                    icon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
-                  >
-                  </IconButton>
+                    leftIcon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
+                  >{(data && data.likes?data.likes:0)+delta}
+                  </Button>
                   <IconButton
                     isRound
                     colorScheme={'purple'}
@@ -523,7 +543,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                   }
                   {data && ((user === data.str_author && data.private && data.algo==="stable") || data.algo==="disco" || (data.algo==="stable" && !data.private)) && <Button
                     colorScheme={'green'}
-                    size="xs"
+                    // size="xs"
                     onClick={() => (navigate(`${mutateEndpoint}/${params.uuid}`))}
                     ml={1}
                   >
@@ -536,7 +556,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                   {data && (data.status === 'complete' || data.status === 'archived') &&
                     <Button
                       colorScheme={'green'}
-                      size="xs"
+                      // size="xs"
                       onClick={() => {
                             let url =""
                             if(data.algo==="disco") url = data.status === 'processing'

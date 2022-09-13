@@ -195,6 +195,12 @@ export function Nav() {
                 <MenuDivider />
                 <MenuItem
                   onClick={() =>
+                    (window.location.href = `/popular/stable/1`)
+                  }
+                >Popular Art
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
                     (window.location.href = `/recent/stable/1`)
                   }
                 >Recent Art
@@ -204,6 +210,12 @@ export function Nav() {
                     (window.location.href = `/recent/dream/1`)
                   }
                 >Recent Dreams
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    (window.location.href = `/recent/hallucination/1`)
+                  }
+                >Recent Hallucinations
                 </MenuItem>
                 <MenuDivider />
                 <MenuItem
@@ -377,10 +389,10 @@ export function Nav() {
                   <MenuItem
                     onClick={() => (window.location.href = `/agentstatus`)}
                   >
-                    Status
+                    GPU Status
                   </MenuItem>
                   <MenuItem onClick={() => (window.location.href = `/jobs`)}>
-                    Jobs
+                    Job Queue
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem

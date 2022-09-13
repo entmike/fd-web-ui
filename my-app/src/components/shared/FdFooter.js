@@ -55,6 +55,7 @@ const SocialButton = ({
 
 export function FdFooter() {
   return (
+    <>
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}>
@@ -118,5 +119,10 @@ export function FdFooter() {
         </Container>
       </Box>
     </Box>
+    <Box p={5}>
+        <Link href="https://www.buymeacoffee.com/entmike"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&slug=entmike&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></Link>
+        <small>Totally optional, but totally appreciated!  Donations help keep this site running and free to use.</small>
+    </Box>
+    </>
   );
 }

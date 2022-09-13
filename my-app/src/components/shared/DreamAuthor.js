@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Image, Heading, Button, VStack, Flex } from '@chakra-ui/react';
 
 export function DreamAuthor(props) {
-  console.log(props);
+  // console.log(props);
   return (
     <Link to={`/gallery/${props.userdets.user_str}/1`}>
       <Flex mt="3" mb="3">

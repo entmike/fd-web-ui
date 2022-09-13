@@ -6,7 +6,7 @@ import { Text, Flex, Center, Heading } from '@chakra-ui/react';
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
-export default function RecentGalleryPage({isAuthenticated, token, user, permissions}) {
+export default function PopularGalleryPage({isAuthenticated, token, user, permissions}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,10 +25,10 @@ export default function RecentGalleryPage({isAuthenticated, token, user, permiss
     "paint-pour" : "Paint and Pour (Disco Diffusion)",
   }
   const type = params.type || "all"
-  const apiURL = `${process.env.REACT_APP_api_url}/v3/recent/${type}/50/${params.page}`;
+  const apiURL = `${process.env.REACT_APP_api_url}/v3/popular/${type}/50/${params.page}`;
 
-  const prevURL = `/recent/${type}/${parseInt(params.page) - 1}`;
-  const nextURL = `/recent/${type}/${parseInt(params.page) + 1}`;
+  const prevURL = `/popular/${type}/${parseInt(params.page) - 1}`;
+  const nextURL = `/popular/${type}/${parseInt(params.page) + 1}`;
 
   useEffect(() => {
     setLoading(true);
@@ -59,7 +59,7 @@ export default function RecentGalleryPage({isAuthenticated, token, user, permiss
 
   return (
     <>
-      <Heading>Recent {headers[type]}</Heading>
+      <Heading>Popular {headers[type]}</Heading>
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

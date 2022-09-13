@@ -1,13 +1,16 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams, createSearchParams, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Skeleton,
   Heading,
   HStack,
   VStack,
-  Button
+  Button,
+  Switch,
+  FormControl,
+  FormLabel
 } from '@chakra-ui/react';
 import FeedGrid from '../shared/Feed/FeedGrid';
 import { SocialButton } from 'components/shared/SocialButton';
@@ -18,10 +21,14 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [include, setInclude] = useState(searchParams.getAll("include"));
+  const [exclude, setExclude] = useState(searchParams.getAll("exclude"));
   const [userDetails, setUserDetails] = useState(null);
   const [userIsLoading, setUserIsLoading] = useState(false);
 
-  const params = useParams();
+  const params = useParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!userDetails) {
@@ -46,8 +53,16 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
     }else{
       console.log("Not logged in")
     }
+    let url = `${process.env.REACT_APP_api_url}/v3/userfeed/${params.user_id}/50/${params.page}?q=1`
+    if(exclude.length>0){
+      url += `&exclude=${exclude.join(',')}`
+    }
+    if(include.length>0){
+      url += `&include=${include.join(',')}`
+    }
+    console.log(url)
     fetch(
-      `${process.env.REACT_APP_api_url}/v3/userfeed/${params.user_id}/50/${params.page}`, {headers}
+      url, {headers}
     )
       .then((response) => response.json())
       .then((actualData) => {
@@ -57,7 +72,7 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
           feed: actualData,
         });
       });
-  }, [params.user_id, params.page, token, user, isAuthenticated]);
+  }, [params.user_id, params.page, token, user, isAuthenticated, include, exclude]);
 
   const prevURL = `/gallery/${params.user_id}/${parseInt(params.page) - 1}`;
   const nextURL = `/gallery/${params.user_id}/${parseInt(params.page) + 1}`;
@@ -111,6 +126,47 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
           </VStack>
         </Skeleton>
       </HStack>
+      <Skeleton isLoaded={!loading}>
+        <FormControl>
+          <FormLabel htmlFor="dreams">Include Dreams</FormLabel>
+          <Switch
+            id="dreams"
+            isChecked={(()=>{return !exclude.find(e=>e==="dream"?true:false)})()}
+            onChange={(event) => {
+              let updatedExclude = JSON.parse(JSON.stringify(exclude));
+              let index = updatedExclude.findIndex(e=>e==="dream"?true:false)
+              console.log(index)
+              if(index!==-1) updatedExclude.splice(index, 1)
+              let checked = event.target.checked ? true : false;
+              if(!checked) updatedExclude.push("dream")
+              setExclude(updatedExclude);
+              
+              let p = {}
+              
+              if(include.length>0) p.include = include.join(",")
+              if(updatedExclude.length>0) p.exclude = updatedExclude.join(",")
+
+              navigate({
+                pathname: `/gallery/${params.user_id}/${parseInt(params.page)}`,
+                search: `?${createSearchParams(p)}`,
+              });
+            }}
+          />
+        </FormControl>
+        {/* <FormControl>
+          <FormLabel htmlFor="nsfw">NSFW</FormLabel>
+          <Switch
+            id="nsfw"
+            isChecked={(()=>{return include.find(e=>e==="nsfw"?true:false)})()}
+          onChange={(event) => {
+            console.log(event)
+            // let updatedAugmentation = JSON.parse(JSON.stringify(augmentation));
+            // updatedAugmentation.face_enhance = event.target.checked ? true : false;
+            // setAugmentation({ ...augmentation, ...updatedAugmentation });
+          }}
+          />
+        </FormControl> */}
+      </Skeleton>
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

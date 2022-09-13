@@ -12,6 +12,7 @@ import { Hero } from "./components/Pages/HomePage"
 import UserGalleryPage from "./components/Pages/UserGalleryPage"
 import RandomGalleryPage from "./components/Pages/RandomGalleryPage"
 import RecentGalleryPage from "./components/Pages/RecentGalleryPage"
+import PopularGalleryPage from "./components/Pages/PopularGalleryPage"
 import MutatePage from "./components/Pages/MutatePage"
 import MutateStablePage from "./components/Pages/MutateStablePage"
 import IncubatePage from "./components/Pages/MutatePage"
@@ -37,6 +38,7 @@ const searchClient = algoliasearch("SBW45H5QPH", "735cfe2686474a143a610f864474b2
 
 function App() {
   const {user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const [permissions, setPermissions] = useState(null)
   const [token, setToken] = useState(null)
   const [userId, setUserId] = useState(null)
   const getToken = async () => {
@@ -51,6 +53,20 @@ function App() {
       if(user){
         let userId = user.sub.split("|")[2]
         setUserId(userId)
+        let headers
+        if (token) {
+          const apiURL = `${process.env.REACT_APP_api_url}/mypermissions`;
+          headers = {
+            "Content-Type" : "application/json",
+            "Authorization" : `Bearer ${token}`
+          }
+          fetch(apiURL,{headers})
+            .then((response) => {
+              return response.json()
+            }).then(permissions=>{
+              setPermissions(permissions)
+            })
+        }
       }
     } catch (e) {
       console.log("Not logged in")
@@ -73,7 +89,8 @@ function App() {
                 <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route path="/random/:type/:amount" element={<RandomGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route path="/recent/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route path="/recent/:type/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
+                <Route path="/popular/:type/:page" element={<PopularGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
+                <Route path="/recent/:type/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId} permissions={permissions}/>} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/rgb/:r/:g/:b/:range/:amount/:page" element={<ColorPage />} />
 
@@ -83,7 +100,8 @@ function App() {
                   path={'/piece/:uuid'}
                   element={<PiecePage token={token} isAuthenticated={isAuthenticated} user={userId}/>}
                 />
-                <Route path="/jobs" element={<JobsPage />}></Route>
+                <Route path="/jobs" element={<JobsPage/>}></Route>
+                <Route path="/jobs/:type" element={<JobsPage />}></Route>
                 <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
                 <Route path="/myfavs/:page" element={<MyLikesPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
                 <Route

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Badge,
   Table,
@@ -28,7 +29,9 @@ import { CopyButton } from '../shared/CopyButton';
 
 function JobsPage() {
   let d = [];
-
+  const params = useParams();
+  let pType = params.type
+  if(!pType) pType = "processing"
   for (let i = 0; i < 25; i++)
     d.push({
       render_type: 'render',
@@ -41,49 +44,39 @@ function JobsPage() {
   let w = JSON.parse(JSON.stringify(d));
 
   const [data, setData] = useState({
-    active: d,
-    waiting: w,
+    processing: d,
+    queued: w,
   });
   const [loading, setLoading] = useState(true);
+  const [type, setType] = useState(pType);
 
-  function fetchStatus(type, amount, user_id) {
+  function fetchStatus() {
     setLoading(true);
-
-    let active = fetch(`${process.env.REACT_APP_api_url}/v3/public_queue/processing`)
+    fetch(`${process.env.REACT_APP_api_url}/v3/public_queue/${type}`)
       .then((response) => {
         return response.json();
       })
       .then((actualData) => {
-        return actualData;
+        let updatedData = JSON.parse(JSON.stringify(data))
+        updatedData[type] = actualData
+        setData({ ...data, ...updatedData });
+        setLoading(false)
       });
-
-    let queued = fetch(`${process.env.REACT_APP_api_url}/v3/public_queue/queued`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((actualData) => {
-        return actualData;
-      });
-
-    Promise.all([active, queued]).then((data) => {
-      setData({
-        active: data[0],
-        waiting: data[1],
-      });
-      setLoading(false);
-    });
   }
 
   // https://exerror.com/react-hook-useeffect-has-a-missing-dependency/
-  useEffect(() => {
-    fetchStatus();
-  }, []);
+  useEffect((type) => {
+    fetchStatus(type);
+  }, [type]);
   return (
     <>
-      <Tabs variant="soft-rounded" colorScheme="blue">
+      <Tabs variant="soft-rounded" colorScheme="blue" index={type==="processing"?0:1} onChange={index=>{
+          if(index===0) setType("processing")
+          if(index===1) setType("queued")
+        }}>
         <TabList>
-          <Tab>Active</Tab>
-          <Tab>Waiting</Tab>
+          <Tab>Processing</Tab>
+          <Tab>Queued</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -94,13 +87,13 @@ function JobsPage() {
                   <Tr>
                     <Th>Author</Th>
                     <Th>Job</Th>
-                    <Th>Agent/GPU Size</Th>
+                    <Th>Agent/Resolution</Th>
                     <Th>Models</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {data &&
-                    data.active.map((o, i) => {
+                    data.processing.map((o, i) => {
                       let prompt = "Unknown Prompt"
                       if (o.algo==="stable"){
                         prompt = o.prompt   // TODO: Params
@@ -143,8 +136,9 @@ function JobsPage() {
                           <Td>
                             <Skeleton isLoaded={!loading}>
                               <>
-                                <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code>
-                                <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.gpu_preference?o.gpu_preference:"Unknown"}</Badge>
+                                <Code>{o && o.agent_id?o.agent_id:"Unknown"}</Code><br/>
+                                {/* <Badge variant={"subtle"} colorScheme={"blue"} ml={5}>{o && o.gpu_preference?o.gpu_preference:"Unknown"}</Badge> */}
+                                <Badge variant={"outline"}>{o && o.width_height?`${o.width_height[0]} x ${o.width_height[1]}`:"Unknown"}</Badge>
                               </>
                             </Skeleton>
                           </Td>
@@ -172,13 +166,13 @@ function JobsPage() {
                   <Tr>
                     <Th>Author</Th>
                     <Th>Job</Th>
-                    <Th>GPU Size</Th>
+                    <Th>Resolution</Th>
                     <Th>Models</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {data &&
-                    data.waiting.map((o, i) => {
+                    data.queued.map((o, i) => {
                       let prompt = "Unknown Prompt"
                       if (o.algo==="stable"){
                         if (o.params)
@@ -215,7 +209,7 @@ function JobsPage() {
                           </Td>
                           <Td>
                             <Skeleton isLoaded={!loading}>
-                              <Badge variant={"outline"}>{o && o.gpu_preference?o.gpu_preference:"Unknown"}</Badge>
+                              <Badge variant={"outline"}>{o && o.width_height?`${o.width_height[0]} x ${o.width_height[1]}`:"Unknown"}</Badge>
                             </Skeleton>
                           </Td>
                           <Td>

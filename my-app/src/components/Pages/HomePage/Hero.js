@@ -33,7 +33,7 @@ export function Hero() {
         right={0}
         bottom={0}
         style={{
-          filter: 'blur(50px)',
+          filter: 'blur(25px)',
           zIndex: '-1',
           transform: 'scale(3.0)',
           "transform-origin": "50% 50%"
