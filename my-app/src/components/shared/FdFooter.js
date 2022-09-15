@@ -109,7 +109,7 @@ export function FdFooter() {
             <SocialButton label={'Twitter'} href={'https://twitter.com/FeverDreamsAI'}>
               <FaTwitter/>
             </SocialButton>
-            <SocialButton label={'Discord'} href={'https://discord.gg/yNDqCnzCbs'}>
+            <SocialButton label={'Discord'} href={'https://discord.gg/feverdreams'}>
               <SiDiscord />
             </SocialButton>
             <SocialButton label={'Instagram'} href={'https://www.instagram.com/feverdreamsai'}>

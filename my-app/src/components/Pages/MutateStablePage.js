@@ -86,7 +86,8 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
               scale : 5.0,
               eta : 0.0,
               steps: 50,
-              prompt: "A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation"              
+              prompt: "A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation",
+              sampler: "k_euler_ancestral"
             }
           }
 
@@ -213,7 +214,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         id="batch_size"
                         value={batchSize}
                         min={1}
-                        max={5}
+                        max={15}
                         clampValueOnBlur={true}
                         onChange={(value) => {
                           let bs = parseInt(value);
@@ -227,33 +228,37 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         </NumberInputStepper>
                       </NumberInput>
                       {show_help && <FormHelperText>
-                        Number of images to generate.  As a friendly reminder, Fever Dreams is not your personal NFT generator.
+                        Number of images to generate.
                       </FormHelperText>}
                     </FormControl>
                     </>}
-                    {/* <FormControl>
-                        <FormLabel htmlFor="gpu_preference">GPU Preference</FormLabel>
+                    <FormControl>
+                        <FormLabel htmlFor="sampler">Sampler</FormLabel>
                         <Select isDisabled = {!job.editable} 
-                            id = "gpu_preference"
-                            value={job.gpu_preference} onChange={(event) => {
+                            id = "sampler"
+                            value={job.params.sampler} onChange={(event) => {
                             let updatedJob = JSON.parse(JSON.stringify(job));
                             let value = event.target.selectedOptions[0].value;
-                            updatedJob.gpu_preference = value
+                            updatedJob.params.sampler = value
                             setJob({ ...job, ...updatedJob });
                           }}>
                           {
                             [
-                              {"key" : "small", "text" : "Small (10-12 GB)"},
-                              {"key" : "medium", "text" : "Medium (24 GB)"},
-                              {"key" : "large", "text" : "Large (48 GB)"},
-                              // {"key" : "titan", "text" : "Titan (80 GB)"}
+                              {"key" : "k_lms", "text" : "k_lms"},
+                              {"key" : "ddim", "text" : "ddim"},
+                              {"key" : "plms", "text" : "plms"},
+                              {"key" : "k_euler", "text" : "k_euler"},
+                              {"key" : "k_euler_ancestral", "text" : "k_euler_ancestral"},
+                              {"key" : "k_heun", "text" : "k_heun"},
+                              {"key" : "k_dpm_2", "text" : "k_dpm_2"},
+                              {"key" : "k_dpm_2_ancestral", "text" : "k_dpm_2_ancestral"},
                             ].map(shape=>{
                               return <option value={shape.key}>{shape.text}</option>
                             })
                           }
                         </Select>
-                        {show_help && <FormHelperText>Select your prefered GPU size.  Why not always pick "Large"?  Because you are a decent human being.</FormHelperText>}
-                      </FormControl> */}
+                        {show_help && <FormHelperText>Sampler</FormHelperText>}
+                      </FormControl>
                     {/* <FormControl>
                       <FormLabel htmlFor="agent_preference">Agent Preference (temporary)</FormLabel>
                       <Input
