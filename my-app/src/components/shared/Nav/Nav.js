@@ -380,6 +380,13 @@ export function Nav() {
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
+                      (window.location.href = `/myreviews/1`)
+                    }
+                  >
+                    My Reviews
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
                       (window.location.href = `/myprofile`)
                     }
                   >

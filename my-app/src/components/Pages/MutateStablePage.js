@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Button,
   Box,
@@ -44,13 +44,16 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
   const [job, setJob] = useState(null);
   let sh = localStorage.getItem("show-mutate-help");
   let pr = localStorage.getItem("private-settings");
+  let rr = localStorage.getItem("review-settings");
   let showhelp = (sh==='false')?false:true
   let privatesettings = (pr==='true')?true:false
+  let reviewsettings = (rr==='false')?false:true
   const [batchSize, setBatchSize] = useState(1);
   const [show_help, setShowHelp] = useState(showhelp);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
   const params = useParams();
+  const navigate = useNavigate();
 
   async function getJob(job_uuid) {
     setLoading(true);
@@ -69,10 +72,12 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
         }
       )
         .then((response) => {
-          return response.json();
+          let data = response.json()
+          return data
         })
         .then((data) => {
-          if (!data) data = {
+          if (!data){
+            data = {
             uuid : job_uuid,
             views : 0,
             str_author : discord_id,
@@ -80,31 +85,36 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
             editable : true,
             private : privatesettings,
             nsfw: false,
+            review: reviewsettings,
             params:{
               width_height:[ 1024, 512 ],
               seed: -1,
-              scale : 5.0,
+              scale : 7.0,
               eta : 0.0,
               steps: 50,
               prompt: "A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation",
               sampler: "k_euler_ancestral"
             }
           }
+        }else{
+          data.review = reviewsettings
+          data.private = privatesettings
+        }
 
-          if(mode==="edit"){
-            if(user){
-              discord_id = user.sub.split("|")[2]
-              if(discord_id !== data.str_author){
-                data.editable = false
-              }else{
-                data.editable = (data.status === "queued" || data.status === "rejected" || data.status === "failed")
-              }
+        if(mode==="edit"){
+          if(user){
+            discord_id = user.sub.split("|")[2]
+            if(discord_id !== data.str_author){
+              data.editable = false
+            }else{
+              data.editable = (data.status === "queued" || data.status === "rejected" || data.status === "failed")
             }
-          }else{
-            data.editable = true
           }
-          return data;
-        });
+        }else{
+          data.editable = true
+        }
+        return data;
+      });
 
       if (jobData) {
         setJob(jobData);
@@ -126,6 +136,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
       setLoading(true)
       let j = JSON.parse(JSON.stringify(job))
       j.batch_size = batchSize
+      console.log(j)
       const { success: mutateSuccess, results: results } = await fetch(
         `${process.env.REACT_APP_api_url}/v3/create/${mode}`,
         {
@@ -146,13 +157,13 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
 
       if (mutateSuccess) {
         if(mode==="mutate"){
-          console.log(results)
           if(results){
-            window.location.href = `/piece/${results[0].uuid}`;
-          }          
+            // console.log(results)
+            navigate(`/myjobs/all/1`);
+          }
         }
         if(mode==="edit"){
-          window.location.href = `/piece/${results[0].uuid}`;
+          navigate(`/piece/${results[0].uuid}`);
         }
       }
       setLoading(false);
@@ -207,6 +218,20 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         }}
                       />
                       {show_help && <FormHelperText>Keep settings private</FormHelperText>}
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel htmlFor="review">Review</FormLabel>
+                      <Switch isDisabled = {!job.editable}
+                        id="review"
+                        isChecked={(job.review===true)?true:false}
+                        onChange={(event) => {
+                          localStorage.setItem("review-settings",event.target.checked)
+                          let updatedJob = JSON.parse(JSON.stringify(job));
+                          updatedJob.review = event.target.checked ? true : false;
+                          setJob({ ...job, ...updatedJob });
+                        }}
+                      />
+                      {show_help && <FormHelperText>Review results before publishing</FormHelperText>}
                     </FormControl>
                     {mode!=="edit" && <><FormControl>
                       <FormLabel htmlFor="batch_size">Batch Size</FormLabel>

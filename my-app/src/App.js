@@ -19,6 +19,7 @@ import IncubatePage from "./components/Pages/MutatePage"
 import CreateDreamPage from "./components/Pages/CreateDreamPage"
 import JobsPage from "./components/Pages/JobsPage"
 import MyJobsPage from "./components/Pages/MyJobsPage"
+import MyReviewsPage from "./components/Pages/MyReviewsPage"
 import PiecePage from "./components/Pages/PiecePage"
 import AgentStatusPage from "./components/Pages/AgentStatusPage"
 import AgentJobsPage from "./components/Pages/AgentJobsPage"
@@ -103,7 +104,8 @@ function App() {
                 <Route path="/jobs" element={<JobsPage/>}></Route>
                 <Route path="/jobs/:type" element={<JobsPage />}></Route>
                 <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
-                <Route path="/myfavs/:page" element={<MyLikesPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
+                <Route path="/myfavs/:page" element={<MyLikesPage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
+                <Route path="/myreviews/:page" element={<MyReviewsPage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
                 <Route
                   path="/dream"
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}

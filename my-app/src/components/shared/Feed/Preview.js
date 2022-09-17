@@ -2,10 +2,12 @@ import React from 'react';
 import { Box, Image, HStack, Button, IconButton } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { PreviewOverlay } from './PreviewOverlay';
+import { ReviewOverlay } from './ReviewOverlay';
 import { useState, useEffect } from 'react';
 
-export function Preview({piece, isAuthenticated, token, user}) {
+export function Preview({piece, isAuthenticated, token, user, mode}) {
   const [isInterested, setIsInterested] = useState(false);
+  if(!mode) mode = "preview"
   function touchover(){
     setIsInterested(true)
     window.setTimeout(()=>{
@@ -19,7 +21,6 @@ export function Preview({piece, isAuthenticated, token, user}) {
     setIsInterested(false)
   }
   return (
-    
     <Box pos="relative" borderRadius="lg" overflow="hidden" 
       onTouchStart={touchover}
       onMouseOver={over}
@@ -32,7 +33,8 @@ export function Preview({piece, isAuthenticated, token, user}) {
         style={{ objectFit: 'cover' }}
         _hover={{ transform: 'scale(1.1)' }}
       />
-      <PreviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>
+      {mode==="preview" && <PreviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>}
+      {mode==="review" && <ReviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>}
     </Box>
   );
 }

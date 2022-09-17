@@ -5,9 +5,9 @@ import { Preview } from './Preview';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const FeedGrid = ({ dreams, loading, isAuthenticated, token, user}) => {
+const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode}) => {
   const { pathname } = useLocation();
-
+  if(!mode) mode = "preview"
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -35,7 +35,7 @@ const FeedGrid = ({ dreams, loading, isAuthenticated, token, user}) => {
               key={piece.uuid}
             >
               <Center>
-                <Preview piece={piece} key={piece.uuid} isAuthenticated={isAuthenticated} token={token} user = {user}/>
+                <Preview mode={mode} piece={piece} key={piece.uuid} isAuthenticated={isAuthenticated} token={token} user = {user}/>
               </Center>
             </Skeleton>
           ))}
