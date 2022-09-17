@@ -10,7 +10,7 @@ export function Preview({piece, isAuthenticated, token, user}) {
     setIsInterested(true)
     window.setTimeout(()=>{
       setIsInterested(false)
-    }, 2000)
+    }, 4000)
   }
   function over(){
     setIsInterested(true)

@@ -35,13 +35,6 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
     right: 0,
     bottom: 0,
   }
-  let authorStyle = {
-    backgroundColor : "rgba(0,0,0,0.4)",
-    width : "100%", height : "100%",
-    padding : "5px",
-    borderRadius : "5px",
-    backdropFilter: "blur(10px)"
-  }
   let overlayStyle, maskStyle
   if(isInterested) {
     overlayStyle = interestedStyle 
@@ -74,7 +67,9 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
               position : "absolute",
               top : 0,
               left : 0,
-              zIndex : 1
+              zIndex : 1,
+              opacity: 0.7,
+              // color : "#FFF"
             }}
             // isRound
             isLoading = {pinLoading}
@@ -164,19 +159,40 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
           />
           }
           <Box pos="absolute" bottom="0" m={5} p={2} >
-            <div style={authorStyle}>
-            <Link to={`/gallery/${piece.userdets.user_str}/1`}>
-              <HStack><Avatar size='sm' name={piece.userdets.display_name?piece.userdets.display_name:piece.userdets.nickname} src={piece.userdets.picture?piece.userdets.picture:piece.userdets.avatar}>
-                {/* <AvatarBadge boxSize='1.25em' bg='green.500' /> */}
-                </Avatar><small> {piece.userdets.nickname?piece.userdets.nickname:piece.userdets.display_name} </small>
-              </HStack>
-            </Link>
-            </div>
+            <div style={(()=>{
+              let bgColor = "rgba(0,0,0,0.4)"
+              if(piece.userdets.user_str === user){
+                if(piece.private){
+                  bgColor = "rgba(200,0,0,0.4)"
+                }else{
+                  bgColor = "rgba(0,170,50,0.4)"
+                }
+                
+              }
+              let authorStyle = {
+                backgroundColor : bgColor,
+                width : "100%", height : "100%",
+                padding : "5px",
+                borderRadius : "10px",
+                backdropFilter: "blur(10px)",
+                "box-shadow": "0px 0px 10px 10px rgba(0,0,0,0.4)"
+              }
+              return authorStyle
+            })()}>
+            <HStack>
+              <Box onClick={(e)=>{
+                navigate(`/gallery/${piece.userdets.user_str}/1`)
+                console.log(`/gallery/${piece.userdets.user_str}/1`)
+                e.stopPropagation()
+              }}>
+              <Avatar size='sm' name={piece.userdets.display_name?piece.userdets.display_name:piece.userdets.nickname} src={piece.userdets.picture?piece.userdets.picture:piece.userdets.avatar}>
+              {/* <AvatarBadge boxSize='1.25em' bg='green.500' /> */}
+              </Avatar><strong><small style={{color:"#FFF", "text-shadow": "1px 1px 2px #2a2a2a"}}> {piece.userdets.nickname?piece.userdets.nickname:piece.userdets.display_name} </small></strong>
+              </Box>
+            </HStack>
             {piece.params && piece.params.prompt && 
-            <div style={authorStyle}>
-                <small> {piece.params.prompt}</small>
-            </div>
-            }
+                <small style={{color:"#FFF", "text-shadow": "1px 1px 2px #2a2a2a"}}> {piece.params.prompt}</small>
+            }</div>
             {/* <small> Time: { timestamp } </small> */}
           </Box>
         </Box>
