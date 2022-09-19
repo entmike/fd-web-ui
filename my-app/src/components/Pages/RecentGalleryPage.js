@@ -39,7 +39,7 @@ export default function RecentGalleryPage({isAuthenticated, token, user, permiss
         "Authorization" : `Bearer ${token}`
       }
     }else{
-      console.log("Not logged in")
+      // console.log("Not logged in")
     }
     fetch(apiURL,{headers})
       .then((response) => response.json())
@@ -53,7 +53,7 @@ export default function RecentGalleryPage({isAuthenticated, token, user, permiss
       })
       .finally(() => {
         setLoading(false);
-        console.log(permissions)
+        // console.log(permissions)
       });
   }, [params.page, params.type, token, user, isAuthenticated, permissions]);
 

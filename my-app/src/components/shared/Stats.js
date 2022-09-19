@@ -25,7 +25,7 @@ import {
         rounded={'xl'}>
         <Flex justifyContent={'space-between'}>
           <Box pl={{ base: 2, md: 4 }}>
-            <StatLabel fontWeight={'medium'} isTruncated>{title}</StatLabel>
+            <StatLabel fontWeight={'medium'}>{title}</StatLabel>
             <StatNumber fontSize={'2xl'} fontWeight={'medium'}>
               {stat}
             </StatNumber>
@@ -47,7 +47,7 @@ import {
     const [, setLoading] = useState(true);
     function fetchStats(amount) {
       let url = `${process.env.REACT_APP_api_url}/v3/landingstats`;
-      console.log(url);
+      // console.log(url);
       fetch(url)
         .then((response) => {
           return response.json();

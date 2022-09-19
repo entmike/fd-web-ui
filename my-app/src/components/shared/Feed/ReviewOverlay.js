@@ -1,12 +1,12 @@
 import React from 'react';
-import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton, Button} from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton, Button, Badge} from '@chakra-ui/react';
 import { AiOutlineDelete, AiOutlineSave } from 'react-icons/ai';
 import { BiHide, BiShow } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useParams, useNavigate } from 'react-router-dom';
-export function ReviewOverlay({piece, isInterested, isAuthenticated, token, user}) {
+export function ReviewOverlay({piece, isInterested, isAuthenticated, token, user, onDecided}) {
   const navigate = useNavigate()
   const { loginWithRedirect } = useAuth0()
   const [isLoading, setIsLoading] = useState(false)
@@ -67,17 +67,16 @@ export function ReviewOverlay({piece, isInterested, isAuthenticated, token, user
               }else{
                 let method = "POST"
                 setDecided(true)
+                if(onDecided) onDecided()
                 fetch(
-                  `${process.env.REACT_APP_api_url}/review/${piece.uuid}`,
-                  {
+                  `${process.env.REACT_APP_api_url}/review/${piece.uuid}`,{
                     method: method,
                     headers: {
                       'Content-Type': 'application/json',
                       Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({ }),
-                  }
-                )
+                  })
               }
             }}
             icon={<AiOutlineSave />}
@@ -99,6 +98,7 @@ export function ReviewOverlay({piece, isInterested, isAuthenticated, token, user
               }else{
                 let method = "DELETE"
                 setDecided(true)
+                if(onDecided) onDecided()
                 fetch(
                   `${process.env.REACT_APP_api_url}/review/${piece.uuid}`,
                   {
@@ -115,8 +115,14 @@ export function ReviewOverlay({piece, isInterested, isAuthenticated, token, user
             icon={<AiOutlineDelete />}
           />
           <Box pos="absolute" bottom="0" m={5} p={2} >
+            <Badge colorScheme={"blue"} variant={"solid"} mr={2}>
+              {piece.params.seed}
+            </Badge>
+            <Badge colorScheme={"blue"} variant={"solid"}>
+              {piece.params.sampler}
+            </Badge>
             <div style={(()=>{
-              let bgColor = "rgba(0,0,200,0.4)"
+              let bgColor = "rgba(0,0,0,0.4)"
               let authorStyle = {
                 backgroundColor : bgColor,
                 width : "100%", height : "100%",
@@ -133,9 +139,6 @@ export function ReviewOverlay({piece, isInterested, isAuthenticated, token, user
                 console.log(`/gallery/${piece.userdets.user_str}/1`)
                 e.stopPropagation()
               }}>
-              <Avatar size='sm' name={piece.userdets.display_name?piece.userdets.display_name:piece.userdets.nickname} src={piece.userdets.picture?piece.userdets.picture:piece.userdets.avatar}>
-              {/* <AvatarBadge boxSize='1.25em' bg='green.500' /> */}
-              </Avatar><strong><small style={{color:"#FFF", textShadow: "1px 1px 2px #2a2a2a"}}> {piece.userdets.nickname?piece.userdets.nickname:piece.userdets.display_name} </small></strong>
               </Box>
             </HStack>
             {piece.params && piece.params.prompt && 

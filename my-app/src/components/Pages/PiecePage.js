@@ -87,9 +87,11 @@ function PiecePage({ isAuthenticated, token, user}) {
   const [textPrompt, setTextPrompt] = useState([]);
   const [seed, setSeed] = useState(0);
   const [steps, setSteps] = useState(0);
+  const [shareURL, setShareURL] = useState(window.location.href);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hasCopied, onCopy } = useClipboard(textPrompt);
   const { hasCopiedTags, onCopyTags } = useClipboard(data);
+  const { hasCopiedURL, onCopyURL } = useClipboard(shareURL);
   const toast = useToast()
   const params = useParams()
   const navigate = useNavigate();  
@@ -179,7 +181,6 @@ function PiecePage({ isAuthenticated, token, user}) {
           return obj;
         })
         .then(relatedData=>{
-          console.log(relatedData)
           setRelated(relatedData)
         })
         })
@@ -512,14 +513,22 @@ function PiecePage({ isAuthenticated, token, user}) {
                     isRound
                     colorScheme={'purple'}
                     size="md"
-                    onClick={() => (window.location.href = ``)}
+                    onClick={event=>{
+                      navigator.clipboard.writeText(shareURL)
+                      toast({
+                        title: "Share URL copied",
+                        description: "A share link has been copied to your clipboard.",
+                        status: "success"
+                      })
+                    }}
                     // ml={1}
-                    isDisabled
+                    // isDisabled
                     icon={<MdIosShare />}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
+                    {hasCopiedURL ? 'URL Copied' : 'Share'}
                   </IconButton>
                   {data && data.algo==="disco" &&
                     <IconButton
@@ -587,7 +596,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                   }
                   {data && ((user === data.str_author && data.algo==="stable")) && <Button
                     colorScheme={'green'}
-                    size="xs"
+                    // size="xs"
                     onClick={()=>{
                       let newAugmentation = {
                         model_name : "RealESRGAN_x4plus",
@@ -804,25 +813,33 @@ function PiecePage({ isAuthenticated, token, user}) {
           </SimpleGrid>}
         <Box>
           <Stack direction="row">
-            <Badge variant="outline" colorScheme="green">
+            <Badge variant="outline">
               {data.algo?data.algo:"disco"}
             </Badge>
-            <Badge variant="outline" colorScheme="blue">
+            <Badge variant="outline">
               {data.status}
             </Badge>
-            <Badge variant="outline" colorScheme="blue">
-              {data.percent} % Complete
-            </Badge>
+            {data && data.params && data.params.sampler && <Badge variant="outline">
+              {data.params.sampler}
+            </Badge>}
             {data && data.algo=="disco" && data.width_height && (()=>{
               return <Badge variant="outline" colorScheme="green">
                 {data.width_height[0]}x{data.width_height[1]}
               </Badge>
             })()}
             {data && (data.algo=="alpha" || data.algo=="stable") && data.width_height && (()=>{
-              return <Badge variant="outline" colorScheme="green">
+              return <Badge variant="outline">
                 {data.width_height[0]}x{data.width_height[1]}
               </Badge>
             })()}
+            {data && data.params && <>
+            <Badge variant="outline">
+              Seed: {seed}
+            </Badge>
+            <Badge variant="outline">
+              Steps: {steps}
+            </Badge>
+            </>}
           </Stack>
         </Box>
         {(!data.private || (user === data.str_author)) && 
@@ -833,12 +850,6 @@ function PiecePage({ isAuthenticated, token, user}) {
               {hasCopied ? 'Copied' : 'Copy Text Prompt'}
             </Button>
           </Code>
-          <Badge variant="outline" colorScheme="blue">
-            Seed: {seed}
-          </Badge>
-          <Badge variant="outline" colorScheme="green">
-            Steps: {steps}
-          </Badge>
           <Box>
             <HStack>
               {data && data.algo=="disco" && data.results && (()=>{

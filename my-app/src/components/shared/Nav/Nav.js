@@ -114,7 +114,7 @@ const CustomSearchBox = (props) => {
   );
 };
 
-export function Nav() {
+export function Nav({myInfo}) {
   let ack = 0
   if(localStorage.getItem("lastAck")) ack = parseInt(localStorage.getItem("lastAck"))
 
@@ -122,12 +122,15 @@ export function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isAuthenticated, logout, user } = useAuth0();
   const [ lastAck, setLastAck] = useState(ack);
-  const [ announcement, setAnnouncement] = useState({
+  const [ announcement, setAnnouncement] = useState([{
     text : `ℹ️ Disco Diffusion creation functionality is offline while website and database maintenance is carried out.
     Your existing Disco Diffusion renders will not be unavailable during this time, however they have NOT been deleted.
     Stable Diffusion functionality is not affected.  See Discord announcements for more details.`,
     id : 1
-  })
+  },{
+    text : `ℹ️ Beginning now, all rendered pieces will first land in your "My Reviews" section that can be found in your user menu.  My Reviews allows you to choose the images you want to keep and which you want to delete.`,
+    id : 2
+  }])
   const navigate = useNavigate();
   
   return (
@@ -185,48 +188,41 @@ export function Nav() {
                 // pr="2"
                 // pl="1"
               >Browse</MenuButton>
-              <MenuList>
-              <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/myfavs/1`)
-                  }
-                >My Favorites
-                </MenuItem>
-                <MenuDivider />
+              <MenuList>               
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/popular/stable/1`)
+                    navigate(`/popular/stable/1`)
                   }
                 >Popular Art
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/recent/stable/1`)
+                    navigate(`/recent/stable/1`)
                   }
                 >Recent Art
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/recent/dream/1`)
+                    navigate(`/recent/dream/1`)
                   }
                 >Recent Dreams
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/recent/hallucination/1`)
+                    navigate(`/recent/hallucination/1`)
                   }
                 >Recent Hallucinations
                 </MenuItem>
                 <MenuDivider />
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/random/stable/50`)
+                    navigate(`/random/stable/50`)
                   }
                 >Random Art
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
-                    (window.location.href = `/random/dream/50`)
+                    navigate(`/random/dream/50`)
                   }
                 >Random Dreams
                 </MenuItem>
@@ -312,7 +308,7 @@ export function Nav() {
                 </MenuItem> */}
                 <MenuItem
                   onClick={() =>
-                    (navigate(`/dream`))
+                    navigate(`/dream`)
                   }
                 >Dream
                 </MenuItem>
@@ -352,12 +348,18 @@ export function Nav() {
                   pr="2"
                   pl="1"
                 >
-                  <Profile />
+                  <Profile myInfo={myInfo} />
                 </MenuButton>
                 <MenuList>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `/gallery/${
+                      navigate(`/myfavs/1`)
+                    }
+                  >My Favorites
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      navigate(`/gallery/${
                         user.sub.split('|')[2]
                       }/1`)
                     }
@@ -373,37 +375,37 @@ export function Nav() {
                   </MenuItem> */}
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `/myjobs/all/1`)
+                      navigate(`/myjobs/all/1`)
                     }
                   >
                     My Jobs
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `/myreviews/1`)
+                      navigate(`/myreviews/1`)
                     }
                   >
-                    My Reviews
+                    My Reviews {myInfo.reviews > 0 && `(${myInfo.reviews})`}
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      (window.location.href = `/myprofile`)
+                      navigate(`/myprofile`)
                     }
                   >
                     My Profile
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
-                    onClick={() => (window.location.href = `/agentstatus`)}
+                    onClick={() => navigate(`/agentstatus`)}
                   >
                     GPU Status
                   </MenuItem>
-                  <MenuItem onClick={() => (window.location.href = `/jobs`)}>
+                  <MenuItem onClick={() => navigate(`/jobs`)}>
                     Job Queue
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
-                  onClick={() => (window.location.href = `https://discord.gg/yNDqCnzCbs`)}
+                  onClick={() => navigate(`https://discord.gg/yNDqCnzCbs`)}
                   >
                     Discord
                   </MenuItem>
@@ -438,18 +440,19 @@ export function Nav() {
           </Box>
         ) : null}
       </Box>
-      {announcement && announcement.id > lastAck && <Box m={5} mb={0} p={5} borderWidth={1} rounded={"md"}>
-        <Text>
-          {announcement.text}
-        </Text>
-        <Center>
-          <Button size={"sm"} colorScheme={"green"} onClick={()=>{
-            localStorage.setItem("lastAck",announcement.id)
-            setLastAck(announcement.id)
-          }}>Got it.</Button>
-        </Center>
-      </Box>
-      }
+      {announcement && announcement.map(a=>{
+        if (a.id > lastAck) return <Box m={5} mb={0} p={5} borderWidth={1} rounded={"md"}>
+          <Text>
+            {a.text}
+          </Text>
+          <Center>
+            <Button size={"sm"} colorScheme={"green"} onClick={()=>{
+              localStorage.setItem("lastAck",a.id)
+              setLastAck(a.id)
+            }}>Got it.</Button>
+          </Center>
+        </Box>
+      })}
     </>
   );
 }

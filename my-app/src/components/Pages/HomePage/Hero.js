@@ -36,7 +36,7 @@ export function Hero() {
           filter: 'blur(25px)',
           zIndex: '-1',
           transform: 'scale(3.0)',
-          "transform-origin": "50% 50%"
+          transformOrigin: "50% 50%"
         }}
         objectFit="contain"
         src="https://images.feverdreams.app/jpg/e61688efecd603911360860957e50b783aee6b0917d920a720451ba6928303db.jpg"

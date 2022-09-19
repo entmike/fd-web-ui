@@ -2,15 +2,17 @@ import React from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { Skeleton, Center, Box } from '@chakra-ui/react';
 import { Preview } from './Preview';
-import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react';
 
-const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode}) => {
+const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode, onDelete }) => {
   const { pathname } = useLocation();
   if(!mode) mode = "preview"
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+   
   return (
     <ResponsiveMasonry
       columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 4 }}
@@ -24,8 +26,7 @@ const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode}) => {
               key={index}
             />)
           )}
-        {!loading &&
-          dreams.map((piece) => (
+        {!loading && dreams && dreams.map((piece, index) => (
             <Skeleton
               margin=".25em"
               borderRadius="lg"
@@ -35,7 +36,9 @@ const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode}) => {
               key={piece.uuid}
             >
               <Center>
-                <Preview mode={mode} piece={piece} key={piece.uuid} isAuthenticated={isAuthenticated} token={token} user = {user}/>
+                <Preview mode={mode} piece={piece} key={piece.uuid} isAuthenticated={isAuthenticated} token={token} user = {user} onDecided={()=>{
+                  if (onDelete) onDelete(index)
+                }}/>
               </Center>
             </Skeleton>
           ))}

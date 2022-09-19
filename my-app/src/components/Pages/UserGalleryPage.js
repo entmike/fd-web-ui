@@ -51,7 +51,7 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
         "Authorization" : `Bearer ${token}`
       }
     }else{
-      console.log("Not logged in")
+      // console.log("Not logged in")
     }
     let url = `${process.env.REACT_APP_api_url}/v3/userfeed/${params.user_id}/50/${params.page}?q=1`
     if(exclude.length>0){
@@ -60,7 +60,7 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
     if(include.length>0){
       url += `&include=${include.join(',')}`
     }
-    console.log(url)
+    // console.log(url)
     fetch(
       url, {headers}
     )

@@ -61,7 +61,7 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
 
     return (
     <Box style={maskStyle}>
-        <Box style={overlayStyle} onClick={()=>{navigate(`/piece/${piece.uuid}`)}}>
+        <Box style={overlayStyle} onClick={()=>{window.open(`/piece/${piece.uuid}`, '_blank')}}>
           <Button
             style={{
               position : "absolute",
@@ -186,7 +186,6 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                 e.stopPropagation()
               }}>
               <Avatar size='sm' name={piece.userdets.display_name?piece.userdets.display_name:piece.userdets.nickname} src={piece.userdets.picture?piece.userdets.picture:piece.userdets.avatar}>
-              {/* <AvatarBadge boxSize='1.25em' bg='green.500' /> */}
               </Avatar><strong><small style={{color:"#FFF", textShadow: "1px 1px 2px #2a2a2a"}}> {piece.userdets.nickname?piece.userdets.nickname:piece.userdets.display_name} </small></strong>
               </Box>
             </HStack>

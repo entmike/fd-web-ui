@@ -30,43 +30,60 @@ import MyProfile from "./components/Pages/MyProfile"
 import MyUploads from "./components/Pages/MyUploads"
 
 import SearchPage from "./components/Pages/SearchPage"
-import algoliasearch from "algoliasearch/lite"
+// import algoliasearch from "algoliasearch/lite"
 
-import { InstantSearch } from "react-instantsearch-hooks-web"
+// import { InstantSearch } from "react-instantsearch-hooks-web"
 import MyLikesPage from "components/Pages/MyLikesPage"
 
-const searchClient = algoliasearch("SBW45H5QPH", "735cfe2686474a143a610f864474b2f2")
+// const searchClient = algoliasearch("SBW45H5QPH", "735cfe2686474a143a610f864474b2f2")
 
 function App() {
   const {user, isAuthenticated, getAccessTokenSilently } = useAuth0()
   const [permissions, setPermissions] = useState(null)
   const [token, setToken] = useState(null)
   const [userId, setUserId] = useState(null)
+  const [myInfo, setMyInfo] = useState({})
+
+  function checkMyInfo() {
+    const infoURL = `${process.env.REACT_APP_api_url}/v3/myinfo`;
+    const headers = {
+      "Content-Type" : "application/json",
+      "Authorization" : `Bearer ${token}`
+    }
+    fetch(infoURL,{headers})
+    .then((response) => {
+      return response.json()
+    }).then(info=>{
+      setMyInfo(info)
+      window.setTimeout(checkMyInfo, 5000)
+    }).catch(err=>{
+      setMyInfo({})
+    })
+  }
   const getToken = async () => {
     let token
-
     try {
       token = await getAccessTokenSilently({
         audience: "https://api.feverdreams.app/",
       })
-
       setToken(token)
       if(user){
         let userId = user.sub.split("|")[2]
         setUserId(userId)
         let headers
         if (token) {
+          checkMyInfo(token)
           const apiURL = `${process.env.REACT_APP_api_url}/mypermissions`;
           headers = {
             "Content-Type" : "application/json",
             "Authorization" : `Bearer ${token}`
           }
           fetch(apiURL,{headers})
-            .then((response) => {
-              return response.json()
-            }).then(permissions=>{
-              setPermissions(permissions)
-            })
+          .then((response) => {
+            return response.json()
+          }).then(permissions=>{
+            setPermissions(permissions)
+          })
         }
       }
     } catch (e) {
@@ -80,10 +97,10 @@ function App() {
 
   return (
     <ChakraProvider>
-      <InstantSearch searchClient={searchClient} indexName="feverdreams">
+      {/* <InstantSearch searchClient={searchClient} indexName="feverdreams"> */}
         <Router>
           <div className="App">
-            <Nav />
+            <Nav myInfo={myInfo}/>
             <Box p={5} width={"100%"}>
               <Routes>
                 {/* Gallery pages */}
@@ -141,7 +158,7 @@ function App() {
             <FdFooter />
           </div>
         </Router>
-      </InstantSearch>
+      {/* </InstantSearch> */}
     </ChakraProvider>
   )
 }

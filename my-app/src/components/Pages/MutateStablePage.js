@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { BsDice3 } from 'react-icons/bs';
 import {
   Button,
   Box,
@@ -44,11 +45,11 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
   const [job, setJob] = useState(null);
   let sh = localStorage.getItem("show-mutate-help");
   let pr = localStorage.getItem("private-settings");
-  let rr = localStorage.getItem("review-settings");
+  let bs = localStorage.getItem("batchsize-settings");
   let showhelp = (sh==='false')?false:true
   let privatesettings = (pr==='true')?true:false
-  let reviewsettings = (rr==='false')?false:true
-  const [batchSize, setBatchSize] = useState(1);
+  let batch_size = bs?parseInt(bs):5
+  const [batchSize, setBatchSize] = useState(batch_size);
   const [show_help, setShowHelp] = useState(showhelp);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
@@ -85,7 +86,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
             editable : true,
             private : privatesettings,
             nsfw: false,
-            review: reviewsettings,
+            review: true,
             params:{
               width_height:[ 1024, 512 ],
               seed: -1,
@@ -97,7 +98,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
             }
           }
         }else{
-          data.review = reviewsettings
+          data.review = true
           data.private = privatesettings
         }
 
@@ -159,7 +160,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
         if(mode==="mutate"){
           if(results){
             // console.log(results)
-            navigate(`/myjobs/all/1`);
+            navigate(`/myreviews/1`);
           }
         }
         if(mode==="edit"){
@@ -219,7 +220,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                       />
                       {show_help && <FormHelperText>Keep settings private</FormHelperText>}
                     </FormControl>
-                    <FormControl>
+                    {/* <FormControl>
                       <FormLabel htmlFor="review">Review</FormLabel>
                       <Switch isDisabled = {!job.editable}
                         id="review"
@@ -232,7 +233,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         }}
                       />
                       {show_help && <FormHelperText>Review results before publishing</FormHelperText>}
-                    </FormControl>
+                    </FormControl> */}
                     {mode!=="edit" && <><FormControl>
                       <FormLabel htmlFor="batch_size">Batch Size</FormLabel>
                       <NumberInput isDisabled = {!job.editable}
@@ -243,6 +244,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         clampValueOnBlur={true}
                         onChange={(value) => {
                           let bs = parseInt(value);
+                          localStorage.setItem("batchsize-settings",bs)
                           setBatchSize(bs);
                         }}
                       >
@@ -257,33 +259,6 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                       </FormHelperText>}
                     </FormControl>
                     </>}
-                    <FormControl>
-                        <FormLabel htmlFor="sampler">Sampler</FormLabel>
-                        <Select isDisabled = {!job.editable} 
-                            id = "sampler"
-                            value={job.params.sampler} onChange={(event) => {
-                            let updatedJob = JSON.parse(JSON.stringify(job));
-                            let value = event.target.selectedOptions[0].value;
-                            updatedJob.params.sampler = value
-                            setJob({ ...job, ...updatedJob });
-                          }}>
-                          {
-                            [
-                              {"key" : "k_lms", "text" : "k_lms"},
-                              {"key" : "ddim", "text" : "ddim"},
-                              {"key" : "plms", "text" : "plms"},
-                              {"key" : "k_euler", "text" : "k_euler"},
-                              {"key" : "k_euler_ancestral", "text" : "k_euler_ancestral"},
-                              {"key" : "k_heun", "text" : "k_heun"},
-                              {"key" : "k_dpm_2", "text" : "k_dpm_2"},
-                              {"key" : "k_dpm_2_ancestral", "text" : "k_dpm_2_ancestral"},
-                            ].map(shape=>{
-                              return <option value={shape.key}>{shape.text}</option>
-                            })
-                          }
-                        </Select>
-                        {show_help && <FormHelperText>Sampler</FormHelperText>}
-                      </FormControl>
                     {/* <FormControl>
                       <FormLabel htmlFor="agent_preference">Agent Preference (temporary)</FormLabel>
                       <Input
@@ -300,29 +275,52 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                   </SimpleGrid>
                   <FormControl>
                     <FormLabel htmlFor="prompt">Prompt</FormLabel>
-                      {job.params.prompt !==undefined && 
-                          <FormControl>
-                            <FormLabel htmlFor={`prompt`}>Text</FormLabel>
-                            <Textarea
-                              isDisabled = {!job.editable}
-                              id={`prompt`}
-                              type="text"
-                              value={job.params.prompt}
-                              onChange={(event) => {
-                                let prompt = event.target.value
-                                // if(!prompt) prompt=" "
-                                let updatedJob = JSON.parse(JSON.stringify(job));
-                                updatedJob.params.prompt = prompt;
-                                setJob({ ...job, ...updatedJob });
-                              }}
-                            />
-                            {show_help && <FormHelperText>Phrase, sentence, or string of words and phrases describing what the image should look like. The words will be analyzed by the AI and will guide the diffusion process toward the image you describe.</FormHelperText>}
-                          </FormControl>
-                    }
+                      <Textarea
+                        isDisabled = {!job.editable}
+                        id={`prompt`}
+                        type="text"
+                        value={job.params.prompt}
+                        onChange={(event) => {
+                          let prompt = event.target.value
+                          // if(!prompt) prompt=" "
+                          let updatedJob = JSON.parse(JSON.stringify(job));
+                          updatedJob.params.prompt = prompt;
+                          setJob({ ...job, ...updatedJob });
+                        }}
+                      />
+                      {show_help && <FormHelperText>Phrase, sentence, or string of words and phrases describing what the image should look like. The words will be analyzed by the AI and will guide the diffusion process toward the image you describe.</FormHelperText>}
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="sampler">Sampler</FormLabel>
+                    <Select isDisabled = {!job.editable} 
+                        id = "sampler"
+                        value={job.params.sampler} onChange={(event) => {
+                        let updatedJob = JSON.parse(JSON.stringify(job));
+                        let value = event.target.selectedOptions[0].value;
+                        updatedJob.params.sampler = value
+                        setJob({ ...job, ...updatedJob });
+                      }}>
+                      {
+                        [
+                          {"key" : "k_lms", "text" : "k_lms"},
+                          {"key" : "ddim", "text" : "ddim"},
+                          {"key" : "plms", "text" : "plms"},
+                          {"key" : "k_euler", "text" : "k_euler"},
+                          {"key" : "k_euler_ancestral", "text" : "k_euler_ancestral"},
+                          {"key" : "k_heun", "text" : "k_heun"},
+                          {"key" : "k_dpm_2", "text" : "k_dpm_2"},
+                          {"key" : "k_dpm_2_ancestral", "text" : "k_dpm_2_ancestral"},
+                        ].map(shape=>{
+                          return <option value={shape.key}>{shape.text}</option>
+                        })
+                      }
+                    </Select>
+                    {show_help && <FormHelperText>Sampler</FormHelperText>}
                   </FormControl>
                   <SimpleGrid columns={{sm: 2, md: 4}} spacing="20px">
                     <FormControl>
                       <FormLabel htmlFor="seed">Image Seed</FormLabel>
+                      <HStack>
                       <NumberInput isDisabled = {!job.editable}
                         id="seed"
                         value={job.params.seed}
@@ -341,6 +339,21 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                           <NumberDecrementStepper />
                         </NumberInputStepper>
                       </NumberInput>
+                      <IconButton
+                        isRound
+                        variant={"ghost"}
+                        // colorScheme={'blue'}
+                        size="md"
+                        onClick={() => {
+                          let updatedJob = JSON.parse(JSON.stringify(job))
+                          let r = Math.floor(Math.random() * (2**32))
+                          updatedJob.params.seed = parseInt(r)
+                          setJob({ ...job, ...updatedJob })
+                        }}
+                        // ml={1}
+                        icon={<BsDice3 />}
+                      ></IconButton>
+                      </HStack>
                       {show_help && <FormHelperText>
                         Image seed used during rendering. Specify -1 for a random seed.
                       </FormHelperText>}
@@ -471,7 +484,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         {show_help && <FormHelperText>Lock width/height to selected aspect ratio.</FormHelperText>}
                       </FormControl>
                     </SimpleGrid>  */}
-                    <SimpleGrid columns={{sm: 2, md: 2}} spacing="20px">
+                    <SimpleGrid columns={{sm: 3, md: 3}} spacing="20px">
                       <FormControl>
                         <FormLabel htmlFor="width">Width</FormLabel>
                         <NumberInput isDisabled = {!job.editable}

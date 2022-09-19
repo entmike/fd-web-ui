@@ -5,7 +5,7 @@ import { PreviewOverlay } from './PreviewOverlay';
 import { ReviewOverlay } from './ReviewOverlay';
 import { useState, useEffect } from 'react';
 
-export function Preview({piece, isAuthenticated, token, user, mode}) {
+export function Preview({piece, isAuthenticated, token, user, mode, onDecided}) {
   const [isInterested, setIsInterested] = useState(false);
   if(!mode) mode = "preview"
   function touchover(){
@@ -20,13 +20,14 @@ export function Preview({piece, isAuthenticated, token, user, mode}) {
   function out(){
     setIsInterested(false)
   }
+ 
   return (
-    <Box pos="relative" borderRadius="lg" overflow="hidden" 
+    <Box pos="relative" borderRadius="lg" overflow="hidden"
       onTouchStart={touchover}
       onMouseOver={over}
       onMouseOut={out}>
       <Image
-        src={`http://images.feverdreams.app/thumbs/1024/${piece.preferredImage || piece.uuid}.jpg`}
+        src={`http://images.feverdreams.app/thumbs/512/${piece.preferredImage || piece.uuid}.jpg`}
         alt={piece.uuid}
         transition="0.2s ease-in-out"
         // objectFit="contain"
@@ -34,7 +35,9 @@ export function Preview({piece, isAuthenticated, token, user, mode}) {
         _hover={{ transform: 'scale(1.1)' }}
       />
       {mode==="preview" && <PreviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>}
-      {mode==="review" && <ReviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user}/>}
+      {mode==="review" && <ReviewOverlay piece={piece} isInterested={isInterested} isAuthenticated={isAuthenticated} token={token} user = {user} onDecided={e=>{
+        if(onDecided) onDecided()
+      }}/>}
     </Box>
   );
 }
