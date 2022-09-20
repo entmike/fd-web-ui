@@ -19,17 +19,19 @@ import {
   Code,
   VStack,
   Button,
-  SimpleGrid
+  SimpleGrid,
+  useToast
 } from '@chakra-ui/react';
 import { AiOutlineDelete, AiOutlineSave } from 'react-icons/ai';
+import { BsDice3 } from 'react-icons/bs';
 
 const PieceTags = (props) => {
   return (
     <Wrap spacing={2} marginTop={props.marginTop}>
       {props.tags.map((tag) => {
         return (
-          <WrapItem>
-            <Tag size={'md'} variant="solid" key={tag}>
+          <WrapItem key={tag}>
+            <Tag size={'md'} variant="solid">
               {tag}
             </Tag>
           </WrapItem>
@@ -41,9 +43,11 @@ const PieceTags = (props) => {
 
 export const Piece = (props) =>{
   let {piece, isAuthenticated, user, token, onDecided} = props
+  const toast = useToast()
   const { loginWithRedirect } = useAuth0()
   const [isLoading, setIsLoading] = useState(false)
   const [decided, setDecided] = useState(false)
+  const [diceRolling, setDiceRolling] = useState(false)
   return (<Container maxW={'7xl'} p="5">
       {/* <Heading as="h1">Stories by Chakra Templates</Heading> */}
       <Heading size={"sm"}>
@@ -158,14 +162,47 @@ export const Piece = (props) =>{
               }
             }}
             icon={<AiOutlineDelete />}/>
+            <Button
+            isLoading={diceRolling}
+            rounded={"full"}
+            colorScheme={'green'}
+            size="md"
+            onClick={(e) => {
+              e.stopPropagation();
+              if(!isAuthenticated){
+                loginWithRedirect()
+              }else{
+                let method = "POST"
+                setDiceRolling(true)
+                fetch(
+                  `${process.env.REACT_APP_api_url}/v3/rolldice`,
+                  {
+                    method: method,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ uuid: piece.uuid, amount : 5 }),
+                  }
+                ).then((response=>{
+                  setDiceRolling(false)
+                  toast({
+                    title: "Job Received",
+                    description: "5 more coming up",
+                  })
+                })).catch(err=>{
+                  setDiceRolling(false)
+                })
+              }
+            }}><BsDice3 />&nbsp;x5</Button>
           </Wrap>
           <PieceTags tags={[piece.params.sampler, `Seed: ${piece.params.seed}`, `Scale: ${piece.params.scale}`, `Steps: ${piece.params.steps}`]} />
           <Text
             as="p"
             marginTop="2"
             color={useColorModeValue('gray.700', 'gray.200')}
-            fontSize="lg">
-            <Code>{piece.params.prompt}</Code>
+            fontSize="md">
+            <Code p={3}>{piece.params.prompt}</Code>
           </Text>
           {piece.userdets && <PieceAuthor name="John Doe" date={new Date('2021-04-06T19:01:27Z')} />}
         </Box>
