@@ -129,7 +129,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
 
   useEffect(() => {
     params && getJob(params.uuid);
-  }, []);
+  }, [token]);
   
   async function save() {
     try {
@@ -496,15 +496,15 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                           clampValueOnBlur={true}
                           onChange={(value) => {
                             let updatedJob = JSON.parse(JSON.stringify(job));
-                            updatedJob.params.width_height=updatedJob.width_height || [1280,768]
+                            // updatedJob.params.width_height=updatedJob.width_height || [1280,768]
                             updatedJob.params.width_height[0] = parseInt(value);
-                            if(updatedJob.aspect_ratio !== "free" && updatedJob.lock_ratio){
-                              let w = updatedJob.params.width_height[0]
-                              let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
-                              let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
-                              let w_h = [parseInt(w), parseInt(h_ratio/w_ratio * w)]
-                              updatedJob.params.width_height = w_h;
-                            }
+                            // if(updatedJob.aspect_ratio !== "free" && updatedJob.lock_ratio){
+                            //   let w = updatedJob.params.width_height[0]
+                            //   let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
+                            //   let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
+                            //   let w_h = [parseInt(w), parseInt(h_ratio/w_ratio * w)]
+                            //   updatedJob.params.width_height = w_h;
+                            // }
                             setJob({ ...job, ...updatedJob });
                           }}
                         >
@@ -529,15 +529,15 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                           clampValueOnBlur={true}
                           onChange={(value) => {
                             let updatedJob = JSON.parse(JSON.stringify(job));
-                            updatedJob.params.width_height=updatedJob.width_height || [1280,768]
+                            // updatedJob.params.width_height=updatedJob.width_height || [1280,768]
                             updatedJob.params.width_height[1] = parseInt(value);
-                            if(updatedJob.aspect_ratio !== "free" && updatedJob.lock_ratio){
-                              let h = updatedJob.params.width_height[1]
-                              let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
-                              let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
-                              let w_h = [parseInt((w_ratio/h_ratio * h)), parseInt(h)]
-                              updatedJob.params.width_height = w_h;
-                            }
+                            // if(updatedJob.aspect_ratio !== "free" && updatedJob.lock_ratio){
+                            //   let h = updatedJob.params.width_height[1]
+                            //   let w_ratio = parseInt(updatedJob.aspect_ratio.split(":")[0])
+                            //   let h_ratio = parseInt(updatedJob.aspect_ratio.split(":")[1])
+                            //   let w_h = [parseInt((w_ratio/h_ratio * h)), parseInt(h)]
+                            //   updatedJob.params.width_height = w_h;
+                            // }
                             setJob({ ...job, ...updatedJob });
                           }}
                         >
@@ -552,7 +552,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         </FormHelperText>}
                       </FormControl>
                     </SimpleGrid>
-                    <FormControl>
+                    {/* <FormControl>
                       <FormLabel htmlFor="nsfw">NSFW?</FormLabel>
                       <Switch isDisabled = {!job.editable}
                         id="nsfw"
@@ -564,7 +564,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                         }}
                       />
                       {show_help && <FormHelperText>Flag as NSFW. This does NOT mean may render racist, illegal, or sexually explicit content</FormHelperText>}
-                    </FormControl>
+                    </FormControl> */}
                   <Button isDisabled = {!job.editable} onClick={save}>{mode==="edit"?"Edit":"Mutate"}</Button>
                 </Skeleton>
               </Box>

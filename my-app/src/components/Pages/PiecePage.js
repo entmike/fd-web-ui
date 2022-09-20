@@ -61,7 +61,8 @@ import {
   ModalFooter,
   ButtonGroup,
   useBreakpointValue,
-  useToast
+  useToast,
+  background
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react'
 import { DreamAuthor } from '../shared/DreamAuthor';
@@ -386,28 +387,26 @@ function PiecePage({ isAuthenticated, token, user}) {
         </Modal>
       {error}
       {!error && <>
+        {/* {data && (data.status==="archived" || data.status==="complete") &&
+        <Image
+            bg={`rgb(${data.dominant_color[0]}, ${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
+            position={'absolute'}
+            top={-10}
+            left={-10}
+            right={-10}
+            bottom={-10}
+            style={{
+              filter: 'blur(70px)',
+              zIndex: '-1',
+              transformOrigin: "50% 50%",
+              // transform: 'scale(2.0)',
+              backgroundSize : "contain"
+            }}
+            objectFit="contain"
+            src={`http://images.feverdreams.app/jpg/${data.uuid}.jpg`}
+          />
+        } */}
       <HStack mt={4} mb={4} maxW="1024" m="auto" position={'relative'}>
-      {data && (data.status==="archived" || data.status==="complete" || (data.status==="processing" && data.percent !==undefined)) &&
-      <Image
-          bg={`rgb(${data.dominant_color[0]},${data.dominant_color[1]},${data.dominant_color[2]},0.5)`}
-          position={'absolute'}
-          top={-10}
-          left={-10}
-          right={-10}
-          bottom={-10}
-          style={{
-            filter: 'blur(70px)',
-            zIndex: '-1',
-            transform: 'scale(2.0)'
-          }}
-          objectFit="contain"
-          src={
-            data.status === 'processing'
-              ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-              : `http://images.feverdreams.app/jpg/${data.uuid}.jpg`
-          }
-        />
-        }
         <Skeleton isLoaded={!loading} className='w-100'>
           <Flex className="w-100" flexDirection={'column'} justifyContent="space-between" alignItems='center'>
             <Flex className="w-100" pl="2" textAlign="left" alignItems="center" justifyContent="space-between">
@@ -459,229 +458,253 @@ function PiecePage({ isAuthenticated, token, user}) {
                   alignItems="center">
                   <ViewIcon />
                   <Text ml={2} mr={2}>{data && data.views}</Text>
-                  <Button
-                    // isRound
-                    isLoading = {pinLoading}
-                    colorScheme={'pink'}
-                    size="md"
-                    onClick={() => {
-                      if(!isAuthenticated){
-                        loginWithRedirect()
-                      }else{
-                        let method = "POST"
-                        if(isPinned) {
-                          method = "DELETE"
-                        }else{
-                          method = "POST"
-                        }
-                        setPinLoading(true)
-                        fetch(
-                          `${process.env.REACT_APP_api_url}/pin/${data.uuid}`,
-                          {
-                            method: method,
-                            headers: {
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${token}`,
-                            },
-                            body: JSON.stringify({ }),
-                          }
-                        ).then(r=>{
-                          if(isPinned){
-                            setIsPinned(false)
-                            if(data.pinned) {
-                              setDelta(-1)
+                  </WrapItem>
+                  <WrapItem>
+                    <Wrap>
+                      <WrapItem>
+                        <Button
+                          // isRound
+                          isLoading = {pinLoading}
+                          colorScheme={'pink'}
+                          size="md"
+                          onClick={() => {
+                            if(!isAuthenticated){
+                              loginWithRedirect()
                             }else{
-                              setDelta(0)
+                              let method = "POST"
+                              if(isPinned) {
+                                method = "DELETE"
+                              }else{
+                                method = "POST"
+                              }
+                              setPinLoading(true)
+                              fetch(
+                                `${process.env.REACT_APP_api_url}/pin/${data.uuid}`,
+                                {
+                                  method: method,
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${token}`,
+                                  },
+                                  body: JSON.stringify({ }),
+                                }
+                              ).then(r=>{
+                                if(isPinned){
+                                  setIsPinned(false)
+                                  if(data.pinned) {
+                                    setDelta(-1)
+                                  }else{
+                                    setDelta(0)
+                                  }
+                                }else{
+                                  setIsPinned(true)
+                                  if(!data.pinned) {
+                                    setDelta(+1)
+                                  }else{
+                                    setDelta(0)
+                                  }
+                                }
+                                setPinLoading(false)
+                              })
                             }
-                          }else{
-                            setIsPinned(true)
-                            if(!data.pinned) {
-                              setDelta(+1)
-                            }else{
-                              setDelta(0)
-                            }
-                          }
-                          setPinLoading(false)
-                        })
+                          }}
+                          // ml={1}
+                          leftIcon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
+                        >{(data && data.likes?data.likes:0)+delta}
+                        </Button>
+                      </WrapItem>
+                      <WrapItem>
+                        <IconButton
+                          isRound
+                          colorScheme={'purple'}
+                          size="md"
+                          onClick={event=>{
+                            navigator.clipboard.writeText(shareURL)
+                            toast({
+                              title: "Share URL copied",
+                              description: "A share link has been copied to your clipboard.",
+                              status: "success"
+                            })
+                          }}
+                          // ml={1}
+                          // isDisabled
+                          icon={<MdIosShare />}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                          </svg>
+                          {hasCopiedURL ? 'URL Copied' : 'Share'}
+                        </IconButton>
+                      </WrapItem>
+                      {data && data.algo==="disco" &&
+                        <WrapItem>
+                          <IconButton
+                            isRound
+                            colorScheme={'green'}
+                            size="md"
+                            onClick={event=>{
+                              let tags = JSON.parse(JSON.stringify(data.discoart_tags))
+                              delete(tags._status)
+                              navigator.clipboard.writeText(JSON.stringify(tags, null, 2))
+                              toast({
+                                title: "DiscoArt tags copied.",
+                                description: "DiscoArt tags have been copied to your clipboard.",
+                                status: "success"
+                              })
+                            }}
+                            // ml={1}
+                            icon={<AiFillTags />}
+                          >
+                          </IconButton>
+                        </WrapItem>
                       }
-                     }}
-                    // ml={1}
-                    leftIcon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
-                  >{(data && data.likes?data.likes:0)+delta}
-                  </Button>
-                  <IconButton
-                    isRound
-                    colorScheme={'purple'}
-                    size="md"
-                    onClick={event=>{
-                      navigator.clipboard.writeText(shareURL)
-                      toast({
-                        title: "Share URL copied",
-                        description: "A share link has been copied to your clipboard.",
-                        status: "success"
-                      })
-                    }}
-                    // ml={1}
-                    // isDisabled
-                    icon={<MdIosShare />}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    {hasCopiedURL ? 'URL Copied' : 'Share'}
-                  </IconButton>
-                  {data && data.algo==="disco" &&
-                    <IconButton
-                      isRound
-                      colorScheme={'green'}
-                      size="md"
-                      onClick={event=>{
-                        let tags = JSON.parse(JSON.stringify(data.discoart_tags))
-                        delete(tags._status)
-                        navigator.clipboard.writeText(JSON.stringify(tags, null, 2))
-                        toast({
-                          title: "DiscoArt tags copied.",
-                          description: "DiscoArt tags have been copied to your clipboard.",
-                          status: "success"
-                        })
-                      }}
-                      // ml={1}
-                      icon={<AiFillTags />}
-                    >
-                    </IconButton>
-                  }
-                  {data && ((user === data.str_author && data.private && data.algo==="stable") || data.algo==="disco" || (data.algo==="stable" && !data.private)) && <Button
-                    colorScheme={'green'}
-                    // size="xs"
-                    onClick={() => (navigate(`${mutateEndpoint}/${params.uuid}`))}
-                    ml={1}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
-                    </svg>
-                    Mutate
-                  </Button>
-                  }
-                  {data && (data.status === 'complete' || data.status === 'archived') &&
-                    <Button
-                      colorScheme={'green'}
-                      // size="xs"
-                      onClick={() => {
-                            let url =""
-                            if(data.algo==="disco") url = data.status === 'processing'
-                              ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
-                              : data.origin==='upload'
-                              ? `${IMAGE_HOST}/images/${params.uuid}.png`
-                              : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+                      {data && ((user === data.str_author && data.private && data.algo==="stable") || data.algo==="disco" || (data.algo==="stable" && !data.private)) && 
+                      <WrapItem>
+                        <Button
+                          colorScheme={'green'}
+                          // size="xs"
+                          onClick={() => (navigate(`${mutateEndpoint}/${params.uuid}`))}
+                          ml={1}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+                          </svg>
+                          Mutate
+                        </Button>
+                      </WrapItem>
+                      }
+                      {data && (data.status === 'complete' || data.status === 'archived') &&
+                      <WrapItem>
+                        <Button
+                          colorScheme={'green'}
+                          // size="xs"
+                          onClick={() => {
+                                let url =""
+                                if(data.algo==="disco") url = data.status === 'processing'
+                                  ? `${IMAGE_HOST}/images/${params.uuid}_progress.png`
+                                  : data.origin==='upload'
+                                  ? `${IMAGE_HOST}/images/${params.uuid}.png`
+                                  : `${IMAGE_HOST}/images/${params.uuid}0_0.png`
+                                
+                                if(data.algo==="alpha" || data.algo=="stable") url = (data.status === 'complete' || data.status === 'archived')
+                                  ? `${IMAGE_HOST}/images/${params.uuid}.png`
+                                  : `${IMAGE_HOST}/${data.status}.jpg`
+                                window.open(url, "_blank")
+                              // const link = document.createElement('a')
+                              // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
+                              // link.setAttribute('download', `${params.uuid}0_0.png`)
                             
-                            if(data.algo==="alpha" || data.algo=="stable") url = (data.status === 'complete' || data.status === 'archived')
-                              ? `${IMAGE_HOST}/images/${params.uuid}.png`
-                              : `${IMAGE_HOST}/${data.status}.jpg`
-                            window.open(url, "_blank")
-                          // const link = document.createElement('a')
-                          // link.setAttribute('href', `https://images.feverdreams.app/images/${params.uuid}0_0.png`)
-                          // link.setAttribute('download', `${params.uuid}0_0.png`)
-                        
-                          // if (document.createEvent) {
-                          //   const event = document.createEvent('MouseEvents')
-                          //   event.initEvent('click', true, true)
-                          //   link.dispatchEvent(event)
-                          // } else {
-                          //   link.click()
-                          // }
-                        }
+                              // if (document.createEvent) {
+                              //   const event = document.createEvent('MouseEvents')
+                              //   event.initEvent('click', true, true)
+                              //   link.dispatchEvent(event)
+                              // } else {
+                              //   link.click()
+                              // }
+                            }
+                          }
+                          ml={1}
+                        ><DownloadIcon />Download</Button>
+                      </WrapItem>
                       }
-                      ml={1}
-                    ><DownloadIcon />Download</Button>
-                  }
-                  {data && ((user === data.str_author && data.algo==="stable")) && <Button
-                    colorScheme={'green'}
-                    // size="xs"
-                    onClick={()=>{
-                      let newAugmentation = {
-                        model_name : "RealESRGAN_x4plus",
-                        face_enhance : false,
-                        outscale : 2
+                      {data && ((user === data.str_author && data.algo==="stable")) && 
+                      <WrapItem>
+                        <Button
+                          colorScheme={'green'}
+                          // size="xs"
+                          onClick={()=>{
+                            let newAugmentation = {
+                              model_name : "RealESRGAN_x4plus",
+                              face_enhance : false,
+                              outscale : 2
+                            }
+                            setAugmentation({...augmentation, ...newAugmentation})
+                            onOpen()
+                          }}
+                          ml={1}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+                          </svg>
+                          Augment
+                        </Button>
+                      </WrapItem>
                       }
-                      setAugmentation({...augmentation, ...newAugmentation})
-                      onOpen()
-                    }}
-                    ml={1}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="heroicons-md" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
-                    </svg>
-                    Augment
-                  </Button>
-                  }
-                </WrapItem>
+                    </Wrap>
+                  </WrapItem>
               </Wrap>
             </Flex>
           </Flex>
         </Skeleton>
       </HStack>
-        {data && (data.status==="archived" || data.status==="complete") && 
-          <Center>
-          <Box w={1024}>
-            <Tabs variant={"solid-rounded"} index={data.selectedTab} onChange={index=>{
-              let updatedData = JSON.parse(JSON.stringify(data));
-              updatedData.selectedTab = index
-              setData({ ...data, ...updatedData });
-            }}>
-              <TabList>
-                {data.images && data.images.map(image=>{
-                  return <Tab>{image.label}</Tab>
-                })}
-              </TabList>
-              <TabPanels>
-                {data.images && data.images.map(image=>{
-                  return <TabPanel>
-                    {isAuthenticated && data.str_author === user && data.preferredImage != image.hash && <Button colorScheme={"green"} onClick={(event) => {
-                      let updatedData = JSON.parse(JSON.stringify(data));
-                      updatedData.preferredImage = image.hash
-                      setData({ ...data, ...updatedData });
-                      setIsModified(true)
-                    }}>Make Preferred Image</Button>}
-                    {image.params &&
-                    <>
+      {data && (data.status==="archived" || data.status==="complete") && 
+        <Center>
+        <Box w={1024}>
+          <Tabs variant={"solid-rounded"} index={data.selectedTab} onChange={index=>{
+            let updatedData = JSON.parse(JSON.stringify(data));
+            updatedData.selectedTab = index
+            setData({ ...data, ...updatedData });
+          }}>
+            <TabList>
+              {data.images && data.images.map(image=>{
+                return <Tab>{image.label}</Tab>
+              })}
+            </TabList>
+            <TabPanels>
+              {data.images && data.images.map(image=>{
+                return <TabPanel>
+                  {isAuthenticated && data.str_author === user && data.preferredImage != image.hash && <Button colorScheme={"green"} onClick={(event) => {
+                    let updatedData = JSON.parse(JSON.stringify(data));
+                    updatedData.preferredImage = image.hash
+                    setData({ ...data, ...updatedData });
+                    setIsModified(true)
+                  }}>Make Preferred Image</Button>}
+                  {image.params &&
+                  <Wrap>
+                    <WrapItem>
                       <Badge mr={3} variant={"outline"}>{image.params.model_name}</Badge>
+                    </WrapItem>
+                    <WrapItem>
                       <Badge mr={3} variant={"outline"}>Face Enhance: {image.params.face_enhance.toString()}</Badge>
+                    </WrapItem>
+                    <WrapItem>
                       <Badge mr={3} variant={"outline"}>Scale: {image.params.outscale}</Badge>
-                    </>
-                    }
-                    <Link>
-                      <Image
-                        onClick={(() => {
-                          let url = ""
-                          url = `${IMAGE_HOST}/images/${image.hash}.png`
-                          window.open(url, "_blank")
-                        })}
-                        maxH="1024"
-                        m="auto"
-                        mt="3"
-                        mb="3"
-                        borderRadius="lg"
-                        alt={
-                          (data.algo === "disco")?data.text_prompts?data.text_prompts:data.text_prompt:data.prompt
-                        }
-                        objectFit="cover"
-                        src={`http://images.feverdreams.app/jpg/${image.hash}.jpg`
-                        }
-                      />
-                    </Link>
-                  </TabPanel>
-                })}
-              </TabPanels>
-            </Tabs>
-          </Box>
-          </Center>
-        }
+                    </WrapItem>
+                  </Wrap>
+                  }
+                  <Link>
+                    <Image
+                      onClick={(() => {
+                        let url = ""
+                        url = `${IMAGE_HOST}/images/${image.hash}.png`
+                        window.open(url, "_blank")
+                      })}
+                      maxH="1024"
+                      m="auto"
+                      mt="3"
+                      mb="3"
+                      borderRadius="lg"
+                      alt={
+                        (data.algo === "disco")?data.text_prompts?data.text_prompts:data.text_prompt:data.prompt
+                      }
+                      objectFit="cover"
+                      src={`http://images.feverdreams.app/jpg/${image.hash}.jpg`
+                      }
+                    />
+                  </Link>
+                </TabPanel>
+              })}
+            </TabPanels>
+          </Tabs>
+        </Box>
+        </Center>
+      }
       
       {data && (data.status==="rejected" || data.status==="failed") && 
       <>
         <VStack>
           <Center>
-          <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}</Code>
+            <Code my={3} p={4} borderRadius="md" maxW="1024">{data.traceback}</Code>
           </Center>
           {isAuthenticated && data.str_author === user &&
         <Center>
@@ -812,7 +835,7 @@ function PiecePage({ isAuthenticated, token, user}) {
             </FormControl>
           </SimpleGrid>}
         <Box>
-          <Stack direction="row">
+          <Wrap>
             <Badge variant="outline">
               {data.algo?data.algo:"disco"}
             </Badge>
@@ -840,7 +863,7 @@ function PiecePage({ isAuthenticated, token, user}) {
               Steps: {steps}
             </Badge>
             </>}
-          </Stack>
+          </Wrap>
         </Box>
         {(!data.private || (user === data.str_author)) && 
         <>

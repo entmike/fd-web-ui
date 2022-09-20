@@ -8,6 +8,7 @@ import {
   Image,
   IconButton,
   Text,
+  Flex,
   Divider,
   HStack,
   Tag,
@@ -20,7 +21,11 @@ import {
   VStack,
   Button,
   SimpleGrid,
-  useToast
+  useToast,
+  Switch,
+  FormControl,
+  FormLabel,
+  FormHelperText
 } from '@chakra-ui/react';
 import { AiOutlineDelete, AiOutlineSave } from 'react-icons/ai';
 import { BsDice3 } from 'react-icons/bs';
@@ -42,13 +47,32 @@ const PieceTags = (props) => {
 };
 
 export const Piece = (props) =>{
-  let {piece, isAuthenticated, user, token, onDecided} = props
+  let {piece, isAuthenticated, user, token, onDecided, onChange} = props
   const toast = useToast()
   const { loginWithRedirect } = useAuth0()
   const [isLoading, setIsLoading] = useState(false)
   const [decided, setDecided] = useState(false)
   const [diceRolling, setDiceRolling] = useState(false)
-  return (<Container maxW={'7xl'} p="5">
+  function fireOnChange(updatedReview){
+    if(onChange) onChange(updatedReview)
+      setIsLoading(true)  
+      fetch(
+        `${process.env.REACT_APP_api_url}/v3/review/update`,
+        {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({review : updatedReview}),
+        }
+      ).then((response=>{
+        setIsLoading(false)
+      })).catch(err=>{
+        setIsLoading(false)
+      })
+  }
+  return (<Box maxW={'7xl'} p="5" rounded={"lg"} borderWidth={1}>
       {/* <Heading as="h1">Stories by Chakra Templates</Heading> */}
       <Heading size={"sm"}>
         <Link textDecoration="none" _hover={{ textDecoration: 'none' }} style={{overflowWrap:"anywhere"}}>
@@ -98,7 +122,7 @@ export const Piece = (props) =>{
           flexDirection="column"
           // justifyContent="center"
           marginTop={{ base: '3', sm: '0' }}>
-          <Wrap mb={5}>
+          <Flex mb={5} style={{justifyContent: "space-between"}}>
             <IconButton
               // style={{
               //   position : "absolute",
@@ -107,6 +131,7 @@ export const Piece = (props) =>{
               //   zIndex : 2
               // }}
               isRound
+              isDisabled={isLoading}
               colorScheme={'green'}
               size="md"
               onClick={(e) => {
@@ -130,42 +155,11 @@ export const Piece = (props) =>{
               }}
               icon={<AiOutlineSave />}
             />
-          <IconButton
-            // style={{
-            //   position : "absolute",
-            //   top : 0,
-            //   right : 0,
-            //   zIndex : 2
-            // }}
-            isRound
-            colorScheme={'red'}
-            size="md"
-            onClick={(e) => {
-              e.stopPropagation();
-              if(!isAuthenticated){
-                loginWithRedirect()
-              }else{
-                let method = "DELETE"
-                setDecided(true)
-                if(onDecided) onDecided()
-                fetch(
-                  `${process.env.REACT_APP_api_url}/review/${piece.uuid}`,
-                  {
-                    method: method,
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ }),
-                  }
-                )
-              }
-            }}
-            icon={<AiOutlineDelete />}/>
-            <Button
+          <Button
             isLoading={diceRolling}
             rounded={"full"}
-            colorScheme={'green'}
+            isDisabled={isLoading}
+            colorScheme={'blue'}
             size="md"
             onClick={(e) => {
               e.stopPropagation();
@@ -195,6 +189,70 @@ export const Piece = (props) =>{
                 })
               }
             }}><BsDice3 />&nbsp;x5</Button>
+            <IconButton
+            // style={{
+            //   position : "absolute",
+            //   top : 0,
+            //   right : 0,
+            //   zIndex : 2
+            // }}
+            isRound
+            isDisabled={isLoading}
+            colorScheme={'red'}
+            size="md"
+            onClick={(e) => {
+              e.stopPropagation();
+              if(!isAuthenticated){
+                loginWithRedirect()
+              }else{
+                let method = "DELETE"
+                setDecided(true)
+                if(onDecided) onDecided()
+                fetch(
+                  `${process.env.REACT_APP_api_url}/review/${piece.uuid}`,
+                  {
+                    method: method,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ }),
+                  }
+                )
+              }
+            }}
+            icon={<AiOutlineDelete />}/>
+          </Flex>
+          <Wrap>
+            <WrapItem>
+            <FormControl>
+              <FormLabel htmlFor="private">Private</FormLabel>
+              <Switch
+                id="private"
+                isChecked = {piece.private}
+                isDisabled = {isLoading}
+                onChange={(event) => {
+                  let updatedPiece = JSON.parse(JSON.stringify(piece))
+                  updatedPiece.private = event.target.checked ? true : false
+                  fireOnChange(updatedPiece)
+                }}
+              />
+            </FormControl>
+            </WrapItem>
+            <WrapItem>
+            <FormControl>
+              <FormLabel htmlFor="nsfw">NSFW</FormLabel>
+              <Switch
+                id="nsfw"
+                isChecked = {piece.nsfw}
+                onChange={(event) => {
+                  let updatedPiece = JSON.parse(JSON.stringify(piece))
+                  updatedPiece.nsfw = event.target.checked?true:false
+                  fireOnChange(updatedPiece)
+                }}
+              />
+            </FormControl>
+            </WrapItem>
           </Wrap>
           <PieceTags tags={[piece.params.sampler, `Seed: ${piece.params.seed}`, `Scale: ${piece.params.scale}`, `Steps: ${piece.params.steps}`]} />
           <Text
@@ -207,7 +265,7 @@ export const Piece = (props) =>{
           {piece.userdets && <PieceAuthor name="John Doe" date={new Date('2021-04-06T19:01:27Z')} />}
         </Box>
       </Box>     
-    </Container>)
+    </Box>)
 }
 
 export const PieceAuthor = (props) => {
@@ -227,12 +285,17 @@ export const PieceAuthor = (props) => {
 };
 
 const FeedList = (props) => {
-  let {pieces, isAuthenticated, user, token, onDelete} = props
+  let {pieces, isAuthenticated, user, token, onDelete, onChange} = props
   return (
     <SimpleGrid columns={{sm: 1, md: 1, lg: 2}} spacing={10}>{pieces && pieces.map((piece, index)=>{
-      return <Piece key={index} piece = {piece} isAuthenticated={isAuthenticated} user={user} token={token} onDecided={()=>{
+      return <Piece key={index} piece = {piece} isAuthenticated={isAuthenticated} user={user} token={token} 
+      onDecided={()=>{
         if (onDelete) onDelete(index)
-      }}/>
+      }}
+      onChange={(review)=>{
+        if (onChange) onChange(review, index)
+      }}
+      />
     })}
       
     </SimpleGrid>

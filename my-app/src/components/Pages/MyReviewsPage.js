@@ -15,7 +15,6 @@ export default function MyReviewsPage(props) {
   const [fetching, setFetching] = useState(false);
   const [interrupt, setInterrupt] = useState(false);
   const interruptRef = useRef(interrupt)
-  interruptRef.current = interrupt
   const [reload, setReload] = useState(true);
   const [timeoutId, setTimeoutId] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +28,16 @@ export default function MyReviewsPage(props) {
     let updatedData = JSON.parse(JSON.stringify(data))
     updatedData.splice(index,1)
     setData(updatedData)
-    setInterrupt(false)
+    interruptRef.current = true
+    setInterrupt(true)
+  }
+
+  function handleOnChange(updatedReview, index){
+    let updatedData = JSON.parse(JSON.stringify(data))
+    updatedData[index] = JSON.parse(JSON.stringify(updatedReview))
+    setData(updatedData)
+    interruptRef.current = true
+    setInterrupt(true)
   }
   
   function checkMyReviews(page) {
@@ -54,9 +62,9 @@ export default function MyReviewsPage(props) {
         // console.log(interruptRef.current)
         if(!interruptRef.current) {
           setData(actualData)
-          setInterrupt(false)
         }else{
           // console.log("Payload is out of date.  Waiting")
+          interruptRef.current = false
         }
         return actualData
       }).catch(err=>{
@@ -114,7 +122,7 @@ export default function MyReviewsPage(props) {
         </VStack></Center>
       } */}
       <Skeleton isLoaded={!loading}>
-        <FeedList pieces = {data} loading={loading} isAuthenticated={isAuthenticated} token={token} user={user} mode={"review"} onDelete={handleOnDelete}/>
+        <FeedList pieces = {data} loading={loading} isAuthenticated={isAuthenticated} token={token} user={user} mode={"review"} onDelete={handleOnDelete} onChange={handleOnChange}/>
       </Skeleton>
       {/* <FeedGrid dreams={data} loading={loading} isAuthenticated={isAuthenticated} token={token} user={user} mode={"review"} onDelete={handleOnDelete}/> */}
       <PaginationNav
