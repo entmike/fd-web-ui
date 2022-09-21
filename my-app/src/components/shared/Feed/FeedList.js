@@ -25,9 +25,27 @@ import {
   Switch,
   FormControl,
   FormLabel,
-  FormHelperText
+  FormHelperText,
+  Popover,
+  PopoverTrigger,
+  PopoverAnchor,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverHeader,
+  PopoverCloseButton,
+  Input,
+  Textarea,
+  ButtonGroup,
+  Select,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper
 } from '@chakra-ui/react';
 import { AiOutlineDelete, AiOutlineSave } from 'react-icons/ai';
+import { VscSettings } from 'react-icons/vsc';
 import { BsDice3 } from 'react-icons/bs';
 
 const PieceTags = (props) => {
@@ -189,6 +207,187 @@ export const Piece = (props) =>{
                 })
               }
             }}><BsDice3 />&nbsp;x5</Button>
+            <Popover isLazy
+              onOpen={()=>{
+                alert("open")
+              }}>
+              <PopoverTrigger>
+                <IconButton
+                  // style={{
+                  //   position : "absolute",
+                  //   top : 0,
+                  //   left : 0,
+                  //   zIndex : 2
+                  // }}
+                  isRound
+                  isDisabled={isLoading}
+                  colorScheme={'blue'}
+                  size="md"
+                  onClick={(e) => { }}
+                  icon={<VscSettings />}
+                />
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverHeader fontWeight='semibold'>Mutate</PopoverHeader>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <FormControl>
+                      <FormLabel htmlFor="prompt">Prompt</FormLabel>
+                      <Textarea
+                        id={`prompt`}
+                        type="text"
+                        value={piece.params.prompt}
+                        onChange={(event) => {
+                          // let prompt = event.target.value
+                          // // if(!prompt) prompt=" "
+                          // let updatedJob = JSON.parse(JSON.stringify(job));
+                          // piece.params.prompt = prompt;
+                          // setJob({ ...job, ...updatedJob });
+                        }}
+                      />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="sampler">Sampler</FormLabel>
+                    <Select id = "sampler" value={piece.params.sampler} onChange={(event) => {
+                        // let updatedJob = JSON.parse(JSON.stringify(job));
+                        // let value = event.target.selectedOptions[0].value;
+                        // updatedJob.params.sampler = value
+                        // setJob({ ...job, ...updatedJob });
+                      }}>
+                      {
+                        [
+                          {"key" : "k_lms", "text" : "k_lms"},
+                          {"key" : "ddim", "text" : "ddim"},
+                          {"key" : "plms", "text" : "plms"},
+                          {"key" : "k_euler", "text" : "k_euler"},
+                          {"key" : "k_euler_ancestral", "text" : "k_euler_ancestral"},
+                          {"key" : "k_heun", "text" : "k_heun"},
+                          {"key" : "k_dpm_2", "text" : "k_dpm_2"},
+                          {"key" : "k_dpm_2_ancestral", "text" : "k_dpm_2_ancestral"},
+                        ].map(shape=>{
+                          return <option value={shape.key}>{shape.text}</option>
+                        })
+                      }
+                    </Select>
+                  </FormControl>
+                  <FormControl>
+                      <FormLabel htmlFor="seed">Image Seed</FormLabel>
+                      <HStack>
+                      <NumberInput
+                        id="seed"
+                        value={piece.params.seed}
+                        min={-1}
+                        max={2 ** 32}
+                        clampValueOnBlur={true}
+                        onChange={(value) => {
+                          // let updatedJob = JSON.parse(JSON.stringify(job));
+                          // updatedJob.params.seed = parseInt(value);
+                          // setJob({ ...job, ...updatedJob });
+                        }}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                      <IconButton
+                        isRound
+                        variant={"ghost"}
+                        // colorScheme={'blue'}
+                        size="md"
+                        onClick={() => {
+                          // let updatedJob = JSON.parse(JSON.stringify(job))
+                          // let r = Math.floor(Math.random() * (2**32))
+                          // updatedJob.params.seed = parseInt(r)
+                          // setJob({ ...job, ...updatedJob })
+                        }}
+                        // ml={1}
+                        icon={<BsDice3 />}
+                      ></IconButton>
+                      </HStack>
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel htmlFor="steps">Steps</FormLabel>
+                      <NumberInput
+                        id="steps"
+                        value={piece.params.steps}
+                        min={10}
+                        max={150}
+                        clampValueOnBlur={true}
+                        onChange={(value) => {
+                          // let updatedJob = JSON.parse(JSON.stringify(job));
+                          // updatedJob.params.steps = parseInt(value);
+                          // setJob({ ...job, ...updatedJob });
+                        }}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                      </FormControl>
+                      <FormControl>
+                      <FormLabel htmlFor="scale">
+                        Scale
+                      </FormLabel>
+                      <NumberInput
+                        id="scale"
+                        value={piece.params.scale}
+                        precision={2}
+                        step={0.1}
+                        min={1}
+                        max={15}
+                        onChange={(value) => {
+                          // let updatedJob = JSON.parse(JSON.stringify(job));
+                          // updatedJob.params.scale = parseFloat(value);
+                          // setJob({ ...job, ...updatedJob });
+                        }}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel htmlFor="eta">ETA</FormLabel>
+                      <NumberInput
+                        id="eta"
+                        step={0.1}
+                        precision={2}
+                        value={piece.params.eta}
+                        min={0.0}
+                        max={10}
+                        onChange={(value) => {
+                          // let updatedJob = JSON.parse(JSON.stringify(job));
+                          // updatedJob.params.eta = parseFloat(value);
+                          // setJob({ ...job, ...updatedJob });
+                        }}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                  <ButtonGroup display='flex' justifyContent='flex-end'>
+                    <Button variant='outline' onClick={()=>{
+                      // TODO
+                    }}>
+                      Cancel
+                    </Button>
+                    <Button isDisabled colorScheme='teal'>
+                      Save
+                    </Button>
+                  </ButtonGroup>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <IconButton
             // style={{
             //   position : "absolute",
