@@ -1,12 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Text, Flex, Center, Button } from '@chakra-ui/react';
+import { Heading, Text, Flex, Center, Button } from '@chakra-ui/react';
 
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
-export default function FollowingPage({ isAuthenticated, token }) {
+export default function FollowingPage({ isAuthenticated, token , user}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ export default function FollowingPage({ isAuthenticated, token }) {
     setLoading(true);
     try {
       const jobData = await fetch(
-        `${process.env.REACT_APP_api_url}/following`,
+        `${process.env.REACT_APP_api_url}/following/feed/50/${params.page}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export default function FollowingPage({ isAuthenticated, token }) {
       } else {
         console.log('Not Authenticated.');
       }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token, params.page]);
 
 
   console.log('loading', loading);
@@ -64,12 +64,15 @@ export default function FollowingPage({ isAuthenticated, token }) {
   }
   return (
     <>
+     <Heading>Following Feed</Heading>
+      <Text>Images from people you follow</Text>
+      
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}
         nextURL={nextURL}
       />
-      <FeedGrid dreams={data} loading={loading} />
+      <FeedGrid dreams={data} loading={loading} isAuthenticated={isAuthenticated} token={token} user={user}/>
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

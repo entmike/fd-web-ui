@@ -150,7 +150,7 @@ function App() {
                 <Route path="/job-generator" element={<JobGenerator />} />
                 <Route path="/agentstatus" element={<AgentStatusPage />} />
                 <Route path="/agentstatus/:agent/:page" element={<AgentJobsPage />} />
-                <Route path="/following" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
+                <Route path="/following/:page" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/myuploads" token={token} element={<MyUploads token={token} isAuthenticated={isAuthenticated}/>} />
               </Routes>
