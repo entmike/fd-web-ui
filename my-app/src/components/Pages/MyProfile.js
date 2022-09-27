@@ -102,7 +102,7 @@ function MyProfile({ isAuthenticated, token }) {
           <FormControl>
                 <FormLabel htmlFor="twitter">Twitter:</FormLabel>
                 <Input id="twitter" placeholder="@Your_Name"
-                value={(userDetails && userDetails.social && userDetails.social.twitter)?userDetails.social.twitter:""}
+                value={(userDetails && userDetails.social && userDetails.social.twitter)?userDetails.social.twitter:"@Your_Name"}
                 onChange={(event) => {
                     let updatedProfile = JSON.parse(JSON.stringify(userDetails));
                     updatedProfile.social.twitter = event.target.value
@@ -110,11 +110,11 @@ function MyProfile({ isAuthenticated, token }) {
                 }}/>
             </FormControl>
           <FormControl>
-            <FormLabel htmlFor="bio">About you:</FormLabel>
+            <FormLabel htmlFor="about">About you:</FormLabel>
             <Textarea
-              id="bio"
+              id="about"
               placeholder="About you..."
-              value={(userDetails && userDetails.social && userDetails.social.twitter)?userDetails.social.about:""}
+              value={(userDetails && userDetails.social && userDetails.social.twitter)?userDetails.social.about:"About you..."}
               onChange={(event) => {
                 let updatedProfile = JSON.parse(JSON.stringify(userDetails));
                 updatedProfile.social.about = event.target.value
