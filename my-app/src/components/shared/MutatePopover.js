@@ -65,13 +65,18 @@ export function MutatePopover(props) {
   let token = props.token
   const toast = useToast()
   const [piece, setPiece] = useState(data)
+  const [dataCopy, setDataCopy] = useState(data)
   const [isLoading, setIsLoading] = useState(false)
+
+  // useEffect(() => {
+  //   setPiece(props.piece)
+  // }, [props.piece]);
 
   async function save() {
     try {
       // return
       setIsLoading(true)
-      let j = JSON.parse(JSON.stringify(piece))
+      let j = JSON.parse(JSON.stringify(dataCopy))
       j.batch_size = 1
       console.log(j)
       const { success: mutateSuccess, results: results } = await fetch(
@@ -126,7 +131,10 @@ export function MutatePopover(props) {
       isDisabled={isLoading}
       colorScheme={'blue'}
       size="md"
-      onClick={onOpen}
+      onClick={()=>{
+        setDataCopy(JSON.parse(JSON.stringify(piece)))
+        onOpen()
+      }}
       icon={<VscSettings />}
     />
     <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
@@ -140,7 +148,7 @@ export function MutatePopover(props) {
           <ModalBody>
             <Image
               borderRadius="lg"
-              src={`http://images.feverdreams.app/thumbs/512/${piece.preferredImage || piece.uuid}.jpg`}
+              src={`http://images.feverdreams.app/thumbs/512/${dataCopy.preferredImage || piece.uuid}.jpg`}
               alt={piece.uuid}
               objectFit="contain"
             />
@@ -149,13 +157,12 @@ export function MutatePopover(props) {
                 <Textarea
                   id={`prompt`}
                   type="text"
-                  value={piece.params.prompt}
+                  value={dataCopy.params.prompt}
                   onChange={(event) => {
                     let prompt = event.target.value
-                    console.log(prompt)
-                    let updatedPiece = JSON.parse(JSON.stringify(piece));
+                    let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
                     updatedPiece.params.prompt = prompt;
-                    setPiece({ ...piece, ...updatedPiece });
+                    setDataCopy({ ...dataCopy, ...updatedPiece });
                   }}
                 />
             </FormControl>
@@ -163,11 +170,11 @@ export function MutatePopover(props) {
               <WrapItem>
                 <FormControl>
                   <FormLabel htmlFor="sampler">Sampler</FormLabel>
-                  <Select id = "sampler" value={piece.params.sampler} onChange={(event) => {
-                      // let updatedJob = JSON.parse(JSON.stringify(job));
-                      // let value = event.target.selectedOptions[0].value;
-                      // updatedJob.params.sampler = value
-                      // setJob({ ...job, ...updatedJob });
+                  <Select id = "sampler" value={dataCopy.params.sampler} onChange={(event) => {
+                      let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                      let value = event.target.selectedOptions[0].value;
+                      updatedPiece.params.sampler = value
+                      setDataCopy({ ...dataCopy, ...updatedPiece });
                     }}>
                     {
                       [
@@ -180,7 +187,7 @@ export function MutatePopover(props) {
                         {"key" : "k_dpm_2", "text" : "k_dpm_2"},
                         {"key" : "k_dpm_2_ancestral", "text" : "k_dpm_2_ancestral"},
                       ].map(shape=>{
-                        return <option value={shape.key}>{shape.text}</option>
+                        return <option key = {shape.key} value={shape.key}>{shape.text}</option>
                       })
                     }
                   </Select>
@@ -192,14 +199,14 @@ export function MutatePopover(props) {
                     <HStack>
                     <NumberInput
                       id="seed"
-                      value={piece.params.seed}
+                      value={dataCopy.params.seed}
                       min={-1}
                       max={2 ** 32}
                       clampValueOnBlur={true}
                       onChange={(value) => {
-                        // let updatedJob = JSON.parse(JSON.stringify(job));
-                        // updatedJob.params.seed = parseInt(value);
-                        // setJob({ ...job, ...updatedJob });
+                        let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                        updatedPiece.params.seed = parseInt(value);
+                        setDataCopy({ ...dataCopy, ...updatedPiece });
                       }}
                     >
                       <NumberInputField />
@@ -211,13 +218,12 @@ export function MutatePopover(props) {
                     <IconButton
                       isRound
                       variant={"ghost"}
-                      // colorScheme={'blue'}
                       size="md"
                       onClick={() => {
-                        let updatedPiece = JSON.parse(JSON.stringify(piece))
+                        let updatedPiece = JSON.parse(JSON.stringify(dataCopy))
                         let r = Math.floor(Math.random() * (2**32))
                         updatedPiece.params.seed = parseInt(r)
-                        setPiece({ ...piece, ...updatedPiece })
+                        setDataCopy({ ...piece, ...updatedPiece })
                       }}
                       // ml={1}
                       icon={<BsDice3 />}
@@ -232,14 +238,14 @@ export function MutatePopover(props) {
                   <FormLabel htmlFor="steps">Steps</FormLabel>
                   <NumberInput
                     id="steps"
-                    value={piece.params.steps}
+                    value={dataCopy.params.steps}
                     min={10}
                     max={150}
                     clampValueOnBlur={true}
                     onChange={(value) => {
-                      // let updatedJob = JSON.parse(JSON.stringify(job));
-                      // updatedJob.params.steps = parseInt(value);
-                      // setJob({ ...job, ...updatedJob });
+                      let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                      updatedPiece.params.steps = parseInt(value);
+                      setDataCopy({ ...dataCopy, ...updatedPiece });
                     }}
                   >
                     <NumberInputField />
@@ -257,15 +263,15 @@ export function MutatePopover(props) {
                   </FormLabel>
                   <NumberInput
                     id="scale"
-                    value={piece.params.scale}
+                    value={dataCopy.params.scale}
                     precision={2}
                     step={0.1}
                     min={1}
                     max={15}
                     onChange={(value) => {
-                      // let updatedJob = JSON.parse(JSON.stringify(job));
-                      // updatedJob.params.scale = parseFloat(value);
-                      // setJob({ ...job, ...updatedJob });
+                      let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                      updatedPiece.params.scale = parseFloat(value);
+                      setDataCopy({ ...dataCopy, ...updatedPiece });
                     }}
                   >
                     <NumberInputField />
@@ -282,14 +288,14 @@ export function MutatePopover(props) {
                     <NumberInput
                       id="width"
                       step={64}
-                      value={piece.params.width_height?piece.params.width_height[0]:1280}
+                      value={dataCopy.params.width_height?dataCopy.params.width_height[0]:1280}
                       min={128}
                       max={2560}
                       clampValueOnBlur={true}
                       onChange={(value) => {
-                        let updatedPiece = JSON.parse(JSON.stringify(piece))
+                        let updatedPiece = JSON.parse(JSON.stringify(dataCopy))
                         updatedPiece.params.width_height[0] = parseInt(value)
-                        setPiece({ ...piece, ...updatedPiece });
+                        setDataCopy({ ...dataCopy, ...updatedPiece });
                       }}
                     >
                       <NumberInputField />
@@ -306,14 +312,14 @@ export function MutatePopover(props) {
                     <NumberInput
                       id="height"
                       step={64}
-                      value={piece.params.width_height?piece.params.width_height[1]:768}
+                      value={dataCopy.params.width_height?dataCopy.params.width_height[1]:768}
                       min={128}
                       max={2560}
                       clampValueOnBlur={true}
                       onChange={(value) => {
-                        let updatedPiece = JSON.parse(JSON.stringify(piece))
+                        let updatedPiece = JSON.parse(JSON.stringify(dataCopy))
                         updatedPiece.params.width_height[1] = parseInt(value)
-                        setPiece({ ...piece, ...updatedPiece });
+                        setDataCopy({ ...dataCopy, ...updatedPiece });
                       }}
                     >
                       <NumberInputField />
@@ -331,13 +337,13 @@ export function MutatePopover(props) {
                     id="eta"
                     step={0.1}
                     precision={2}
-                    value={piece.params.eta}
+                    value={dataCopy.params.eta}
                     min={0.0}
                     max={10}
                     onChange={(value) => {
-                      // let updatedJob = JSON.parse(JSON.stringify(job));
-                      // updatedJob.params.eta = parseFloat(value);
-                      // setJob({ ...job, ...updatedJob });
+                      let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                      updatedPiece.params.eta = parseFloat(value);
+                      setDataCopy({ ...dataCopy, ...updatedPiece });
                     }}
                   >
                     <NumberInputField />

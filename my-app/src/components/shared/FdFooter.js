@@ -69,7 +69,7 @@ export function FdFooter() {
           </Stack> */}
           <Box borderWidth={1} p={5} borderRadius="md" h={"100%"}>
           <Link href={'http://www.redmond.ai/'} target="_blank">
-            <Image src="/friends/redmond-logo.png" h={14}/><br />
+            <Image src="/friends/redmond_red.png" h={14}/><br />
           </Link>
           <Text fontSize={"xs"}>Donating hardware and infrastructure to Fever Dreams.  Your high-performance AI cloud infrastructure. Dedicated or on-demand 80gb A100s and world record storage performance.</Text>
           </Box>
