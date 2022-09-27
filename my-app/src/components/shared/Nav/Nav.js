@@ -353,6 +353,12 @@ export function Nav({myInfo}) {
                 <MenuList>
                   <MenuItem
                     onClick={() =>
+                      navigate(`/following/1`)
+                    }
+                  >Follow Feed
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
                       navigate(`/myfavs/1`)
                     }
                   >My Favorites
