@@ -199,7 +199,13 @@ export function Nav({myInfo}) {
                   onClick={() =>
                     navigate(`/recent/stable/1`)
                   }
-                >Recent Art
+                >Recent Stable Diffusion Art
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    navigate(`/recent/disco/1`)
+                  }
+                >Recent Disco Diffusion Art
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -227,19 +233,6 @@ export function Nav({myInfo}) {
                 >Random Dreams
                 </MenuItem>
                 {/*
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/stable/1`)
-                  }
-                >All Stable
-                </MenuItem>
-                 <MenuDivider />
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/disco/1`)
-                  }
-                >All Disco
-                </MenuItem>
                 <MenuItem
                   onClick={() =>
                     (window.location.href = `/recent/general/1`)
