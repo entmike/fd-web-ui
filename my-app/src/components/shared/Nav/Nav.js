@@ -122,7 +122,8 @@ export function Nav({myInfo}) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isAuthenticated, logout, user } = useAuth0();
   const [ lastAck, setLastAck] = useState(ack);
-  // const [ announcement, setAnnouncement] = useState([{
+  const [ announcement, setAnnouncement] = useState([
+  // {
   //   text : `ℹ️ Disco Diffusion creation functionality is offline while website and database maintenance is carried out.
   //   Your existing Disco Diffusion renders will not be unavailable during this time, however they have NOT been deleted.
   //   Stable Diffusion functionality is not affected.  See Discord announcements for more details.`,
@@ -133,7 +134,8 @@ export function Nav({myInfo}) {
   // },{
   //   text : `😭 I had a database brain fart last night.  I managed to destroy the table that holds all the saved pieces users have.  I restored the table from a September 8 backup I had, but unfortunately a lot of hard work is lost.  Upon request in Discord, I can restore any you have DELETED back to REVIEW state in case that helps jog your memory to recreate some missing art, however I did not manage to make a proper backup in the last few weeks.  Also, I (re)restored the Disco Diffusion table to reviewed state, so apologies to those who did a lot of hard cleanup work, but at least there was a backup there!  I'm super sorry for this, and I'll be sure that I have proper backups in place going forward.`,
   //   id : 3
-  // }])
+  // }
+  ])
   const navigate = useNavigate();
   
   return (
