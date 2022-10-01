@@ -160,7 +160,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
         if(mode==="mutate"){
           if(results){
             // console.log(results)
-            navigate(`/myreviews/1`);
+            navigate(`/myworkspace/1`);
           }
         }
         if(mode==="edit"){

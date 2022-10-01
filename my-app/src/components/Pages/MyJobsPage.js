@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {HelpHeader} from '../shared/HelpHeader';
 import {
   Badge,
   Table,
@@ -88,6 +89,9 @@ function MyJobsPage({ isAuthenticated, token }) {
   }, [params.page, params.status]);
   return (
     isAuthenticated?<>
+      <HelpHeader
+        title={`My Jobs`}
+        description={`This is just a page to troubleshoot and monitor your render jobs.`}/>
         <FormControl>
           <FormLabel htmlFor="status">Job Status</FormLabel>
           <RadioGroup

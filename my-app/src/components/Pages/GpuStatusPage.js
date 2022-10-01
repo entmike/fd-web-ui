@@ -15,10 +15,11 @@ import {
   HStack,
   Link
 } from '@chakra-ui/react';
+import {HelpHeader} from '../shared/HelpHeader';
 import { dt } from '../../utils/dateUtils';
 import { Link as RouteLink } from 'react-router-dom';
 
-function AgentStatusPage() {
+function GpuStatusPage() {
   let d = [];
   for (var i = 0; i < 25; i++) {
     d.push({
@@ -58,6 +59,9 @@ function AgentStatusPage() {
   }, []);
   return (
     <>
+    <HelpHeader
+        title={`GPU Status`}
+        description={`Fever Dreams is run by community-donated GPU compute.  This page shows active GPU status.`}/>
       <TableContainer>
         <Table variant="simple">
           <TableCaption>List of active agents running</TableCaption>
@@ -146,4 +150,4 @@ function AgentStatusPage() {
   );
 }
 
-export default AgentStatusPage;
+export default GpuStatusPage;

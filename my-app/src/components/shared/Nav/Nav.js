@@ -386,10 +386,10 @@ export function Nav({myInfo}) {
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      navigate(`/myreviews/1`)
+                      navigate(`/myworkspace/1`)
                     }
                   >
-                    My Reviews {myInfo.reviews > 0 && `(${myInfo.reviews})`}
+                    My Workspace {myInfo.reviews > 0 && `(${myInfo.reviews})`}
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
@@ -406,16 +406,16 @@ export function Nav({myInfo}) {
                       }/1`)
                     }
                   >
-                    🪰 My Trash Can 💩
+                    My Trash Can
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
-                    onClick={() => navigate(`/agentstatus`)}
+                    onClick={() => navigate(`/gpustatus`)}
                   >
                     GPU Status
                   </MenuItem>
                   <MenuItem onClick={() => navigate(`/jobs`)}>
-                    Job Queue
+                    Job Status
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem

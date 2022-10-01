@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { HelpHeader } from '../shared/HelpHeader';
 import {
   Badge,
   Table,
@@ -70,7 +71,11 @@ function JobsPage() {
   }, [type]);
   return (
     <>
-      <Tabs variant="soft-rounded" colorScheme="blue" index={type==="processing"?0:1} onChange={index=>{
+     <HelpHeader
+        title={`Job Status`}
+        description={`Active and waiting job details`}/>
+      
+      <Tabs mt={5} variant="soft-rounded" colorScheme="blue" index={type==="processing"?0:1} onChange={index=>{
           if(index===0) setType("processing")
           if(index===1) setType("queued")
         }}>

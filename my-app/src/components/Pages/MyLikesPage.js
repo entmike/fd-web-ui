@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Text, Flex, Center, Heading } from '@chakra-ui/react';
-
+import { HelpHeader } from '../shared/HelpHeader';
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
@@ -59,7 +59,9 @@ export default function MyLikesPage({isAuthenticated, token, user}) {
 
   return (
     <>
-      <Heading>My Favorite {headers[type]}</Heading>
+      <HelpHeader
+            title={`My Favorite ${headers[type]}`}
+            description={`Favorites, Likes, Pins, Hearts, whatever you call it.`}/>
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

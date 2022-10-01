@@ -16,6 +16,7 @@ import {
 import FeedGrid from '../shared/Feed/FeedGrid';
 import { SocialButton } from 'components/shared/SocialButton';
 import PaginationNav from '../shared/Feed/PaginationNav';
+import { HelpHeader } from '../shared/HelpHeader';
 import { FaTwitter } from 'react-icons/fa';
 
 export default function DeletedGalleryPage({ isAuthenticated, token, user }) {
@@ -25,22 +26,12 @@ export default function DeletedGalleryPage({ isAuthenticated, token, user }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [include, setInclude] = useState(searchParams.getAll("include"));
   const [exclude, setExclude] = useState(searchParams.getAll("exclude"));
-  const [userDetails, setUserDetails] = useState(null);
-  const [userIsLoading, setUserIsLoading] = useState(false);
 
   const params = useParams()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!userDetails) {
-      setUserIsLoading(true);
-      fetch(`${process.env.REACT_APP_api_url}/user/${params.user_id}`)
-        .then((response) => response.json())
-        .then((actualData) => {
-          setUserIsLoading(false);
-          setUserDetails(actualData);
-        });
-    }
+  
   });
 
   useEffect(() => {
@@ -80,55 +71,19 @@ export default function DeletedGalleryPage({ isAuthenticated, token, user }) {
   const prevURL = `/deleted/${params.user_id}/${parseInt(params.page) - 1}`;
   const nextURL = `/deleted/${params.user_id}/${parseInt(params.page) + 1}`;
 
-  const handleFollowClick = () => {
-    fetch(`${process.env.REACT_APP_api_url}/follow/${userDetails.user_id_str}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  };
-
-  let userAvatar = '/avatar-placeholder.png';
-  let userNameGallery = "Loading..."
-  if(userDetails){
-    userAvatar = userDetails.picture?userDetails.picture:userDetails.avatar
-    userNameGallery = userDetails.nickname?userDetails.nickname:userDetails.user_name
-  }
-
   return (
     <>
       <HStack>
-        <Skeleton isLoaded={!userIsLoading}>
-          {userDetails && <Avatar size="xl" src={userAvatar} />}
-        </Skeleton>
-        <Skeleton isLoaded={!userIsLoading}>
-          <VStack alignItems={'left'}>
-            <Heading>{`${userNameGallery}'s Trash Can 💩🪰`}</Heading>
-            <Text>Accidentally delete something? &nbsp;Changed your mind? &nbsp;Just want to browse your terrible art fails in the privacy of your own garbage pile? &nbsp;Welcome to your trash can! &nbsp;Trash is emptied on a completely unpredictable and infrequent schedule, usually when we can't fit anymore beer cans in it. &nbsp;Don't worry, nobody else can see your failures. &nbsp;Incinerator coming soon.</Text>
-            <HStack>
-              {userDetails && (
-                <Button
-                  colorScheme="blue"
-                  variant="outline"
-                  size="xs"
-                  onClick={handleFollowClick}
-                >
-                  Follow
-                </Button>
-              )}
-              {userDetails && userDetails.social && userDetails.social.twitter && (
-                <SocialButton
-                  label={userDetails.social.twitter}
-                  href={`https://twitter.com/${userDetails.social.twitter}`}
-                >
-                  <FaTwitter />
-                </SocialButton>
-              )}
-            </HStack>
-          </VStack>
-        </Skeleton>
+        <VStack alignItems={'left'}>
+          <HelpHeader
+          title={`My Trash Can 💩`}
+          description={`Accidentally delete something?  Changed your mind?  
+          Just want to browse your terrible art fails in the privacy of your own garbage pile?  
+          Welcome to your trash can!  Trash is emptied on a completely unpredictable and infrequent schedule, 
+          usually when we can't fit anymore beer cans in it.  
+          Don't worry, nobody else can see your failures.  
+          Incinerator coming soon.`}/>
+        </VStack>
       </HStack>
       <PaginationNav
         pageNumber={params.page}

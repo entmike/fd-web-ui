@@ -5,6 +5,7 @@ import { Heading, Text, Flex, Center, Button } from '@chakra-ui/react';
 
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
+import {HelpHeader} from '../shared/HelpHeader';
 
 export default function FollowingPage({ isAuthenticated, token , user}) {
   const [data, setData] = useState([]);
@@ -64,8 +65,9 @@ export default function FollowingPage({ isAuthenticated, token , user}) {
   }
   return (
     <>
-     <Heading>Following Feed</Heading>
-      <Text>Images from people you follow</Text>
+    <HelpHeader
+      title={`Following Feed`}
+      description={`Images from people you follow.  (Or stalk.  No judgement here.)`}/>
       
       <PaginationNav
         pageNumber={params.page}

@@ -7,8 +7,9 @@ import { dt } from '../../utils/dateUtils';
 import FeedGrid from '../shared/Feed/FeedGrid';
 import FeedList from '../shared/Feed/FeedList';
 import PaginationNav from '../shared/Feed/PaginationNav';
+import {HelpHeader} from '../shared/HelpHeader';
 
-export default function MyReviewsPage(props) {
+export default function MyWorkspacePage(props) {
   let {isAuthenticated, token, user} = props
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -98,8 +99,12 @@ export default function MyReviewsPage(props) {
   }, [reload]);
   return (
     <>
-      <Heading>My Reviews</Heading>
-      <Text>Images in My Reviews can only be seen by you.  Click the Save button to move the image into your gallery, or use the Delete button to delete it.  This page will automatically update.</Text>
+      <HelpHeader
+        title={`My Workspace`}
+        description={`Images in your workspace can only be seen by you.  
+        Click the Save button to move the image into your gallery, 
+        or use the Delete button to delete it.  
+        This page will automatically update.`}/>
         <PaginationNav
           pageNumber={params.page}
           prevURL={prevURL}

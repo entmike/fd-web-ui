@@ -21,9 +21,9 @@ import IncubatePage from "./components/Pages/MutatePage"
 import CreateDreamPage from "./components/Pages/CreateDreamPage"
 import JobsPage from "./components/Pages/JobsPage"
 import MyJobsPage from "./components/Pages/MyJobsPage"
-import MyReviewsPage from "./components/Pages/MyReviewsPage"
+import MyWorkspacePage from "./components/Pages/MyWorkspacePage"
 import PiecePage from "./components/Pages/PiecePage"
-import AgentStatusPage from "./components/Pages/AgentStatusPage"
+import GpuStatusPage from "./components/Pages/GpuStatusPage"
 import AgentJobsPage from "./components/Pages/AgentJobsPage"
 import ColorPage from "./components/Pages/ColorPage"
 import JobGenerator from "./components/Pages/JobGenerator"
@@ -129,7 +129,7 @@ function App() {
                 <Route path="/jobs/:type" element={<JobsPage />}></Route>
                 <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
                 <Route path="/myfavs/:page" element={<MyLikesPage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
-                <Route path="/myreviews/:page" element={<MyReviewsPage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
+                <Route path="/myworkspace/:page" element={<MyWorkspacePage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
                 <Route
                   path="/dream"
                   element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}
@@ -155,7 +155,7 @@ function App() {
                   element={<IncubatePage token={token} isAuthenticated={isAuthenticated} />}
                 /> */}
                 <Route path="/job-generator" element={<JobGenerator />} />
-                <Route path="/agentstatus" element={<AgentStatusPage />} />
+                <Route path="/gpustatus" element={<GpuStatusPage />} />
                 <Route path="/agentstatus/:agent/:page" element={<AgentJobsPage />} />
                 <Route path="/following/:page" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
                 <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
