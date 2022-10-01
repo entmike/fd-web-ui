@@ -26,7 +26,7 @@ import {
         <Flex justifyContent={'space-between'}>
           <Box pl={{ base: 2, md: 4 }}>
             <StatLabel fontWeight={'medium'}>{title}</StatLabel>
-            <StatNumber fontSize={'2xl'} fontWeight={'medium'}>
+            <StatNumber fontSize={'xl'} fontWeight={'medium'}>
               {stat}
             </StatNumber>
           </Box>
@@ -69,7 +69,7 @@ import {
     }, []);
     return (
       data && <Center>
-        <Box minW={{ xl : "7xl", lg:"5xl"}} maxW={{ xl : "7xl", lg:"5xl"}} mx={'auto'} px={{ base: 12, sm: 12, md: 17 }}>
+        <Box minW={{ xl : "5xl", lg:"5xl"}} maxW={{ xl : "7xl", lg:"5xl"}} mx={'auto'} px={{ base: 12, sm: 12, md: 17 }}>
           <chakra.h1
             textAlign={'center'}
             fontSize={'2xl'}

@@ -11,8 +11,9 @@ const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode, onDelet
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-
-   
+  useEffect(() => {
+    
+  }, [token,user,isAuthenticated]);
   return (
     <ResponsiveMasonry
       columnsCountBreakPoints={{ 300: 1, 480: 2, 560: 3, 821: 4, 992: 4 }}

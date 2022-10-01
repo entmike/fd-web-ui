@@ -8,8 +8,10 @@ import "./App.css"
 import { Nav } from "./components/shared/Nav"
 import { FdFooter } from "./components/shared/FdFooter.js"
 
+import { BackToTop } from "./components/shared/BackToTop"
 import { Hero } from "./components/Pages/HomePage"
 import UserGalleryPage from "./components/Pages/UserGalleryPage"
+import DeletedGalleryPage from "./components/Pages/DeletedGalleryPage"
 import RandomGalleryPage from "./components/Pages/RandomGalleryPage"
 import RecentGalleryPage from "./components/Pages/RecentGalleryPage"
 import PopularGalleryPage from "./components/Pages/PopularGalleryPage"
@@ -95,16 +97,21 @@ function App() {
     getToken()
   },[user,isAuthenticated])
 
+  useEffect(() => {
+    // getToken()
+  },[token,user,isAuthenticated])
   return (
     <ChakraProvider>
       {/* <InstantSearch searchClient={searchClient} indexName="feverdreams"> */}
         <Router>
           <div className="App">
+            <BackToTop />
             <Nav myInfo={myInfo}/>
             <Box p={5} width={"100%"}>
               <Routes>
                 {/* Gallery pages */}
                 <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
+                <Route path={"/deleted/:user_id/:page"} element={<DeletedGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route path="/random/:type/:amount" element={<RandomGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route path="/recent/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route path="/popular/:type/:page" element={<PopularGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
@@ -113,7 +120,7 @@ function App() {
                 <Route path="/rgb/:r/:g/:b/:range/:amount/:page" element={<ColorPage />} />
 
                 {/* Non-gallery pages */}
-                <Route path="/" element={<Hero />} />
+                <Route path="/" element={<Hero token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
                 <Route
                   path={'/piece/:uuid'}
                   element={<PiecePage token={token} isAuthenticated={isAuthenticated} user={userId}/>}

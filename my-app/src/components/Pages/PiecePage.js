@@ -161,8 +161,9 @@ function PiecePage({ isAuthenticated, token, user}) {
               setSteps("Private");
             }
           }else{
-            setTextPrompt(actualData.text_prompts?actualData.text_prompts:actualData.text_prompt);
+            setTextPrompt(actualData.discoart_tags?actualData.discoart_tags.text_prompts:"ERORR");
             if(actualData.results){
+              setSeed(actualData.results.seed)
               setSeed(actualData.results.seed)
             }
             if(actualData.discoart_tags){
@@ -685,7 +686,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                       mb="3"
                       borderRadius="lg"
                       alt={
-                        (data.algo === "disco")?data.text_prompts?data.text_prompts:data.text_prompt:data.prompt
+                        (data.algo === "disco")?data.discoart_tags?data.discoart_tags.text_prompts:"ERROR":"ERROR"
                       }
                       objectFit="cover"
                       src={`http://images.feverdreams.app/jpg/${image.hash}.jpg`
@@ -863,6 +864,14 @@ function PiecePage({ isAuthenticated, token, user}) {
               Steps: {steps}
             </Badge>
             </>}
+            {data && data.discoart_tags && <>
+            <Badge variant="outline">
+              Seed: {data.discoart_tags.seed}
+            </Badge>
+            <Badge variant="outline">
+              Steps: {data.discoart_tags.steps}
+            </Badge>
+            </>}
           </Wrap>
         </Box>
         {(!data.private || (user === data.str_author)) && 
@@ -880,6 +889,15 @@ function PiecePage({ isAuthenticated, token, user}) {
                 const clip_models = ["RN101","RN50","RN50x16","RN50x4","RN50x64","ViTB16","ViTB32","ViTL14","ViTL14_336"]
                 clip_models.map((model)=>{
                   if (data.results[model]) badges.push(<Badge variant="outline" colorScheme="orange">{model}</Badge>)
+                  return null
+                })
+                return badges
+              })()}
+              {data && data.algo=="disco" && data.discoart_tags && data.discoart_tags.clip_models && (()=>{
+                let badges = []
+                const clip_models = data.discoart_tags.clip_models
+                clip_models.map((model)=>{
+                  badges.push(<Badge variant="outline" colorScheme="orange">{model}</Badge>)
                   return null
                 })
                 return badges

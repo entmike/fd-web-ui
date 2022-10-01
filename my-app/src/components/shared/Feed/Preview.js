@@ -20,7 +20,10 @@ export function Preview({piece, isAuthenticated, token, user, mode, onDecided}) 
   function out(){
     setIsInterested(false)
   }
- 
+  useEffect(() => {
+    
+  }, [token,user,isAuthenticated,piece]);
+
   return (
     <Box pos="relative" borderRadius="lg" overflow="hidden"
       onTouchStart={touchover}

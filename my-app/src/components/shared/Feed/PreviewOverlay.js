@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton, Button} from '@chakra-ui/react';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
-import { BiHide, BiShow } from 'react-icons/bi';
+import { FaTrash, FaTrashRestore } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -9,10 +9,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 export function PreviewOverlay({piece, isInterested, isAuthenticated, token, user}) {
   const navigate = useNavigate()
   const { loginWithRedirect } = useAuth0()
-  const [isPinned, setIsPinned] = useState(piece.pinned?true:false)
+  const [isPinned, setIsPinned] = useState((piece.pinned)?true:false)
   const [pinLoading, setIsPinLoading] = useState(false)
   const [delta, setDelta] = useState(0)
-  const [isHidden, setIsHidden] = useState(piece.hide?true:false)
+  const [isDeleted, setIsDeleted] = useState(piece.deleted?true:false)
   let duration = 0.2
   let interestedStyle = {
     cursor: "pointer",
@@ -41,23 +41,27 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
   }else{
     overlayStyle = uninterestedStyle 
   }
-  if(isHidden) {
+  if(isDeleted && !isInterested) {
     maskStyle = {
       position : "absolute",
       top : 0,
       left : 0,
       right: 0,
       bottom: 0,
-      backdropFilter : "blur(10px)",
-      backgroundColor : "rgba(0,0,0,0.4)"
+      border: '5px solid rgba(200, 0, 0, 0.8)'
+      // backdropFilter : "blur(10px)",
+      // backgroundColor : "rgba(0,0,0,0.8)"
     }
   }else{
     maskStyle = {}
   }
   useEffect(() => {
-    // console.log(piece)
-    // console.log(user)
-  }, [isPinned, isHidden]);
+    setIsPinned((piece.pinned)?true:false)
+    setIsDeleted((piece.deleted)?true:false)
+  }, [piece]);
+  useEffect(() => {
+
+  }, [isPinned, isDeleted, user, isAuthenticated, token]);
 
     return (
     <Box style={maskStyle}>
@@ -136,14 +140,13 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                 loginWithRedirect()
               }else{
                 let method = "POST"
-                if(isHidden) {
-                  method = "DELETE"
-                }else{
-                  method = "POST"
+                let url = `${process.env.REACT_APP_api_url}/delete/${piece.uuid}`
+                if(isDeleted) {
+                  url = `${process.env.REACT_APP_api_url}/undelete/${piece.uuid}`
                 }
-                setIsHidden(!isHidden)
+                setIsDeleted(!isDeleted)
                 fetch(
-                  `${process.env.REACT_APP_api_url}/hide/${piece.uuid}`,
+                  url,
                   {
                     method: method,
                     headers: {
@@ -155,7 +158,7 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
                 )
               }
             }}
-            icon={(isHidden)?<BiHide />:<BiShow />}
+            icon={(isDeleted)?<FaTrashRestore />:<FaTrash />}
           />
           }
           <Box pos="absolute" bottom="0" m={5} p={2} >

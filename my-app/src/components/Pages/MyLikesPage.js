@@ -55,7 +55,7 @@ export default function MyLikesPage({isAuthenticated, token, user}) {
       });
   }, [params.page, params.type, token, user, isAuthenticated]);
 
-  console.log('loading', loading);
+  // console.log('loading', loading);
 
   return (
     <>
