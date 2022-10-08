@@ -5,7 +5,6 @@ export function dt(ts) {
     if (ts && ts["$date"]) {
       let d = ts.$date
       if(!indexOf(d,'Z')===-1) d+='Z'
-      console.log(d)
       return format(new Date(d), "MM/dd/yyyy k:mm:ss")
     } else {
       let d = ts

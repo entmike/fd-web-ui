@@ -21,6 +21,7 @@ const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode, onDelet
       <Masonry gutter="16x">
         {loading &&
           [...Array(50)].map((i, index) => (<Skeleton
+              fadeDuration = {0}
               margin=".25em"
               borderRadius="lg"
               minHeight="100px"
@@ -29,6 +30,7 @@ const FeedGrid = ({ dreams, loading, isAuthenticated, token, user, mode, onDelet
           )}
         {!loading && dreams && dreams.map((piece, index) => (
             <Skeleton
+              fadeDuration = "0"
               margin=".25em"
               borderRadius="lg"
               minHeight="50px"

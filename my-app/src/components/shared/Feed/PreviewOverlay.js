@@ -1,11 +1,11 @@
 import React from 'react';
-import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton, Button} from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Box, Flex, Image, HStack, IconButton, Button, Badge} from '@chakra-ui/react';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
 import { FaTrash, FaTrashRestore } from 'react-icons/fa';
+import { BiLinkExternal } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate} from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useParams, useNavigate } from 'react-router-dom';
 export function PreviewOverlay({piece, isInterested, isAuthenticated, token, user}) {
   const navigate = useNavigate()
   const { loginWithRedirect } = useAuth0()
@@ -65,9 +65,10 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
 
     return (
     <Box style={maskStyle}>
-        <Box style={overlayStyle} onClick={()=>{window.open(`/piece/${piece.uuid}`, '_blank')}}>
-          <Button
-            style={{
+        <Box style={overlayStyle} onClick={()=>{
+            navigate(`/piece/${piece.uuid}`)
+          }}>
+          <Box style={{
               position : "absolute",
               top : 0,
               left : 0,
@@ -75,6 +76,8 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
               opacity: 0.7,
               // color : "#FFF"
             }}
+          >
+          <Button
             // isRound
             isLoading = {pinLoading}
             colorScheme={'pink'}
@@ -123,6 +126,27 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
             }}
             leftIcon={(isPinned)?<AiFillHeart />:<AiOutlineHeart />}
           >{(piece && piece.likes?piece.likes:0)+delta}</Button>
+          <IconButton
+            // isRound
+            colorScheme={'blue'}
+            size="md"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(`/piece/${piece.uuid}`, '_blank')
+            }}
+            icon={<BiLinkExternal/>}
+          />
+        </Box>
+
+
+
+
+
+
+
+
+
+
           {piece.userdets.user_str === user && 
           <IconButton
             style={{
@@ -193,7 +217,10 @@ export function PreviewOverlay({piece, isInterested, isAuthenticated, token, use
               </Box>
             </HStack>
             {piece.params && piece.params.prompt && 
-                <small style={{color:"#FFF", textShadow: "1px 1px 2px #2a2a2a"}}> {piece.params.prompt}</small>
+                <>
+                  <small style={{color:"#FFF", textShadow: "1px 1px 2px #2a2a2a"}}> {piece.params.prompt}</small><br />
+                  <Badge>{piece.params.seed}</Badge>
+                </>
             }</div>
             {/* <small> Time: { timestamp } </small> */}
           </Box>

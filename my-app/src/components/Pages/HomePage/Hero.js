@@ -20,16 +20,7 @@ export function Hero({isAuthenticated, token, user}) {
 
   useEffect(() => {
     setLoading(true);
-    let headers
-    if (token) {
-      headers = {
-        "Content-Type" : "application/json",
-        "Authorization" : `Bearer ${token}`
-      }
-    }else{
-      console.log("Not logged in")
-    }
-    fetch(apiURL,{headers})
+    fetch(apiURL)
       .then((response) => response.json())
       .then((actualData) => {
         setData(actualData);
@@ -42,7 +33,7 @@ export function Hero({isAuthenticated, token, user}) {
       .finally(() => {
         setLoading(false);
       });
-  }, [token, user, isAuthenticated]);
+  }, []);
 
   return (
     <>

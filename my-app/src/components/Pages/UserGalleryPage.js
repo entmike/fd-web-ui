@@ -97,76 +97,56 @@ export default function UserGalleryPage({ isAuthenticated, token, user }) {
   return (
     <>
       <HStack>
-        <Skeleton isLoaded={!userIsLoading}>
-          {userDetails && <Avatar size="xl" src={userAvatar} />}
-        </Skeleton>
-        <Skeleton isLoaded={!userIsLoading}>
-          <VStack alignItems={'left'}>
-            <Heading>{`${userNameGallery}'s Gallery`}</Heading>
-            <HStack>
-              {userDetails && (
-                <Button
-                  colorScheme="blue"
-                  variant="outline"
-                  size="xs"
-                  onClick={handleFollowClick}
-                >
-                  Follow
-                </Button>
-              )}
-              {userDetails && userDetails.social && userDetails.social.twitter && (
-                <SocialButton
-                  label={userDetails.social.twitter}
-                  href={`https://twitter.com/${userDetails.social.twitter}`}
-                >
-                  <FaTwitter />
-                </SocialButton>
-              )}
-            </HStack>
-          </VStack>
-        </Skeleton>
+        {userDetails && <Avatar size="xl" src={userAvatar} />}
+        <VStack alignItems={'left'}>
+          <Heading>{`${userNameGallery}'s Gallery`}</Heading>
+          <HStack>
+            {userDetails && (
+              <Button
+                colorScheme="blue"
+                variant="outline"
+                size="xs"
+                onClick={handleFollowClick}
+              >
+                Follow
+              </Button>
+            )}
+            {userDetails && userDetails.social && userDetails.social.twitter && (
+              <SocialButton
+                label={userDetails.social.twitter}
+                href={`https://twitter.com/${userDetails.social.twitter}`}
+              >
+                <FaTwitter />
+              </SocialButton>
+            )}
+          </HStack>
+        </VStack>
       </HStack>
-      <Skeleton isLoaded={!loading}>
-        <FormControl>
-          <FormLabel htmlFor="dreams">Include Dreams</FormLabel>
-          <Switch
-            id="dreams"
-            isChecked={(()=>{return !exclude.find(e=>e==="dream"?true:false)})()}
-            onChange={(event) => {
-              let updatedExclude = JSON.parse(JSON.stringify(exclude));
-              let index = updatedExclude.findIndex(e=>e==="dream"?true:false)
-              console.log(index)
-              if(index!==-1) updatedExclude.splice(index, 1)
-              let checked = event.target.checked ? true : false;
-              if(!checked) updatedExclude.push("dream")
-              setExclude(updatedExclude);
-              
-              let p = {}
-              
-              if(include.length>0) p.include = include.join(",")
-              if(updatedExclude.length>0) p.exclude = updatedExclude.join(",")
-
-              navigate({
-                pathname: `/gallery/${params.user_id}/${parseInt(params.page)}`,
-                search: `?${createSearchParams(p)}`,
-              });
-            }}
-          />
-        </FormControl>
-        {/* <FormControl>
-          <FormLabel htmlFor="nsfw">NSFW</FormLabel>
-          <Switch
-            id="nsfw"
-            isChecked={(()=>{return include.find(e=>e==="nsfw"?true:false)})()}
+      <FormControl>
+        <FormLabel htmlFor="dreams">Include Dreams</FormLabel>
+        <Switch
+          id="dreams"
+          isChecked={(()=>{return !exclude.find(e=>e==="dream"?true:false)})()}
           onChange={(event) => {
-            console.log(event)
-            // let updatedAugmentation = JSON.parse(JSON.stringify(augmentation));
-            // updatedAugmentation.face_enhance = event.target.checked ? true : false;
-            // setAugmentation({ ...augmentation, ...updatedAugmentation });
+            let updatedExclude = JSON.parse(JSON.stringify(exclude));
+            let index = updatedExclude.findIndex(e=>e==="dream"?true:false)
+            if(index!==-1) updatedExclude.splice(index, 1)
+            let checked = event.target.checked ? true : false;
+            if(!checked) updatedExclude.push("dream")
+            setExclude(updatedExclude);
+            
+            let p = {}
+            
+            if(include.length>0) p.include = include.join(",")
+            if(updatedExclude.length>0) p.exclude = updatedExclude.join(",")
+
+            navigate({
+              pathname: `/gallery/${params.user_id}/${parseInt(params.page)}`,
+              search: `?${createSearchParams(p)}`,
+            });
           }}
-          />
-        </FormControl> */}
-      </Skeleton>
+        />
+      </FormControl>
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

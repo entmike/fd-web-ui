@@ -23,3 +23,12 @@ code {
 .slick-active.slick-current {
   z-index: 999;
 }
+
+.TOS p, .TOS ul {
+  margin-bottom: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+.TOS li {
+  margin-left:25px;
+}

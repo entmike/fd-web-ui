@@ -29,6 +29,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Badge
 } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons';
 import algoliasearch from 'algoliasearch/lite';
@@ -199,6 +200,12 @@ export function Nav({myInfo}) {
                     navigate(`/popular/stable/1`)
                   }
                 >Popular Art
+                </MenuItem>
+                <MenuItem
+                  onClick={() =>
+                    navigate(`/recentlyliked/1`)
+                  }
+                ><Badge colorScheme={"green"} fontSize='0.6em' variant={"outline"} mr={2}>New</Badge>Recently Liked
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -382,14 +389,14 @@ export function Nav({myInfo}) {
                       navigate(`/myjobs/all/1`)
                     }
                   >
-                    My Jobs
+                    My Jobs {myInfo.queue > 0 && <Badge ml={2} variant={"outline"} colorScheme={"green"}>{myInfo.queue}</Badge>}
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
                       navigate(`/myworkspace/1`)
                     }
                   >
-                    My Workspace {myInfo.reviews > 0 && `(${myInfo.reviews})`}
+                    My Workspace {myInfo.reviews > 0 && <Badge ml={2} variant={"outline"} colorScheme={"green"}>{myInfo.reviews}</Badge>}
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
@@ -397,6 +404,13 @@ export function Nav({myInfo}) {
                     }
                   >
                     My Profile
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      navigate(`/myinvites`)
+                    }
+                  >
+                    My Invites {myInfo.invites > 0 && <Badge ml={2} variant={"outline"} colorScheme={"green"}>{myInfo.invites}</Badge>}
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem

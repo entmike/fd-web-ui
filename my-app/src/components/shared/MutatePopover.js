@@ -67,7 +67,9 @@ export function MutatePopover(props) {
   const [piece, setPiece] = useState(data)
   const [dataCopy, setDataCopy] = useState(data)
   const [isLoading, setIsLoading] = useState(false)
-
+  let bs = localStorage.getItem("batchsize-settings");
+  let batch_size = bs?parseInt(bs):5
+  const [batchSize, setBatchSize] = useState(batch_size);
   // useEffect(() => {
   //   setPiece(props.piece)
   // }, [props.piece]);
@@ -77,8 +79,7 @@ export function MutatePopover(props) {
       // return
       setIsLoading(true)
       let j = JSON.parse(JSON.stringify(dataCopy))
-      j.batch_size = 1
-      console.log(j)
+      j.batch_size = batchSize
       const { success: mutateSuccess, results: results } = await fetch(
         `${process.env.REACT_APP_api_url}/v3/create/mutate`,
         {
@@ -152,6 +153,27 @@ export function MutatePopover(props) {
               alt={piece.uuid}
               objectFit="contain"
             />
+            <FormControl>
+              <FormLabel htmlFor="batch_size">Batch Size</FormLabel>
+              <NumberInput
+                id="batch_size"
+                value={batchSize}
+                min={1}
+                max={15}
+                clampValueOnBlur={true}
+                onChange={(value) => {
+                  let bs = parseInt(value);
+                  localStorage.setItem("batchsize-settings",bs)
+                  setBatchSize(bs);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
             <FormControl>
                 <FormLabel htmlFor="prompt">Prompt</FormLabel>
                 <Textarea

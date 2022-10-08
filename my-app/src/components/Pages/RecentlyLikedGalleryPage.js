@@ -3,11 +3,10 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Text, Flex, Center, Heading } from '@chakra-ui/react';
 import { HelpHeader } from '../shared/HelpHeader';
-
 import FeedGrid from '../shared/Feed/FeedGrid';
 import PaginationNav from '../shared/Feed/PaginationNav';
 
-export default function PopularGalleryPage({isAuthenticated, token, user, permissions}) {
+export default function RecentlyLikedGalleryPage({isAuthenticated, token, user, permissions}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,10 +25,10 @@ export default function PopularGalleryPage({isAuthenticated, token, user, permis
     "paint-pour" : "Paint and Pour (Disco Diffusion)",
   }
   const type = params.type || "all"
-  const apiURL = `${process.env.REACT_APP_api_url}/v3/popular/${type}/50/${params.page}`;
+  const apiURL = `${process.env.REACT_APP_api_url}/v3/recentlikes/50/${params.page}`;
 
-  const prevURL = `/popular/${type}/${parseInt(params.page) - 1}`;
-  const nextURL = `/popular/${type}/${parseInt(params.page) + 1}`;
+  const prevURL = `/recentlyliked/${parseInt(params.page) - 1}`;
+  const nextURL = `/recentlyliked/${parseInt(params.page) + 1}`;
 
   useEffect(() => {
     setLoading(true);
@@ -61,8 +60,8 @@ export default function PopularGalleryPage({isAuthenticated, token, user, permis
   return (
     <>
       <HelpHeader
-        title={`Popular Art`}
-        description={`Images ranked from most likes to least`}/>
+        title={`Recently Liked Art`}
+        description={`Images recently liked by the Fever Dreams community`}/>
       <PaginationNav
         pageNumber={params.page}
         prevURL={prevURL}

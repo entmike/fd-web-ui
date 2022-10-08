@@ -22,8 +22,8 @@ export default function MyWorkspacePage(props) {
   const params = useParams();
   const type = params.type || "all"
   const apiURL = `${process.env.REACT_APP_api_url}/v3/myreviews/50/${params.page}`
-  const prevURL = `/myreviews/${parseInt(params.page) - 1}`;
-  const nextURL = `/myreviews/${parseInt(params.page) + 1}`;
+  const prevURL = `/myworkspace/${parseInt(params.page) - 1}`;
+  const nextURL = `/myworkspace/${parseInt(params.page) + 1}`;
 
   function handleOnDelete(index){
     let updatedData = JSON.parse(JSON.stringify(data))

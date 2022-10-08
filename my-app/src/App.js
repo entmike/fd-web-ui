@@ -1,84 +1,38 @@
 import { useAuth0 } from "@auth0/auth0-react"
-import { ChakraProvider, Box } from "@chakra-ui/react"
+import { ChakraProvider } from "@chakra-ui/react"
 import { useState, useEffect } from "react"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
 import "./App.css"
 
-import { Nav } from "./components/shared/Nav"
 import { FdFooter } from "./components/shared/FdFooter.js"
 
 import { BackToTop } from "./components/shared/BackToTop"
-import { Hero } from "./components/Pages/HomePage"
-import UserGalleryPage from "./components/Pages/UserGalleryPage"
-import DeletedGalleryPage from "./components/Pages/DeletedGalleryPage"
-import RandomGalleryPage from "./components/Pages/RandomGalleryPage"
-import RecentGalleryPage from "./components/Pages/RecentGalleryPage"
-import PopularGalleryPage from "./components/Pages/PopularGalleryPage"
-import MutatePage from "./components/Pages/MutatePage"
-import MutateStablePage from "./components/Pages/MutateStablePage"
-import IncubatePage from "./components/Pages/MutatePage"
-import CreateDreamPage from "./components/Pages/CreateDreamPage"
-import JobsPage from "./components/Pages/JobsPage"
-import MyJobsPage from "./components/Pages/MyJobsPage"
-import MyWorkspacePage from "./components/Pages/MyWorkspacePage"
-import PiecePage from "./components/Pages/PiecePage"
-import GpuStatusPage from "./components/Pages/GpuStatusPage"
-import AgentJobsPage from "./components/Pages/AgentJobsPage"
-import ColorPage from "./components/Pages/ColorPage"
-import JobGenerator from "./components/Pages/JobGenerator"
-import FollowingPage from "./components/Pages/FollowingPage"
-import MyProfile from "./components/Pages/MyProfile"
-import MyUploads from "./components/Pages/MyUploads"
+import { SiteRouter } from "./components/shared/SiteRouter"
 
-import SearchPage from "./components/Pages/SearchPage"
-// import algoliasearch from "algoliasearch/lite"
-
-// import { InstantSearch } from "react-instantsearch-hooks-web"
-import MyLikesPage from "components/Pages/MyLikesPage"
-
-// const searchClient = algoliasearch("SBW45H5QPH", "735cfe2686474a143a610f864474b2f2")
 
 function App() {
-  const {user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const {user, isAuthenticated, getAccessTokenSilently, loginWithRedirect } = useAuth0()
   const [permissions, setPermissions] = useState(null)
+  const [pollId, setPollId] = useState(null)
   const [token, setToken] = useState(null)
   const [userId, setUserId] = useState(null)
   const [myInfo, setMyInfo] = useState({})
 
-  function checkMyInfo() {
-    const infoURL = `${process.env.REACT_APP_api_url}/v3/myinfo`;
-    const headers = {
-      "Content-Type" : "application/json",
-      "Authorization" : `Bearer ${token}`
-    }
-    fetch(infoURL,{headers})
-    .then((response) => {
-      return response.json()
-    }).then(info=>{
-      setMyInfo(info)
-      window.setTimeout(checkMyInfo, 5000)
-    }).catch(err=>{
-      setMyInfo({})
-    })
-  }
   const getToken = async () => {
-    let token
     try {
-      token = await getAccessTokenSilently({
-        audience: "https://api.feverdreams.app/",
-      })
-      setToken(token)
-      if(user){
+      if(user!==undefined){
+        let t = await getAccessTokenSilently({
+          audience: "https://api.feverdreams.app/",
+        })
+        setToken(t)
         let userId = user.sub.split("|")[2]
         setUserId(userId)
         let headers
-        if (token) {
-          checkMyInfo(token)
+        if (t) {
           const apiURL = `${process.env.REACT_APP_api_url}/mypermissions`;
           headers = {
             "Content-Type" : "application/json",
-            "Authorization" : `Bearer ${token}`
+            "Authorization" : `Bearer ${t}`
           }
           fetch(apiURL,{headers})
           .then((response) => {
@@ -89,82 +43,59 @@ function App() {
         }
       }
     } catch (e) {
-      console.log("Not logged in")
+      if (e.error === 'login_required') {
+        loginWithRedirect();
+      }
+      if (e.error === 'consent_required') {
+        loginWithRedirect();
+      }
+      throw e;
     }
   }
 
   useEffect(() => {
     getToken()
-  },[user,isAuthenticated])
+    return ()=>{
+      window.clearTimeout(pollId)
+      setPollId(null)
+    }
+  },[user])
 
-  useEffect(() => {
-    // getToken()
-  },[token,user,isAuthenticated])
+  useEffect(()=>{
+    function checkMyInfo() {
+      const infoURL = `${process.env.REACT_APP_api_url}/v3/myinfo`;
+      if (token){
+        let headers = {
+          "Content-Type" : "application/json",
+          "Authorization" : `Bearer ${token}`
+        }
+        fetch(infoURL,{headers})
+          .then((response) => {
+            return response.json()
+          }).then(info=>{
+            setMyInfo(info)
+            setPollId(window.setTimeout(checkMyInfo, 5000))
+          }).catch(err=>{
+            setMyInfo({})
+            setPollId(window.setTimeout(checkMyInfo, 5000))
+          })
+        }
+    }
+    if (token) setPollId(window.setTimeout(checkMyInfo, 500))
+    return ()=>{
+      window.clearTimeout(pollId)
+      setPollId(null)
+    }
+  },[token])
+
   return (
     <ChakraProvider>
       {/* <InstantSearch searchClient={searchClient} indexName="feverdreams"> */}
-        <Router>
           <div className="App">
             <BackToTop />
-            <Nav myInfo={myInfo}/>
-            <Box p={5} width={"100%"}>
-              <Routes>
-                {/* Gallery pages */}
-                <Route path={"/gallery/:user_id/:page"} element={<UserGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route path={"/deleted/:user_id/:page"} element={<DeletedGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route path="/random/:type/:amount" element={<RandomGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route path="/recent/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route path="/popular/:type/:page" element={<PopularGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route path="/recent/:type/:page" element={<RecentGalleryPage token={token} isAuthenticated={isAuthenticated} user={userId} permissions={permissions}/>} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/rgb/:r/:g/:b/:range/:amount/:page" element={<ColorPage />} />
-
-                {/* Non-gallery pages */}
-                <Route path="/" element={<Hero token={token} isAuthenticated={isAuthenticated} user={userId}/>} />
-                <Route
-                  path={'/piece/:uuid'}
-                  element={<PiecePage token={token} isAuthenticated={isAuthenticated} user={userId}/>}
-                />
-                <Route path="/jobs" element={<JobsPage/>}></Route>
-                <Route path="/jobs/:type" element={<JobsPage />}></Route>
-                <Route path="/myjobs/:status/:page" element={<MyJobsPage token={token} isAuthenticated={isAuthenticated}/>}></Route>
-                <Route path="/myfavs/:page" element={<MyLikesPage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
-                <Route path="/myworkspace/:page" element={<MyWorkspacePage token={token} isAuthenticated={isAuthenticated} user={userId}/>}></Route>
-                <Route
-                  path="/dream"
-                  element={<CreateDreamPage token={token} isAuthenticated={isAuthenticated} />}
-                />
-                <Route
-                  path="/mutate/:uuid"
-                  element={<MutateStablePage mode="mutate" token={token} isAuthenticated={isAuthenticated} />}
-                />
-                <Route
-                  path="/edit/:uuid"
-                  element={<MutateStablePage mode="edit" token={token} isAuthenticated={isAuthenticated} user={userId}/>}
-                />
-                {/* <Route
-                  path="/mutate/:uuid"
-                  element={<MutatePage mode="mutate" token={token} isAuthenticated={isAuthenticated} />}
-                />
-                <Route
-                  path="/edit/:uuid"
-                  element={<MutatePage mode="edit" token={token} isAuthenticated={isAuthenticated} />}
-                />
-                <Route
-                  path="/incubate/:uuid"
-                  element={<IncubatePage token={token} isAuthenticated={isAuthenticated} />}
-                /> */}
-                <Route path="/job-generator" element={<JobGenerator />} />
-                <Route path="/gpustatus" element={<GpuStatusPage />} />
-                <Route path="/agentstatus/:agent/:page" element={<AgentJobsPage />} />
-                <Route path="/following/:page" token={token} element={<FollowingPage token={token} isAuthenticated={isAuthenticated}/>} />
-                <Route path="/myprofile" token={token} element={<MyProfile token={token} isAuthenticated={isAuthenticated}/>} />
-                <Route path="/myuploads" token={token} element={<MyUploads token={token} isAuthenticated={isAuthenticated}/>} />
-              </Routes>
-            </Box>
+            <SiteRouter token={token} isAuthenticated={isAuthenticated} userId={userId} myInfo={myInfo}/>
             <FdFooter />
           </div>
-        </Router>
       {/* </InstantSearch> */}
     </ChakraProvider>
   )
