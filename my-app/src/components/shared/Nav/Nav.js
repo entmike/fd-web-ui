@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { MutatePopover } from "../MutatePopover"
 import {
   Link as RouteLink,
   Link,
@@ -78,7 +79,7 @@ const CustomSearchBox = (props) => {
 
   const { query, refine, clear, isSearchStalled } = useSearchBox(props);
   const navigate = useNavigate(); // https://reactrouter.com/docs/en/v6/hooks/use-navigate
-
+  
   // Set the search state once on load if a query ("q") is present in URL.
   useEffect(() => {
     refine(searchParams.get('q'));
@@ -115,10 +116,15 @@ const CustomSearchBox = (props) => {
   );
 };
 
-export function Nav({myInfo}) {
+export function Nav(props) {
+  const {token, myInfo} = props
   let ack = 0
   if(localStorage.getItem("lastAck")) ack = parseInt(localStorage.getItem("lastAck"))
-
+  let pr = localStorage.getItem("private-settings");
+  let bs = localStorage.getItem("batchsize-settings");
+  let privatesettings = (pr==='true')?true:false
+  let batch_size = bs?parseInt(bs):5
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isAuthenticated, logout, user } = useAuth0();
@@ -179,6 +185,7 @@ export function Nav({myInfo}) {
               <NavLink as={RouteLink} key={title} title={title} url={url}/>
             ))}
           </HStack> */}
+          
           <Menu>
               {/* <Button variant={'outline'} colorScheme="blue" onClick={() =>
                 (window.location.href = `/recent/stable/1`)
@@ -244,43 +251,25 @@ export function Nav({myInfo}) {
                   }
                 >Random Dreams
                 </MenuItem>
-                {/*
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/general/1`)
-                  }
-                >General
-                </MenuItem>
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/portraits/1`)
-                  }
-                >Portraits
-                </MenuItem>
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/isometric/1`)
-                  }
-                >Isometric
-                </MenuItem>
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/pixel-art/1`)
-                  }
-                >Pixel Art
-                </MenuItem>
-                <MenuItem
-                  onClick={() =>
-                    (window.location.href = `/recent/paint-pour/1`)
-                  }
-                >Paint and Pour
-                </MenuItem> */}
-                
               </MenuList>
-              </Menu><Menu>
-              {/* <Button variant={'outline'} colorScheme="green" onClick={() =>
-                navigate(`/mutate/2c63a23fcfc693c67d5ff5767ace6dd954af52b743aa342dca52ac9d5d108752`)
-              }>Create</Button> */}
+              </Menu>
+              {/* <MutatePopover token={token} piece = {{
+                nsfw: false,
+                params : {
+                  width_height:[ 512, 512 ],
+                  private : privatesettings,
+                  restore_faces : false,
+                  seed : -1,
+                  scale : 7.0,
+                  steps : 25,
+                  prompt : "A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation",
+                  negative_prompt : "",
+                  repo : "a1111",
+                  sampler: "k_euler_ancestral",
+                  eta : 0.0
+                }
+              }}/> */}
+              <Menu>
               <MenuButton
                 colorScheme="green"
                 as={Button}

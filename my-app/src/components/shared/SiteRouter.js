@@ -83,7 +83,7 @@ export const SiteRouter = (props)=>{
     }
     return(
         <Router>
-            <Nav myInfo={myInfo}/>
+            <Nav myInfo={myInfo} token={token}/>
                 <Box p={5} width={"100%"}>
                     {(()=>{
                         return <>{

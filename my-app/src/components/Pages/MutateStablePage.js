@@ -33,7 +33,9 @@ import {
   Select,
   Checkbox,
   VStack,
-  Center
+  Center,
+  Wrap,
+  WrapItem
 } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { join, update } from 'lodash';
@@ -79,28 +81,33 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
         .then((data) => {
           if (!data){
             data = {
-            uuid : job_uuid,
-            views : 0,
-            str_author : discord_id,
-            gpu_preference : "medium",
-            editable : true,
-            private : privatesettings,
-            nsfw: false,
-            review: true,
-            params:{
-              width_height:[ 1024, 512 ],
-              seed: -1,
-              scale : 7.0,
-              eta : 0.0,
-              steps: 50,
-              prompt: "A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation",
-              sampler: "k_euler_ancestral"
+              uuid : job_uuid,
+              views : 0,
+              str_author : discord_id,
+              gpu_preference : "medium",
+              editable : true,
+              private : privatesettings,
+              nsfw: false,
+              review: true,
+              params:{
+                restore_faces : false,
+                enable_hr : false,
+                width_height:[ 1024, 512 ],
+                seed: -1,
+                scale : 7.0,
+                eta : 0.0,
+                steps: 50,
+                prompt: "A beautiful painting of a singular lighthouse, shining its light across a tumultuous sea of blood by greg rutkowski and thomas kinkade, Trending on artstation",
+                negative_prompt : "",
+                repo : "a1111",
+                sampler: "k_euler_ancestral"
+              }
             }
+          }else{
+            data.review = true
+            data.private = privatesettings
+            data.params.repo = "a1111"
           }
-        }else{
-          data.review = true
-          data.private = privatesettings
-        }
 
         if(mode==="edit"){
           if(user){
@@ -190,7 +197,7 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                     <VStack>
                       <Heading size={"sm"}>{mode==="mutate"?"Mutate":"Edit"}</Heading>
                       {/* <Text fontSize='xs' noOfLines={1}>{job ? job.uuid : 'Loading'}</Text> */}
-                      <Image src={`https://images.feverdreams.app/thumbs/512/${job.uuid}.jpg`}></Image>
+                      {job.uuid && <Image src={`https://images.feverdreams.app/thumbs/512/${job.uuid}.jpg`}></Image>}
                     </VStack>
                   </Center>
                   <SimpleGrid columns={{sm: 1, md: 3}} spacing="20px">
@@ -290,6 +297,54 @@ function MutateStablePage({ isAuthenticated, token, mode }) {
                       />
                       {show_help && <FormHelperText>Phrase, sentence, or string of words and phrases describing what the image should look like. The words will be analyzed by the AI and will guide the diffusion process toward the image you describe.</FormHelperText>}
                   </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="negative_prompt">Negative Prompt</FormLabel>
+                      <Textarea
+                        isDisabled = {!job.editable}
+                        id={`negative_prompt`}
+                        type="text"
+                        value={job.params.negative_prompt}
+                        onChange={(event) => {
+                          let negative_prompt = event.target.value
+                          // if(!prompt) prompt=" "
+                          let updatedJob = JSON.parse(JSON.stringify(job));
+                          updatedJob.params.negative_prompt = negative_prompt;
+                          setJob({ ...job, ...updatedJob });
+                        }}
+                      />
+                      {show_help && <FormHelperText>Stuff you want excluded from your image.</FormHelperText>}
+                  </FormControl>
+                  <Wrap>
+                    <WrapItem><FormControl>
+                      <FormLabel htmlFor="enable_hr">Highres. Fix</FormLabel>
+                      <Switch
+                          id="enable_hr"
+                          isChecked = {job.params.enable_hr}
+                          onChange={(event) => {
+                            let enable_hr = event.target.checked
+                            let updatedJob = JSON.parse(JSON.stringify(job));
+                            updatedJob.params.enable_hr = enable_hr;
+                            setJob({ ...job, ...updatedJob });
+                          }}
+                        />
+                    </FormControl>
+                    </WrapItem>
+                    <WrapItem>
+                      <FormControl>
+                        <FormLabel htmlFor="restore_faces">Restore Faces</FormLabel>
+                        <Switch
+                            id="restore_faces"
+                            isChecked = {job.params.restore_faces}
+                            onChange={(event) => {
+                              let restore_faces = event.target.checked
+                              let updatedJob = JSON.parse(JSON.stringify(job));
+                              updatedJob.params.restore_faces = restore_faces;
+                              setJob({ ...job, ...updatedJob });
+                            }}
+                          />
+                      </FormControl>
+                    </WrapItem>
+                </Wrap>
                   <FormControl>
                     <FormLabel htmlFor="sampler">Sampler</FormLabel>
                     <Select isDisabled = {!job.editable} 

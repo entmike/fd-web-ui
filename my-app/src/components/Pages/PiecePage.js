@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 // import { useState } from 'react-usestateref'
 import { useParams, useNavigate } from 'react-router-dom';
+import { MutatePopover } from "../shared/MutatePopover"
 import { ExternalLinkIcon, ViewIcon, DownloadIcon } from '@chakra-ui/icons';
 import { AiOutlineHeart, AiFillHeart, AiFillTags } from 'react-icons/ai';
 import { MdIosShare } from "react-icons/md";
@@ -561,7 +562,8 @@ function PiecePage({ isAuthenticated, token, user}) {
                       }
                       {data && ((user === data.str_author && data.private && data.algo==="stable") || data.algo==="disco" || (data.algo==="stable" && !data.private)) && 
                       <WrapItem>
-                        <Button
+                        <MutatePopover piece = {data} token = {token}/>
+                        {/* <Button
                           colorScheme={'green'}
                           // size="xs"
                           onClick={() => (navigate(`${mutateEndpoint}/${params.uuid}`))}
@@ -571,7 +573,7 @@ function PiecePage({ isAuthenticated, token, user}) {
                             <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
                           </svg>
                           Mutate
-                        </Button>
+                        </Button> */}
                       </WrapItem>
                       }
                       {data && (data.status === 'complete' || data.status === 'archived') &&

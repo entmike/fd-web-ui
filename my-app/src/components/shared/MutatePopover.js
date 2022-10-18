@@ -64,8 +64,8 @@ export function MutatePopover(props) {
   let data = props.piece
   let token = props.token
   const toast = useToast()
-  const [piece, setPiece] = useState(data)
-  const [dataCopy, setDataCopy] = useState(data)
+  const [piece, setPiece] = useState(data?data:{params:{}})
+  const [dataCopy, setDataCopy] = useState(data?data:{params:{}})
   const [isLoading, setIsLoading] = useState(false)
   let bs = localStorage.getItem("batchsize-settings");
   let batch_size = bs?parseInt(bs):5
@@ -153,27 +153,61 @@ export function MutatePopover(props) {
               alt={piece.uuid}
               objectFit="contain"
             />
-            <FormControl>
-              <FormLabel htmlFor="batch_size">Batch Size</FormLabel>
-              <NumberInput
-                id="batch_size"
-                value={batchSize}
-                min={1}
-                max={15}
-                clampValueOnBlur={true}
-                onChange={(value) => {
-                  let bs = parseInt(value);
-                  localStorage.setItem("batchsize-settings",bs)
-                  setBatchSize(bs);
-                }}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </FormControl>
+            <Wrap>
+              <WrapItem>
+                <FormControl>
+                  <FormLabel htmlFor="batch_size">Batch Size</FormLabel>
+                  <NumberInput
+                    id="batch_size"
+                    value={batchSize}
+                    min={1}
+                    max={15}
+                    clampValueOnBlur={true}
+                    onChange={(value) => {
+                      let bs = parseInt(value);
+                      localStorage.setItem("batchsize-settings",bs)
+                      setBatchSize(bs);
+                    }}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                </FormControl>
+              </WrapItem>
+              <WrapItem>
+                  <FormControl>
+                  <FormLabel htmlFor="restore_faces">Restore Faces</FormLabel>
+                  <Switch
+                      id="restore_faces"
+                      isChecked = {dataCopy.params.restore_faces}
+                      onChange={(event) => {
+                        let restore_faces = event.target.checked
+                        let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                        updatedPiece.params.restore_faces = restore_faces;
+                        setDataCopy({ ...dataCopy, ...updatedPiece });
+                      }}
+                    />
+                </FormControl>
+              </WrapItem>
+              <WrapItem>
+                  <FormControl>
+                  <FormLabel htmlFor="enable_hr">Highres. Fix</FormLabel>
+                  <Switch
+                      id="enable_hr"
+                      isChecked = {dataCopy.params.enable_hr}
+                      onChange={(event) => {
+                        let enable_hr = event.target.checked
+                        let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                        updatedPiece.params.enable_hr = enable_hr;
+                        setDataCopy({ ...dataCopy, ...updatedPiece });
+                      }}
+                    />
+                </FormControl>
+              </WrapItem>
+            </Wrap>
             <FormControl>
                 <FormLabel htmlFor="prompt">Prompt</FormLabel>
                 <Textarea
@@ -184,6 +218,20 @@ export function MutatePopover(props) {
                     let prompt = event.target.value
                     let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
                     updatedPiece.params.prompt = prompt;
+                    setDataCopy({ ...dataCopy, ...updatedPiece });
+                  }}
+                />
+            </FormControl>
+            <FormControl>
+                <FormLabel htmlFor="negative_prompt">Negative Prompt</FormLabel>
+                <Textarea
+                  id={`negative_prompt`}
+                  type="text"
+                  value={dataCopy.params.negative_prompt}
+                  onChange={(event) => {
+                    let negative_prompt = event.target.value
+                    let updatedPiece = JSON.parse(JSON.stringify(dataCopy));
+                    updatedPiece.params.negative_prompt = negative_prompt;
                     setDataCopy({ ...dataCopy, ...updatedPiece });
                   }}
                 />
